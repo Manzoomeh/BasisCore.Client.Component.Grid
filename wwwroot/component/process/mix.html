@@ -14,8 +14,7 @@
 
   <Basis core="api" url="/server/api/mix?data=[##api.refresh_demo.urlencoded|(null)##]" method="get" run="atclient"
     triggers="api.refresh_demo"> </Basis>
-  <Basis core="component.bc.grid" run="atclient" dataMemberName="api.demo" signalSourceId="api.refresh_demo"
-    options="options">
+  <Basis core="component.bc.grid" run="atclient" dataMemberName="api.demo" options="options">
   </Basis>
   <basis core="callback" run="atclient" triggers="api.refresh_demo"></basis>
 
@@ -64,6 +63,7 @@
         }
       },
       pageNumber: 2,
+      refreshSourceId: "api.refresh_demo"
       //rowMaker: (data, tr) => console.log(data, tr)
     };
   </script>

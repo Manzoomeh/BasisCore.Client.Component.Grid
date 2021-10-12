@@ -1,10 +1,5 @@
 import { IGridOptions, IOffsetOptions } from "./IOptions";
-import {
-  IGridColumnInfo,
-  ISortType,
-  IGridSource,
-  SignalSourceCallback,
-} from "../../type-alias";
+import { IGridColumnInfo, ISortType, IGridSource, SignalSourceCallback } from "../../type-alias";
 import "./../../asset/style.css";
 import GridRow from "./GridRow";
 import IGrid from "./IGrid";
@@ -16,7 +11,7 @@ import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 
 export default class Grid implements IGrid {
-  readonly container: HTMLElement;
+  private readonly _container: HTMLElement;
   private _table: HTMLTableElement;
   readonly options: IGridOptions;
   private _head: HTMLTableSectionElement;
@@ -25,18 +20,15 @@ export default class Grid implements IGrid {
   private _loaderContainer: HTMLElement;
   private _informationContainer: HTMLElement;
   private readonly _onSignalSourceCallback: SignalSourceCallback;
+  private readonly _selectionChangeCallback: SignalSourceCallback;
 
   static _defaults: Partial<IGridOptions>;
-  private rows: GridRow[] = new Array<GridRow>();
-  private source: IGridSource;
   private columnsInitialized = false;
   private processManager: IGridProcessManager;
   public readonly columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
-  private readonly _informationFormatter: (
-    from: number,
-    to: number,
-    total: number
-  ) => string;
+  private readonly _informationFormatter: (from: number, to: number, total: number) => string;
+  public readonly id: string;
+  private _rows: Array<GridRow>;
 
   static getDefaults(): Partial<IGridOptions> {
     if (!Grid._defaults) {
@@ -55,6 +47,7 @@ export default class Grid implements IGrid {
         rowNumber: "#",
         loader: true,
         refresh: false,
+        selectable: false,
         culture: {
           labels: {
             search: "Search :",
@@ -76,7 +69,8 @@ export default class Grid implements IGrid {
   constructor(
     container: HTMLElement,
     options?: IGridOptions,
-    signalSourceCallback?: SignalSourceCallback
+    signalSourceCallback?: SignalSourceCallback,
+    selectionChangeCallback?: SignalSourceCallback
   ) {
     if (!container) {
       throw "table element in null or undefined";
@@ -89,10 +83,10 @@ export default class Grid implements IGrid {
       ...Grid.getDefaults().culture.labels,
       ...(options?.culture?.labels ?? {}),
     };
-    this.container = container;
-    this.container.setAttribute("data-bc-grid", "");
+    this._container = container;
+    this._container.setAttribute("data-bc-grid", "");
     if (this.options.direction) {
-      this.container.style["direction"] = this.options.direction;
+      this._container.style["direction"] = this.options.direction;
     }
     this._informationFormatter = Function(
       "from",
@@ -101,6 +95,8 @@ export default class Grid implements IGrid {
       `return \`${this.options.culture.labels.information}\``
     ) as any;
     this._onSignalSourceCallback = signalSourceCallback;
+    this._selectionChangeCallback = selectionChangeCallback;
+    this.id = Math.random().toString(36).substring(2);
     this.createUI();
   }
 
@@ -124,20 +120,15 @@ export default class Grid implements IGrid {
 
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute(
-        "data-bc-information-container",
-        ""
-      );
+      this._informationContainer.setAttribute("data-bc-information-container", "");
     }
 
     if (this.options.filter == "simple") {
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
-      this.container.appendChild(filter);
+      this._container.appendChild(filter);
       const label = document.createElement("label");
-      label.appendChild(
-        document.createTextNode(this.options.culture.labels.search)
-      );
+      label.appendChild(document.createTextNode(this.options.culture.labels.search));
       const input = document.createElement("input");
       input.setAttribute("type", "text");
       label.appendChild(input);
@@ -154,7 +145,7 @@ export default class Grid implements IGrid {
     if (this.options.refresh) {
       const div = document.createElement("div");
       div.setAttribute("data-bc-refresh-container", "");
-      this.container.appendChild(div);
+      this._container.appendChild(div);
       var btn = document.createElement("span");
       btn.innerHTML = this.options.culture.labels.refresh;
       btn.addEventListener("click", (e) => {
@@ -164,38 +155,26 @@ export default class Grid implements IGrid {
       div.appendChild(btn);
     }
 
-    this.container.appendChild(this._tableContainer);
+    this._container.appendChild(this._tableContainer);
     if (this.options.paging) {
       const pageSizeContainer = document.createElement("div");
       pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
-      this.container.insertBefore(pageSizeContainer, this._tableContainer);
+      this._container.insertBefore(pageSizeContainer, this._tableContainer);
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
-      this.container.appendChild(pagingContainer);
+      this._container.appendChild(pagingContainer);
       switch (this.options.process) {
         case "server": {
-          this.processManager = new ServerProcess(
-            this,
-            pageSizeContainer,
-            pagingContainer
-          );
+          this.processManager = new ServerProcess(this, pageSizeContainer, pagingContainer);
           break;
         }
         case "client": {
-          this.processManager = new ClientProcess(
-            this,
-            pageSizeContainer,
-            pagingContainer
-          );
+          this.processManager = new ClientProcess(this, pageSizeContainer, pagingContainer);
           break;
         }
         case "mix": {
-          this.processManager = new MixedProcess(
-            this,
-            pageSizeContainer,
-            pagingContainer
-          );
+          this.processManager = new MixedProcess(this, pageSizeContainer, pagingContainer);
           break;
         }
         default: {
@@ -206,7 +185,7 @@ export default class Grid implements IGrid {
       this.processManager = new NoPaginate(this);
     }
     if (this._informationContainer) {
-      this.container.appendChild(this._informationContainer);
+      this._container.appendChild(this._informationContainer);
     }
     this.createTable();
   }
@@ -235,10 +214,7 @@ export default class Grid implements IGrid {
                 mustUpdate = true;
               }
             } else {
-              if (
-                typeof this.processManager.filter[columnInfo.name] !==
-                "undefined"
-              ) {
+              if (typeof this.processManager.filter[columnInfo.name] !== "undefined") {
                 delete this.processManager.filter[columnInfo.name];
                 mustUpdate = true;
               }
@@ -272,7 +248,20 @@ export default class Grid implements IGrid {
         title: this.options.rowNumber,
         source: null,
         name: null,
-        type: ColumnType.Sort,
+        type: ColumnType.sort,
+      };
+      tr.appendChild(this.createColumn(columnInfo));
+    }
+    if (this.options.selectable) {
+      const col = document.createElement("col");
+      col.setAttribute("width", "5%");
+      colgroup.appendChild(col);
+
+      const columnInfo: IGridColumnInfo = {
+        title: "",
+        source: null,
+        name: null,
+        type: ColumnType.select,
       };
       tr.appendChild(this.createColumn(columnInfo));
     }
@@ -287,7 +276,7 @@ export default class Grid implements IGrid {
             source: property,
             name: property,
             sort: this.options.sorting,
-            type: ColumnType.Data,
+            type: ColumnType.data,
             filter: true,
           };
         } else {
@@ -297,7 +286,7 @@ export default class Grid implements IGrid {
               source: property,
               name: property,
               sort: this.options.sorting,
-              type: ColumnType.Data,
+              type: ColumnType.data,
               filter: true,
             },
             ...value,
@@ -317,7 +306,7 @@ export default class Grid implements IGrid {
   private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
     const td = document.createElement("td");
     td.appendChild(document.createTextNode(columnInfo.title));
-    if (columnInfo.type === ColumnType.Data && (columnInfo.sort ?? true)) {
+    if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       td.setAttribute("data-bc-sorting", "");
       td.addEventListener("click", (_) => {
         if (this.processManager.sortInfo?.column !== columnInfo) {
@@ -372,7 +361,7 @@ export default class Grid implements IGrid {
             source: property,
             name: property,
             sort: this.options.sorting,
-            type: ColumnType.Data,
+            type: ColumnType.data,
             filter: true,
           };
           tr.appendChild(this.createColumn(columnInfo));
@@ -382,39 +371,23 @@ export default class Grid implements IGrid {
       this.addTableRowFilterPart();
     }
     this.hideUIProgress();
-    //TODO:add repository for store generated ui element data
-    this.rows = [];
-    this.source = source;
-    this.source?.forEach((row, index) => {
-      const rowObj = new GridRow(this, row, index);
-      this.rows.push(rowObj);
-    });
 
-    this.processManager.setSource(this.rows, offsetOptions);
+    this._rows = source.map((row, index) => new GridRow(this, row, index));
+    this.processManager.setSource(this._rows, offsetOptions);
   }
 
-  public displayRows(
-    rows: GridRow[],
-    from: number,
-    to: number,
-    total: number
-  ): void {
+  public displayRows(rows: GridRow[], from: number, to: number, total: number): void {
     this._body.innerHTML = "";
     if (rows?.length > 0) {
       rows?.forEach((row) => this._body.appendChild(row.uiElement));
-    } else if (
-      typeof this.options.noData !== "undefined" &&
-      this.options.noData
-    ) {
+    } else if (typeof this.options.noData !== "undefined" && this.options.noData) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
       tr.appendChild(td);
       td.colSpan = this.columns.length;
       switch (typeof this.options.noData) {
         case "boolean": {
-          td.appendChild(
-            document.createTextNode(this.options.culture.labels.noData)
-          );
+          td.appendChild(document.createTextNode(this.options.culture.labels.noData));
           break;
         }
         case "string": {
@@ -429,11 +402,7 @@ export default class Grid implements IGrid {
       this._body.appendChild(tr);
     }
 
-    this._informationContainer.innerText = this._informationFormatter(
-      from,
-      to,
-      total
-    );
+    this._informationContainer.innerText = this._informationFormatter(from, to, total);
   }
 
   private showUIProgress(): void {
@@ -444,9 +413,7 @@ export default class Grid implements IGrid {
           break;
         }
         case "string": {
-          this._tableContainer.style[
-            "background-image"
-          ] = `url("${this.options.loader}")`;
+          this._tableContainer.style["background-image"] = `url("${this.options.loader}")`;
         }
         case "boolean": {
           this._tableContainer.setAttribute("data-process", "");
@@ -477,25 +444,24 @@ export default class Grid implements IGrid {
   }
 
   public tryLoadData() {
-    if (this._onSignalSourceCallback) {
-      const data = {
-        pageNumber: this.processManager.pageNumber + 1,
-        pageSize: this.processManager.pageSize,
-        filter: this.processManager.filter,
-        sortInfo: {
-          col: this.processManager.sortInfo?.column.name,
-          type: this.processManager.sortInfo?.sort,
-        },
-      };
-      this.showUIProgress();
-      this._onSignalSourceCallback({
-        ...data,
-        ...{ urlencoded: encodeURIComponent(JSON.stringify(data)) },
-      });
-    } else {
-      throw new Error(
-        "for use refresh,SignalSourceId attribute must be set in grid!"
-      );
-    }
+    const data = {
+      pageNumber: this.processManager.pageNumber + 1,
+      pageSize: this.processManager.pageSize,
+      filter: this.processManager.filter,
+      sortInfo: {
+        col: this.processManager.sortInfo?.column.name,
+        type: this.processManager.sortInfo?.sort,
+      },
+    };
+    this.showUIProgress();
+    this._onSignalSourceCallback({
+      ...data,
+      ...{ urlencoded: encodeURIComponent(JSON.stringify(data)) },
+    });
+  }
+
+  public onSelectionChange() {
+    const selectedRows = this._rows.filter((x) => x.selected).map((x) => x.data);
+    this._selectionChangeCallback(selectedRows);
   }
 }

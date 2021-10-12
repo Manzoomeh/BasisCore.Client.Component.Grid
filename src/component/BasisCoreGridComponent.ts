@@ -4,6 +4,7 @@ import ISource from "../basiscore/ISource";
 import IUserDefineComponent from "../basiscore/IUserDefineComponent";
 import { SourceId } from "../basiscore/type-alias";
 import Grid from "./grid/Grid";
+import { IGridOptions } from "./grid/IOptions";
 
 export default class BasisCoreGridComponent implements IComponentManager {
   readonly owner: IUserDefineComponent;
@@ -18,26 +19,32 @@ export default class BasisCoreGridComponent implements IComponentManager {
 
   public async initializeAsync(): Promise<void> {
     const sourceId = await this.owner.getAttributeValueAsync("DataMemberName");
-    const signalSourceId = await this.owner.getAttributeValueAsync(
-      "SignalSourceId"
-    );
-    const callback = signalSourceId
-      ? (data) => {
-          this.owner.setSource(signalSourceId, data);
-        }
-      : null;
-
-    const style = await this.owner.getAttributeValueAsync("style");
     this.container = document.createElement("div");
-    if (style) {
-      this.container.setAttribute("style", style);
-    }
     this.owner.setContent(this.container);
 
     const optionName = await this.owner.getAttributeValueAsync("options");
-    const option = optionName ? eval(optionName) : null;
-    this.grid = new Grid(this.container, option, callback);
+    const option: IGridOptions = optionName ? eval(optionName) : null;
 
+    const refreshCallback = (data) => {
+      if (option.refreshSourceId) {
+        this.owner.setSource(option.refreshSourceId, data);
+      } else {
+        throw new Error(
+          "For refresh grid,'refreshSourceId' property must be set in grid 'options' object!"
+        );
+      }
+    };
+
+    const selectionChangeCallback = (data) => {
+      if (option.selectedSourceId) {
+        this.owner.setSource(option.selectedSourceId, data);
+      } else {
+        throw new Error(
+          "For receive selected row from grid,'selectedSourceId' property must be set in grid 'options' object!"
+        );
+      }
+    };
+    this.grid = new Grid(this.container, option, refreshCallback, selectionChangeCallback);
     if (sourceId) {
       this.sourceId = sourceId.toLowerCase();
       this.owner.addTrigger([this.sourceId]);

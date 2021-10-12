@@ -6,6 +6,8 @@ export type HtmlDirection = "ltr" | "rtl";
 
 export type ProcessType = "server" | "client" | "mix";
 
+export type SelectType = "none" | "single" | "multi";
+
 export type IGridOptions = {
   columns: IDictionary<IColumn>;
   filter?: FilterType;
@@ -27,6 +29,9 @@ export type IGridOptions = {
   information?: boolean;
   loader?: string | ILoaderMaker | boolean;
   refresh?: boolean;
+  selectable?: boolean | SelectType;
+  selectedSourceId?: string;
+  refreshSourceId?: string;
 };
 
 export type IOffsetOptions = {
@@ -50,16 +55,9 @@ export type IColumnInfo = {
   cssClass?: string | Array<string>;
 };
 
-export type ICellMakerCallback = (
-  row: any,
-  data: any,
-  element: HTMLTableCellElement
-) => RawHtml;
+export type ICellMakerCallback = (row: any, data: any, element: HTMLTableCellElement) => RawHtml;
 
-export type IRowMakerCallback = (
-  row: any,
-  element: HTMLTableRowElement
-) => void;
+export type IRowMakerCallback = (row: any, element: HTMLTableRowElement) => void;
 
 export type IFieldMakerCallback = (row: any) => any;
 

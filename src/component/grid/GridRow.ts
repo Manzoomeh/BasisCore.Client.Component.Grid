@@ -4,14 +4,16 @@ import Grid from "./Grid";
 
 export default class GridRow {
   public readonly data: any;
-  readonly dataProxy: any;
-  private readonly owner: Grid;
+  private readonly _dataProxy: any;
+  private readonly _owner: Grid;
   public order: number;
   private _uiElement: HTMLTableRowElement = null;
+  private _checkBox: HTMLInputElement;
+
   public get uiElement(): HTMLTableRowElement {
     if (!this._uiElement) {
       this._uiElement = document.createElement("tr");
-      this.owner.columns.forEach((column) => {
+      this._owner.columns.forEach((column) => {
         const td = document.createElement("td");
         if (column.cssClass) {
           Array.isArray(column.cssClass)
@@ -19,20 +21,34 @@ export default class GridRow {
             : td.classList.add(column.cssClass);
         }
         switch (column.type) {
-          case ColumnType.Data: {
+          case ColumnType.data: {
             td.setAttribute("data-bc-data", "");
-            const tmpValue = Reflect.get(this.dataProxy, column.name);
+            const tmpValue = Reflect.get(this._dataProxy, column.name);
             if (column.cellMaker) {
-              td.innerHTML =
-                column.cellMaker(this.data, tmpValue, td) ?? tmpValue;
+              td.innerHTML = column.cellMaker(this.data, tmpValue, td) ?? tmpValue;
             } else {
               td.appendChild(document.createTextNode(tmpValue?.toString()));
             }
             break;
           }
-          case ColumnType.Sort: {
+          case ColumnType.sort: {
             td.setAttribute("data-bc-order", "");
             td.appendChild(document.createTextNode(this.order.toString()));
+            this._orderChanged = false;
+            break;
+          }
+          case ColumnType.select: {
+            td.setAttribute("data-bc-select", "");
+
+            this._checkBox = document.createElement("input");
+            this._checkBox.type =
+              this._owner.options.selectable === "single" ? "radio" : "checkbox";
+            this._checkBox.name = this._owner.id;
+            this._checkBox.addEventListener("change", (e) => {
+              e.preventDefault();
+              this._owner.onSelectionChange();
+            });
+            td.appendChild(this._checkBox);
             this._orderChanged = false;
             break;
           }
@@ -41,8 +57,8 @@ export default class GridRow {
         }
         this._uiElement.appendChild(td);
       });
-      if (this.owner.options.rowMaker) {
-        this.owner.options.rowMaker(this.data, this._uiElement);
+      if (this._owner.options.rowMaker) {
+        this._owner.options.rowMaker(this.data, this._uiElement);
       }
     } else if (this._orderChanged) {
       const cel = this._uiElement.querySelector("[data-bc-order]");
@@ -56,14 +72,14 @@ export default class GridRow {
 
   constructor(owner: Grid, data: any, order: number) {
     this.data = data;
-    this.dataProxy = {};
-    this.owner = owner;
+    this._dataProxy = {};
+    this._owner = owner;
     this.order = order + 1;
-    this.owner.columns
-      .filter((x) => x.type == ColumnType.Data)
+    this._owner.columns
+      .filter((x) => x.type == ColumnType.data)
       .forEach((column) =>
         Reflect.set(
-          this.dataProxy,
+          this._dataProxy,
           column.name,
           typeof column.source === "string"
             ? Reflect.get(this.data, column.source)
@@ -82,7 +98,7 @@ export default class GridRow {
     let retVal = true;
     for (const key of Reflect.ownKeys(filter)) {
       const element = Reflect.get(filter, key);
-      const value = Reflect.get(this.dataProxy, key)?.toString().toLowerCase();
+      const value = Reflect.get(this._dataProxy, key)?.toString().toLowerCase();
       retVal = retVal && value.indexOf(element) >= 0;
       if (!retVal) {
         break;
@@ -91,14 +107,12 @@ export default class GridRow {
     return retVal;
   }
   public acceptableBySimpleFilter(filter: string): boolean {
-    const colInfo = this.owner.columns
-      .filter((col) => col.type === ColumnType.Data)
+    const colInfo = this._owner.columns
+      .filter((col) => col.type === ColumnType.data)
       .find((col) => {
         let retVal = false;
         if (col.filter) {
-          const value = Reflect.get(this.dataProxy, col.name)
-            ?.toString()
-            .toLowerCase();
+          const value = Reflect.get(this._dataProxy, col.name)?.toString().toLowerCase();
           retVal = value && value.indexOf(filter) >= 0;
         }
         return retVal;
@@ -106,17 +120,13 @@ export default class GridRow {
     return colInfo ? true : false;
   }
 
-  public static compare(
-    first: GridRow,
-    second: GridRow,
-    sortInfo: ISortInfo
-  ): number {
+  public static compare(first: GridRow, second: GridRow, sortInfo: ISortInfo): number {
     let valFirst = Reflect.get(
-      sortInfo.column.title ? first.dataProxy : first,
+      sortInfo.column.title ? first._dataProxy : first,
       sortInfo.column.name
     );
     let valSecond = Reflect.get(
-      sortInfo.column.title ? second.dataProxy : second,
+      sortInfo.column.title ? second._dataProxy : second,
       sortInfo.column.name
     );
     if (typeof valFirst === "string") {
@@ -134,5 +144,9 @@ export default class GridRow {
         ? -1
         : 1
       : 0;
+  }
+
+  public get selected() {
+    return this._checkBox?.checked ?? false;
   }
 }

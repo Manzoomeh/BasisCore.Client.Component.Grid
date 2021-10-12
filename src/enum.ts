@@ -1,4 +1,5 @@
 export enum ColumnType {
-  Data,
-  Sort,
+  data,
+  sort,
+  select,
 }

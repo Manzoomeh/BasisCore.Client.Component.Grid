@@ -59,22 +59,26 @@
   </fieldset>
   <script>
     const options1 = {
-      process: "server"
+      process: "server",
+      refreshSourceId: "api.refresh_demo1"
     };
 
     const options2 = {
       process: "server",
-      loader: false
+      loader: false,
+      refreshSourceId: "api.refresh_demo2"
     };
 
     const options3 = {
       process: "server",
-      loader: "walk.gif"
+      loader: "walk.gif",
+      refreshSourceId: "api.refresh_demo3"
     };
 
     const options4 = {
       process: "server",
-      loader: () => "<div style='background-color:red;with:300px;hight:300px'>ops...!</div>"
+      loader: () => "<div style='background-color:red;with:300px;hight:300px'>ops...!</div>",
+      refreshSourceId: "api.refresh_demo4"
     };
   </script>
 </body>

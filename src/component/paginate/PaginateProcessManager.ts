@@ -46,6 +46,8 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     const rows = this.filteredData.filter(
       (row) => row.order > fromId && row.order <= toId
     );
+
+    console.log(fromId, toId);
     const from = fromId + 1;
     const to = fromId + rows.length;
     const total = this.filteredData.length;

@@ -1,7 +1,7 @@
 import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
 import { IOffsetOptions } from "../grid/IOptions";
-import { ISortInfo, SignalSourceCallback } from "../../type-alias";
+import { ISortInfo } from "../../type-alias";
 import IGridProcessManager from "./IGridProcessManager";
 
 export default abstract class ProcessManager implements IGridProcessManager {
@@ -55,6 +55,6 @@ export default abstract class ProcessManager implements IGridProcessManager {
     to: number,
     total: number
   ): void {
-    this.owner.displayRows(rows, from, to, total);
+    this.owner.displayRows(rows, Math.max(from, 0), Math.max(to, 0), total);
   }
 }

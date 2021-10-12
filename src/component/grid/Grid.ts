@@ -17,13 +17,13 @@ import MixedProcess from "../paginate/MixedProcess";
 
 export default class Grid implements IGrid {
   readonly container: HTMLElement;
-  readonly table: HTMLTableElement;
+  private _table: HTMLTableElement;
   readonly options: IGridOptions;
-  readonly head: HTMLTableSectionElement;
-  readonly body: HTMLTableSectionElement;
-  private readonly _tableContainer: HTMLElement;
-  private readonly _loaderContainer: HTMLElement;
-  private readonly _informationContainer: HTMLElement;
+  private _head: HTMLTableSectionElement;
+  private _body: HTMLTableSectionElement;
+  private _tableContainer: HTMLElement;
+  private _loaderContainer: HTMLElement;
+  private _informationContainer: HTMLElement;
 
   static _defaults: Partial<IGridOptions>;
   private rows: GridRow[] = new Array<GridRow>();
@@ -33,7 +33,11 @@ export default class Grid implements IGrid {
   pageNumber: number = 1;
   private processManager: IGridProcessManager;
   public readonly columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
-  private readonly _informationFormatter: (from: number, to: number, total: number) => string;
+  private readonly _informationFormatter: (
+    from: number,
+    to: number,
+    total: number
+  ) => string;
 
   static getDefaults(): Partial<IGridOptions> {
     if (!Grid._defaults) {
@@ -60,7 +64,7 @@ export default class Grid implements IGrid {
             first: "First",
             last: "last",
             noData: "No Data Find",
-            information: "Showing ${from} to ${to} from Total ${total}"
+            information: "Showing ${from} to ${to} from Total ${total}",
           },
         },
       };
@@ -89,13 +93,22 @@ export default class Grid implements IGrid {
     if (this.options.direction) {
       this.container.style["direction"] = this.options.direction;
     }
+    this._informationFormatter = Function(
+      "from",
+      "to",
+      "total",
+      `return \`${this.options.culture.labels.information}\``
+    ) as any;
+    this.createUI(signalSourceCallback);
+  }
 
-    this.table = document.createElement("table");
-    this.table.setAttribute("data-bc-table", "");
-    this.head = document.createElement("thead");
-    this.table.appendChild(this.head);
-    this.body = document.createElement("tbody");
-    this.table.appendChild(this.body);
+  private createUI(signalSourceCallback?: SignalSourceCallback): void {
+    this._table = document.createElement("table");
+    this._table.setAttribute("data-bc-table", "");
+    this._head = document.createElement("thead");
+    this._table.appendChild(this._head);
+    this._body = document.createElement("tbody");
+    this._table.appendChild(this._body);
 
     this._tableContainer = document.createElement("div");
     this._tableContainer.setAttribute("data-bc-table-container", "");
@@ -104,7 +117,7 @@ export default class Grid implements IGrid {
       this._loaderContainer.setAttribute("data-bc-loader-container", "");
       this._tableContainer.appendChild(this._loaderContainer);
     }
-    this._tableContainer.appendChild(this.table);
+    this._tableContainer.appendChild(this._table);
 
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
@@ -113,12 +126,7 @@ export default class Grid implements IGrid {
         ""
       );
     }
-    this.createUI(signalSourceCallback);
 
-    this._informationFormatter = Function("from", "to", "total", `return \`${this.options.culture.labels.information}\``) as any;
-  }
-
-  private createUI(signalSourceCallback?: SignalSourceCallback): void {
     if (this.options.filter == "simple") {
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
@@ -194,7 +202,7 @@ export default class Grid implements IGrid {
       const tr = document.createElement("tr");
       tr.setAttribute("data-bc-no-selection", "");
       tr.setAttribute("data-bc-filter", "");
-      this.head.appendChild(tr);
+      this._head.appendChild(tr);
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
           const td = document.createElement("td");
@@ -236,11 +244,11 @@ export default class Grid implements IGrid {
 
   private createTable(): void {
     const colgroup = document.createElement("colgroup");
-    this.table.prepend(colgroup);
+    this._table.prepend(colgroup);
     const tr = document.createElement("tr");
     tr.setAttribute("data-bc-no-selection", "");
     tr.setAttribute("data-bc-column-title", "");
-    this.head.appendChild(tr);
+    this._head.appendChild(tr);
     if (this.options.rowNumber) {
       const col = document.createElement("col");
       col.setAttribute("width", "5%");
@@ -299,7 +307,7 @@ export default class Grid implements IGrid {
       td.setAttribute("data-bc-sorting", "");
       td.addEventListener("click", (_) => {
         if (this.processManager.sortInfo?.column !== columnInfo) {
-          this.head
+          this._head
             .querySelectorAll("[data-bc-sorting]")
             .forEach((element) => element.setAttribute("data-bc-sorting", ""));
         }
@@ -342,7 +350,7 @@ export default class Grid implements IGrid {
 
   public setSource(source: IGridSource, offsetOptions?: IOffsetOptions): void {
     if (!this.columnsInitialized) {
-      const tr = this.head.querySelector("tr");
+      const tr = this._head.querySelector("tr");
       if (source && source.length > 0 && source[0]) {
         Object.getOwnPropertyNames(source[0]).forEach((property) => {
           const columnInfo: IGridColumnInfo = {
@@ -371,10 +379,15 @@ export default class Grid implements IGrid {
     this.processManager.setSource(this.rows, offsetOptions);
   }
 
-  public displayRows(rows: GridRow[], from: number, to: number, total: number): void {
-    this.body.innerHTML = "";
+  public displayRows(
+    rows: GridRow[],
+    from: number,
+    to: number,
+    total: number
+  ): void {
+    this._body.innerHTML = "";
     if (rows?.length > 0) {
-      rows?.forEach((row) => this.body.appendChild(row.uiElement));
+      rows?.forEach((row) => this._body.appendChild(row.uiElement));
     } else if (
       typeof this.options.noData !== "undefined" &&
       this.options.noData
@@ -399,53 +412,53 @@ export default class Grid implements IGrid {
           break;
         }
       }
-      this.body.appendChild(tr);
+      this._body.appendChild(tr);
     }
 
-    this._informationContainer.innerText = this._informationFormatter(from, to, total);
+    this._informationContainer.innerText = this._informationFormatter(
+      from,
+      to,
+      total
+    );
   }
 
   public showUIProgress(): void {
     if (this.options.loader) {
       switch (typeof this.options.loader) {
-        case "function":
-          {
-            this._loaderContainer.innerHTML = this.options.loader();
-            break;
-          }
-        case "string":
-          {
-            this._tableContainer.style["background-image"] = `url("${this.options.loader}")`;
-          }
-        case "boolean":
-          {
-            this._tableContainer.setAttribute("data-process", "");
-            break;
-          }
+        case "function": {
+          this._loaderContainer.innerHTML = this.options.loader();
+          break;
+        }
+        case "string": {
+          this._tableContainer.style[
+            "background-image"
+          ] = `url("${this.options.loader}")`;
+        }
+        case "boolean": {
+          this._tableContainer.setAttribute("data-process", "");
+          break;
+        }
       }
-      this.table.style["opacity"] = ".4";
+      this._table.style["opacity"] = ".4";
     }
   }
 
   public hideUIProgress(): void {
     if (this.options.loader) {
       switch (typeof this.options.loader) {
-        case "function":
-          {
-            this._loaderContainer.innerHTML = "";
-            break;
-          }
-        case "string":
-          {
-            this._tableContainer.style["background-image"] = "";
-          }
-        case "boolean":
-          {
-            this._tableContainer.removeAttribute("data-process");
-            break;
-          }
+        case "function": {
+          this._loaderContainer.innerHTML = "";
+          break;
+        }
+        case "string": {
+          this._tableContainer.style["background-image"] = "";
+        }
+        case "boolean": {
+          this._tableContainer.removeAttribute("data-process");
+          break;
+        }
       }
-      this.table.style["opacity"] = "1";
+      this._table.style["opacity"] = "1";
     }
   }
 }

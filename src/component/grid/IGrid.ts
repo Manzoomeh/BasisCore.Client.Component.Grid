@@ -3,6 +3,6 @@ import { IGridOptions } from "./IOptions";
 
 export default interface IGrid {
   options: IGridOptions;
-  displayRows(rows: GridRow[],from:number,to:number,total:number): void;
-  showUIProgress(): void;
+  displayRows(rows: GridRow[], from: number, to: number, total: number): void;
+  tryLoadData(): void;
 }

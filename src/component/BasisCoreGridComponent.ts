@@ -21,6 +21,11 @@ export default class BasisCoreGridComponent implements IComponentManager {
     const signalSourceId = await this.owner.getAttributeValueAsync(
       "SignalSourceId"
     );
+    const callback = signalSourceId
+      ? (data) => {
+          this.owner.setSource(signalSourceId, data);
+        }
+      : null;
 
     const style = await this.owner.getAttributeValueAsync("style");
     this.container = document.createElement("div");
@@ -31,9 +36,7 @@ export default class BasisCoreGridComponent implements IComponentManager {
 
     const optionName = await this.owner.getAttributeValueAsync("options");
     const option = optionName ? eval(optionName) : null;
-    this.grid = new Grid(this.container, option, (data) => {
-      this.owner.setSource(signalSourceId, data);
-    });
+    this.grid = new Grid(this.container, option, callback);
 
     if (sourceId) {
       this.sourceId = sourceId.toLowerCase();

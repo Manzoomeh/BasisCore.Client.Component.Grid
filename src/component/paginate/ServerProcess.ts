@@ -1,16 +1,14 @@
-import { SignalSourceCallback } from "../../type-alias";
 import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
 import { IOffsetOptions } from "../grid/IOptions";
-import ServerBaseProcess from "./ServerBaseProcess";
-export default class ServerProcess extends ServerBaseProcess {
+import PaginateProcessManager from "./PaginateProcessManager";
+export default class ServerProcess extends PaginateProcessManager {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement,
-    onSignalSourceCallback: SignalSourceCallback
+    pagingContainer: HTMLDivElement
   ) {
-    super(owner, pageSizeContainer, pagingContainer, onSignalSourceCallback);
+    super(owner, pageSizeContainer, pagingContainer);
   }
 
   setSource(rows: GridRow[], options: IOffsetOptions) {
@@ -32,10 +30,10 @@ export default class ServerProcess extends ServerBaseProcess {
   }
 
   protected displayCurrentPage(): void {
-    this.tryLoadData();
+    this.owner.tryLoadData();
   }
 
   public applyUserAction(): void {
-    this.tryLoadData();
+    this.owner.tryLoadData();
   }
 }

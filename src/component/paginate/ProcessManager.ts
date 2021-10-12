@@ -6,17 +6,15 @@ import IGridProcessManager from "./IGridProcessManager";
 
 export default abstract class ProcessManager implements IGridProcessManager {
   readonly owner: IGrid;
-  readonly onSignalSourceCallback: SignalSourceCallback;
   protected options: IOffsetOptions;
-  protected pageSize: number;
-  protected pageNumber: number;
+  public pageSize: number;
+  public pageNumber: number;
   public sortInfo: ISortInfo;
   public filter: any = "";
   protected originalData: Array<GridRow>;
 
-  constructor(owner: IGrid, onSignalSourceCallback: SignalSourceCallback) {
+  constructor(owner: IGrid) {
     this.owner = owner;
-    this.onSignalSourceCallback = onSignalSourceCallback;
   }
 
   public setSource(data: GridRow[], options: IOffsetOptions) {
@@ -46,12 +44,17 @@ export default abstract class ProcessManager implements IGridProcessManager {
   public applyUserAction(): void {
     const rows = this.applyFilterAndSort();
     const total = rows?.length ?? 0;
-    const from = rows ? rows[0].order : 0;
+    const from = rows?.length > 0 ? rows[0].order : 0;
     const to = from + total;
     this.displayRows(rows, from, to, total);
   }
 
-  protected displayRows(rows: Array<GridRow>, from: number, to: number, total: number): void {
+  protected displayRows(
+    rows: Array<GridRow>,
+    from: number,
+    to: number,
+    total: number
+  ): void {
     this.owner.displayRows(rows, from, to, total);
   }
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="http://localhost:3000/basiscore.min.js"></script>
+  <title>Grid Command -Use DbSource</title>
+
+</head>
+
+<body>
+
+  <Basis core="api" url="/server/api/server?data=[##api.refresh_demo.urlencoded|(null)##]" method="get" run="atclient"
+    triggers="api.refresh_demo"> </Basis>
+  <Basis core="component.bc.grid" run="atclient" dataMemberName="api.demo" signalSourceId="api.refresh_demo"
+    options="options">
+  </Basis>
+  <basis core="callback" run="atclient" triggers="api.refresh_demo"></basis>
+
+  <script>
+    const host = {
+      sources: {
+        "grid.paging": {
+          data: [{
+            pageSize: 10,
+            pageNumber: 3
+          }]
+        }
+
+      },
+      repositories: {
+        "bc.grid": "/basiscore.grid.component.js",
+      },
+    };
+    const options = {
+      process: "server",
+      filter: "simple",
+      refresh: true,
+      columns: {
+        id: {
+          title: "Data-Id",
+          filter: false
+        },
+
+        data: {
+          title: "Data",
+          filter: true
+        },
+
+        count: "Count",
+      },
+      rowNumber: "#",
+      defaultSort: { name: "id" },
+      paging: [10, 30, 60],
+      culture: {
+        labels: {
+          "search": "Type for Search :",
+          "pageSize": "Page Size :",
+          "next": "to next",
+          "previous": "to previous",
+          "first": "to first",
+          "last": "to last",
+          "refresh": "<input type='button' value='refresh'/>"
+        }
+      },
+      pageNumber: 2,
+      //rowMaker: (data, tr) => console.log(data, tr)
+    };
+  </script>
+
+</body>
+
+</html>

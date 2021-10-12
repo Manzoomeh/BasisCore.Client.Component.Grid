@@ -3,7 +3,7 @@ import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
 import ProcessManager from "./ProcessManager";
 
-export default abstract class PaginateBaseProcess extends ProcessManager {
+export default abstract class PaginateProcessManager extends ProcessManager {
   readonly pagingContainer: HTMLDivElement;
   readonly pageSizeContainer: HTMLDivElement;
 
@@ -22,10 +22,9 @@ export default abstract class PaginateBaseProcess extends ProcessManager {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement,
-    onSignalSourceCallback: SignalSourceCallback
+    pagingContainer: HTMLDivElement
   ) {
-    super(owner, onSignalSourceCallback);
+    super(owner);
     this.pageSizeContainer = pageSizeContainer;
     this.pagingContainer = pagingContainer;
     this.initializeUI();

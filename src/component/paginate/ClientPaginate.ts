@@ -1,14 +1,12 @@
-import { SignalSourceCallback } from "../../type-alias";
 import IGrid from "../grid/IGrid";
-import PaginateBaseProcess from "./PaginateBaseProcess";
+import PaginateBaseProcess from "./PaginateProcessManager";
 
 export default class ClientProcess extends PaginateBaseProcess {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement,
-    onSignalSourceCallback: SignalSourceCallback
+    pagingContainer: HTMLDivElement
   ) {
-    super(owner, pageSizeContainer, pagingContainer, onSignalSourceCallback);
+    super(owner, pageSizeContainer, pagingContainer);
   }
 }

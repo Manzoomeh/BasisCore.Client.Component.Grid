@@ -26,6 +26,7 @@ export type IGridOptions = {
   firstAndLastBtn?: boolean;
   information?: boolean;
   loader?: string | ILoaderMaker | boolean;
+  refresh?: boolean;
 };
 
 export type IOffsetOptions = {

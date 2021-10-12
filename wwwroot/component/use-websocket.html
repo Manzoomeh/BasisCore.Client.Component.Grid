@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+    <title>Grid Command - With WebSocket</title>
+    <script>
+      const host = {
+        settings: {
+          "connection.websocket.simple": "ws://localhost:8080/demo-data",
+          "default.dmnid": 2668,
+        },
+        repositories: {
+          "bc.grid": "/basiscore.grid.component.js",
+        },
+      };
+    </script>
+  </head>
+
+  <body>
+    <basis core="dbsource" source="simple" name="socket" run="atclient">
+      <member name="demo" />
+    </basis>
+    <Basis core="component.bc.grid" run="atclient" dataMemberName="socket.demo">
+    </Basis>
+    <basis core="callback" run="atclient" triggers="socket.demo"></basis>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+  <title>Grid Command - With Actions</title>
+  <style>
+    tr img {
+      width: 25px;
+    }
+  </style>
+  <script>
+    const host = {
+      repositories: {
+        "bc.grid": "/basiscore.grid.component.js",
+      },
+    };
+  </script>
+</head>
+
+<body>
+  <button id="btn">Reload</button>
+  <Basis core="component.bc.grid" run="atclient" dataMemberName="sample.data" options="options">
+  </Basis>
+  <basis core="callback" run="atclient" triggers="sample.data"></basis>
+  <script>
+    function setSource() {
+      const MIN_ID = 1000;
+      const MAX_ID = 1200;
+      const MIN_COUNT = 10;
+
+      const dataList = [];
+      for (let index = MIN_ID; index < MAX_ID; index++) {
+        const data = {
+          id: index,
+          count: Math.floor(Math.random() * 80) + MIN_COUNT,
+          data: Math.random().toString(36).substring(7),
+        };
+        dataList.push(data);
+      }
+      $bc.setSource("sample.data", dataList);
+    }
+    document.getElementById("btn").addEventListener("click", (e) => {
+      setSource();
+    });
+    setSource();
+
+    function onClickRowInfoBtn(tr) {
+      console.log(tr);
+    }
+    const options = {
+      columns: {
+        id: {
+          title: "Data-Id",
+        },
+        data: "Data",
+        count: "Count",
+        action: {
+          cellMaker: (row, data, td) =>
+            `<a href='javascript:void' onclick="onClickRowInfoBtn(this)">info</a>
+            <a href="?p=${row.id}" title="add"><img src='add.png'/></a>
+            <a href="#" title="remove"><img src='remove.png'/></a>`,
+          sort: false
+        }
+      },
+      rowNumber: "#",
+      defaultSort: { name: "count" },
+      pageSize: [10, 30, 50],
+    };
+  </script>
+</body>
+
+</html>

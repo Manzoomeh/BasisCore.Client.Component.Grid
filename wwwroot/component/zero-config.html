@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Command - Zero Config</title>
+  </head>
+
+  <body>
+    <Basis core="component.bc.grid" run="atclient" dataMemberName="sample.data">
+    </Basis>
+    <script>
+      const MIN_ID = 1000;
+      const MAX_ID = 1200;
+      const MIN_COUNT = 10;
+
+      const dataList = [];
+      for (let index = MIN_ID; index < MAX_ID; index++) {
+        const data = {
+          id: index,
+          count: Math.floor(Math.random() * 80) + MIN_COUNT,
+          data: Math.random().toString(36).substring(7),
+        };
+        dataList.push(data);
+      }
+      console.log(dataList);
+      const host = {
+        sources: {
+          "sample.data": dataList,
+        },
+        repositories: {
+          "bc.grid": "/basiscore.grid.component.js",
+        },
+      };
+    </script>
+    <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+  </body>
+</html>

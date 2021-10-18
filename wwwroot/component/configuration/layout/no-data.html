@@ -33,6 +33,11 @@
     <Basis core="component.bc.grid" run="atclient" dataMemberName="sample.data" options="options3">
     </Basis>
   </fieldset>
+  <fieldset>
+    <legend>Empty</legend>
+    <Basis core="component.bc.grid" run="atclient" dataMemberName="sample.empty-data">
+    </Basis>
+  </fieldset>
 
   <basis core="callback" run="atclient" triggers="sample.data"></basis>
   <script>
@@ -52,6 +57,7 @@
 
     function setSource() {
       $bc.setSource("sample.data", dataList);
+      $bc.setSource("sample.empty-data", []);
     }
 
     document.getElementById("btn").addEventListener("click", (e) => {

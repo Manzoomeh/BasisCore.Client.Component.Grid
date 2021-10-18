@@ -401,8 +401,9 @@ export default class Grid implements IGrid {
       }
       this._body.appendChild(tr);
     }
-
-    this._informationContainer.innerText = this._informationFormatter(from, to, total);
+    if (this.options.information) {
+      this._informationContainer.innerText = this._informationFormatter(from, to, total);
+    }
   }
 
   private showUIProgress(): void {

@@ -31,16 +31,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.ts$/i,
         use: ["ts-loader"],
       },
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.png/,
-        type: "asset/resource",
+        test: /\.(png|gif)/i,
+        type: "asset/inline",
       },
     ],
   },

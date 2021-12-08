@@ -181,6 +181,10 @@ export default class Grid implements IGrid {
           throw Error(`Type '${this.options.process}' not support in grid`);
         }
       }
+      if (typeof(this.options.paging) == "number") {
+        // pageSizeContainer.style.display = "none";
+        pageSizeContainer.remove();
+      }
     } else {
       this.processManager = new NoPaginate(this);
     }

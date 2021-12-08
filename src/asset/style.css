@@ -53,24 +53,37 @@
   -ms-user-select: none; /* IE10+ */
 }
 
+[data-bc-grid] table[data-bc-table] thead input[type="text"] {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center;
+}
+
 [data-bc-grid] table[data-bc-table] thead td {
   background-color: #eee;
   text-align: center;
-  padding: 10px 30px;
+  padding: 10px 10px;
   font-size: 15px;
   border-left: 1px solid #f8f9fa;
   border-right: 1px solid #f8f9fa;
 }
 
-[data-bc-grid] table[data-bc-table] thead td:first-child {
-  border-top-right-radius: 3px;
+[data-bc-grid] table[data-bc-table] thead td:first-child,
+[data-bc-grid] table[data-bc-table] thead td:last-child {
   border: none;
 }
 
-[data-bc-grid] table[data-bc-table] thead td:last-child {
-  border-top-left-radius: 3px;
-  border: none;
+[data-bc-grid] table[data-bc-table] thead tr:first-child td:first-child {
+  border-top-right-radius: 3px;
 }
+
+[data-bc-grid] table[data-bc-table] thead tr:first-child td:last-child {
+  border-top-left-radius: 3px;
+}
+
+/* [data-bc-grid] table[data-bc-table] thead tr:last-child td {
+  border-top: 1px solid #f8f9fa;
+} */
 
 [data-bc-grid] table[data-bc-table] thead [data-bc-sorting] {
   cursor: pointer;
@@ -135,6 +148,8 @@
   margin-top: 20px;
   border-radius: 3px;
   direction: ltr;
+  text-align: left;
+  float: left;
 }
 
 [data-bc-grid] [data-bc-paging-container] * {
@@ -177,4 +192,15 @@
   background-repeat: no-repeat;
   background-position: right 50% bottom 50%;
   background-image: url("img/progress.gif");
+}
+
+/* information */
+[data-bc-grid] [data-bc-information-container] {
+  padding-top: 10px;
+  margin-top: 20px;
+  border-radius: 3px;
+  direction: ltr;
+  text-align: right;
+  line-height: 35px;
+  float: right;
 }

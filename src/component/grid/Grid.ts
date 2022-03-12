@@ -124,9 +124,15 @@ export default class Grid implements IGrid {
     }
 
     if (this.options.filter == "simple") {
+      const gridHeaderContainer = document.createElement("div");
+      gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
-      this._container.appendChild(filter);
+      gridHeaderContainer.appendChild(filter);
+      
+      this._container.appendChild(gridHeaderContainer);
+
       const label = document.createElement("label");
       label.appendChild(document.createTextNode(this.options.culture.labels.search));
       const input = document.createElement("input");
@@ -157,13 +163,27 @@ export default class Grid implements IGrid {
 
     this._container.appendChild(this._tableContainer);
     if (this.options.paging) {
+      let gridHeaderContainer = this._container.querySelector("[data-bc-grid-header-container]");
+      if (!gridHeaderContainer) {
+        gridHeaderContainer = document.createElement("div");
+        gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+        this._container.insertBefore(gridHeaderContainer, this._tableContainer);
+      }
+
       const pageSizeContainer = document.createElement("div");
       pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
-      this._container.insertBefore(pageSizeContainer, this._tableContainer);
+      gridHeaderContainer.appendChild(pageSizeContainer);
+      
+      const gridFooterContainer = document.createElement("div");
+      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
-      this._container.appendChild(pagingContainer);
+      gridFooterContainer.appendChild(pagingContainer);
+      
+      this._container.appendChild(gridFooterContainer);
+
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(this, pageSizeContainer, pagingContainer);
@@ -184,12 +204,21 @@ export default class Grid implements IGrid {
       if (typeof(this.options.paging) == "number") {
         // pageSizeContainer.style.display = "none";
         pageSizeContainer.remove();
+        if (gridHeaderContainer.innerHTML == "") {
+          gridHeaderContainer.remove();
+        }
       }
     } else {
       this.processManager = new NoPaginate(this);
     }
     if (this._informationContainer) {
-      this._container.appendChild(this._informationContainer);
+      let gridFooterContainer = this._container.querySelector("[data-bc-grid-footer-container]");
+      if (!gridFooterContainer) {
+        gridFooterContainer = document.createElement("div");
+        gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+        this._container.appendChild(gridFooterContainer);
+      }
+      gridFooterContainer.appendChild(this._informationContainer);
     }
     this.createTable();
   }
@@ -309,7 +338,8 @@ export default class Grid implements IGrid {
 
   private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
     const td = document.createElement("td");
-    td.appendChild(document.createTextNode(columnInfo.title));
+    // td.appendChild(document.createTextNode(columnInfo.title));
+    td.innerHTML = columnInfo.title;
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       td.setAttribute("data-bc-sorting", "");
       td.addEventListener("click", (_) => {
@@ -389,6 +419,7 @@ export default class Grid implements IGrid {
       const td = document.createElement("td");
       tr.appendChild(td);
       td.colSpan = this.columns.length;
+      td.setAttribute("data-bc-no-data", "");
       switch (typeof this.options.noData) {
         case "boolean": {
           td.appendChild(document.createTextNode(this.options.culture.labels.noData));

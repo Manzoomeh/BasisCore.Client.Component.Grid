@@ -7,6 +7,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
   readonly pagingContainer: HTMLDivElement;
   readonly pageSizeContainer: HTMLDivElement;
 
+  private pageNo: HTMLInputElement;
   private previousButton: HTMLAnchorElement;
   private firstButton: HTMLAnchorElement;
   private nextButton: HTMLAnchorElement;
@@ -78,6 +79,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       page.appendChild(document.createTextNode((i + 1).toString()));
       page.setAttribute("data-bc-page", i.toString());
       page.addEventListener("click", (e) => {
+        this.pageNo.value = "";
         this.pageNumber = i;
         this.displayCurrentPage();
       });
@@ -101,6 +103,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
         select.appendChild(option);
       });
       select.addEventListener("change", (x) => {
+        this.pageNo.value = "";
         const newSize = parseInt((x.target as HTMLSelectElement).value);
         if (this.pageSize != newSize) {
           this.pageSize = newSize;
@@ -115,10 +118,22 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       this.pageSize = this.owner.options.paging;
     }
 
+    this.pageNo = document.createElement("input");
+    this.pageNo.setAttribute("type", "text");
+    this.pageNo.setAttribute("data-bc-page-number", "");
+    this.pageNo.addEventListener("keyup", (e) => {
+      e.preventDefault();
+      if (this.pageNo.value.length > 0) {
+        this.pageNumber = parseInt(this.pageNo.value) - 1;
+        this.displayCurrentPage();
+      }
+    });
+
     this.previousButton = document.createElement("a");
     this.previousButton.innerHTML = this.owner.options.culture.labels.previous;
     this.previousButton.addEventListener("click", (e) => {
       e.preventDefault();
+      this.pageNo.value = "";
       if (this.pageNumber > 0) {
         this.pageNumber -= 1;
         this.displayCurrentPage();
@@ -130,6 +145,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       this.firstButton.innerHTML = this.owner.options.culture.labels.first;
       this.firstButton.addEventListener("click", (e) => {
         e.preventDefault();
+        this.pageNo.value = "";
         this.pageNumber = 0;
         this.displayCurrentPage();
       });
@@ -138,6 +154,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       this.lastButton.innerHTML = this.owner.options.culture.labels.last;
       this.lastButton.addEventListener("click", (e) => {
         e.preventDefault();
+        this.pageNo.value = "";
         this.pageNumber = this.totalPage - 1;
         this.displayCurrentPage();
       });
@@ -149,6 +166,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     this.nextButton.innerHTML = this.owner.options.culture.labels.next;
     this.nextButton.addEventListener("click", (e) => {
       e.preventDefault();
+      this.pageNo.value = "";
       if (this.pageNumber + 1 < this.totalPage) {
         this.pageNumber += 1;
         this.displayCurrentPage();
@@ -164,6 +182,8 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     if (this.lastButton) {
       this.pagingContainer.appendChild(this.lastButton);
     }
+    this.pagingContainer.appendChild(this.pageNo);
+
     this.updateState();
     this.pageNumber = -1;
   }

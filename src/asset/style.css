@@ -187,6 +187,27 @@
   color: #fff;
 }
 
+[data-bc-grid] [data-bc-paging-container] input[type="text"] {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  padding: 5px;
+  margin-right: 5px;
+  font-size: 13px;
+  box-sizing: border-box;
+  color: #004B85;
+  background: #fff;
+  border: 1px solid #D0D0D0;
+  border-radius: 3px;
+  transition: border 0.3s linear 0s;
+  text-align: right;
+  float: left;
+}
+
+[data-bc-grid] [data-bc-paging-container] input[type="text"]:hover {
+  border: 1px solid #004B85;
+}
+
 [data-bc-grid] [data-bc-table-container][data-process] {
   cursor: pointer;
   background-repeat: no-repeat;

@@ -26,7 +26,7 @@ module.exports = (env, options) => {
         import: "./src/ComponentLoader.ts",
         filename: "basiscore.grid.component.js",
         library: {
-          name: "bc",
+          name: "grid",
           type: "assign",
         },
       },
@@ -34,7 +34,7 @@ module.exports = (env, options) => {
         import: "./src/ComponentLoader.ts",
         filename: "basiscore.grid.component.min.js",
         library: {
-          name: "bc",
+          name: "grid",
           type: "assign",
         },
       },

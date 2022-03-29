@@ -14,7 +14,7 @@
         "default.dmnid": 2668,
       },
       repositories: {
-        "bc.grid": "/basiscore.grid.component.js",
+        "grid.grid": "/basiscore.grid.component.js",
       },
     };
   </script>
@@ -24,7 +24,7 @@
   <basis core="dbsource" source="demo" name="book" run="atclient">
     <member name="list" type="list" request="print" preview="true"></member>
   </basis>
-  <Basis core="component.bc.grid" run="atclient" dataMemberName="book.list">
+  <Basis core="component.grid.grid" run="atclient" dataMemberName="book.list">
   </Basis>
   <basis core="callback" run="atclient" triggers="sample.data"></basis>
 </body>

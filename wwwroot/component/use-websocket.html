@@ -13,7 +13,7 @@
           "default.dmnid": 2668,
         },
         repositories: {
-          "bc.grid": "/basiscore.grid.component.js",
+          "grid.grid": "/basiscore.grid.component.js",
         },
       };
     </script>
@@ -23,7 +23,7 @@
     <basis core="dbsource" source="simple" name="socket" run="atclient">
       <member name="demo" />
     </basis>
-    <Basis core="component.bc.grid" run="atclient" dataMemberName="socket.demo">
+    <Basis core="component.grid.grid" run="atclient" dataMemberName="socket.demo">
     </Basis>
     <basis core="callback" run="atclient" triggers="socket.demo"></basis>
   </body>

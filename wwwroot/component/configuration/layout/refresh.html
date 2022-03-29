@@ -14,7 +14,7 @@
 
   <Basis core="api" url="/server/api/server?data=[##api.refresh_demo.urlencoded|(null)##]" method="get" run="atclient"
     triggers="api.refresh_demo"> </Basis>
-  <Basis core="component.bc.grid" run="atclient" dataMemberName="api.demo" options="options">
+  <Basis core="component.grid.grid" run="atclient" dataMemberName="api.demo" options="options">
   </Basis>
   <basis core="callback" run="atclient" triggers="api.refresh_demo"></basis>
 
@@ -30,7 +30,7 @@
 
       },
       repositories: {
-        "bc.grid": "/basiscore.grid.component.js",
+        "grid.grid": "/basiscore.grid.component.js",
       },
     };
     const options = {

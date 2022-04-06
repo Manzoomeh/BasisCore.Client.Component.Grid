@@ -1,28 +1,27 @@
 import { ColumnType } from "../../enum";
 import { ISortInfo } from "../../type-alias";
 import Grid from "./Grid";
+import Item from "./Item"
 
-export default class GridRow {
-  public readonly data: any;
-  private readonly _dataProxy: any;
-  private readonly _owner: Grid;
-  public order: number;
-  private _uiElement: HTMLTableRowElement = null;
-  private _checkBox: HTMLInputElement;
+export default class GridRow extends Item {
 
-  public get uiElement(): HTMLTableRowElement {
+  public get uiElement(): HTMLElement {
+   
     if (!this._uiElement) {
       this._uiElement = document.createElement("tr");
+      
       this._owner.columns.forEach((column) => {
         const td = document.createElement("td");
+        
         if (column.cssClass) {
           Array.isArray(column.cssClass)
             ? td.classList.add(...column.cssClass)
             : td.classList.add(column.cssClass);
         }
+        
         switch (column.type) {
           case ColumnType.data: {
-            td.setAttribute("data-bc-data", "");
+            td.setAttribute("data-bc-data", "");      
             const tmpValue = Reflect.get(this._dataProxy, column.name);
             if (column.cellMaker) {
               td.innerHTML = column.cellMaker(this.data, tmpValue, td) ?? tmpValue;
@@ -30,6 +29,7 @@ export default class GridRow {
               td.appendChild(document.createTextNode(tmpValue?.toString()));
             }
             break;
+            
           }
           case ColumnType.sort: {
             td.setAttribute("data-bc-order", "");
@@ -56,6 +56,7 @@ export default class GridRow {
             break;
         }
         this._uiElement.appendChild(td);
+
       });
       if (this._owner.options.rowMaker) {
         this._owner.options.rowMaker(this.data, this._uiElement);
@@ -71,24 +72,10 @@ export default class GridRow {
   }
 
   constructor(owner: Grid, data: any, order: number) {
-    this.data = data;
-    this._dataProxy = {};
-    this._owner = owner;
-    this.order = order + 1;
-    this._owner.columns
-      .filter((x) => x.type == ColumnType.data)
-      .forEach((column) =>
-        Reflect.set(
-          this._dataProxy,
-          column.name,
-          typeof column.source === "string"
-            ? Reflect.get(this.data, column.source)
-            : column.source(this.data)
-        )
-      );
+    super(owner, data, order)
   }
 
-  private _orderChanged: boolean = true;
+  
   public setOrder(order: number): void {
     this.order = order + 1;
     this._orderChanged = true;

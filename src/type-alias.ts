@@ -7,10 +7,20 @@ export type IDictionary<T> = { [key: string]: T };
 
 export type ISortType = "asc" | "desc";
 
+export type IGridType = "grid" | "widthCard";
+
 export type IGridColumnInfo = IColumnInfo & {
   title: string;
   type: ColumnType;
   name?: string;
+  source: string | IFieldMakerCallback;
+};
+
+export type IGridCardInfo = IColumnInfo & {
+  title: string;
+  image: string;
+  type: ColumnType;
+  name?: string;  
   source: string | IFieldMakerCallback;
 };
 

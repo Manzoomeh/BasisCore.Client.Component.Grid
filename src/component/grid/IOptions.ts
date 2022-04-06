@@ -1,4 +1,4 @@
-import { IDictionary, ISortType } from "../../type-alias";
+import { IDictionary, IGridType, ISortType } from "../../type-alias";
 
 export type FilterType = "none" | "simple" | "row";
 
@@ -32,6 +32,8 @@ export type IGridOptions = {
   selectable?: boolean | SelectType;
   selectedSourceId?: string;
   refreshSourceId?: string;
+  mode?: IGridType ;
+  widthCard?: IWidthCArd
 };
 
 export type IOffsetOptions = {
@@ -55,9 +57,15 @@ export type IColumnInfo = {
   cssClass?: string | Array<string>;
 };
 
-export type ICellMakerCallback = (row: any, data: any, element: HTMLTableCellElement) => RawHtml;
+export type IWidthCArd = {
+  title: string;
+  image?: string;
+  action?: object
+};
 
-export type IRowMakerCallback = (row: any, element: HTMLTableRowElement) => void;
+export type ICellMakerCallback = (row: any, data: any, element: HTMLElement) => RawHtml;
+
+export type IRowMakerCallback = (row: any, element: HTMLElement) => void;
 
 export type IFieldMakerCallback = (row: any) => any;
 

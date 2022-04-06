@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Command - Javascript Library</title>
+  </head>
+
+  <body>
+    <button id="data-btn">Load</button>
+    <div id="tbl"></div>
+    <script src="/basiscore.grid.js"></script>
+    <script>
+      function makeid(length) {
+        var result = "";
+        var characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+        return result;
+      }
+      const MIN_ID = 1000;
+      const MAX_ID = 1200;
+      const MIN_COUNT = 10;
+
+      const dataList = [];
+      for (let index = 0; index < 50; index++) {
+        const data = {
+          id: index,
+          count: Math.floor(Math.random() * 80) + MIN_COUNT,
+          data: Math.random().toString(36).substring(7),
+          titleee:makeid(5),
+          imagee:makeid(5)
+        };
+        dataList.push(data);
+      }
+      const options = {
+        filter:"row" , 
+        columns: {
+          id: {
+            title: "Data-Id",
+            width: "10%",
+            sort: false
+          },
+          data: "Data",
+          count: "Count",
+          titleee: "title",
+          imagee : "image"
+        },
+        rowNumber: "*",
+        defaultSort: { name: "count" },
+        pageSize: [10,40,50],
+        mode: "widthCard",
+        widthCard: {
+          image: {
+            cellMaker: (row, data, td) =>
+              `<a href='javascript:void' onclick="onClickRowInfoBtn(this)">info</a>
+            <a href="?p=${row.id}" title="add"><img src='add.png'/></a>
+            <a href="#" title="remove"><img src='remove.png'/></a>`,
+            sort: false,
+          },
+          title: "titleee",
+          info : "count",
+          action: {
+            cellMaker: (row, data, td) =>
+              `<a href='javascript:void' onclick="onClickRowInfoBtn(this)">info</a>
+            <a href="?p=${row.id}" title="add"><img src='add.png'/></a>
+            <a href="#" title="remove"><img src='remove.png'/></a>`,
+            sort: false,
+          },
+        },
+      };
+
+      const element = document.getElementById("tbl");
+      const myGrid = new grid.Grid(element, options);
+      document
+        .getElementById("data-btn")
+        .addEventListener("click", (_) => myGrid.setSource(dataList));
+      myGrid.setSource(dataList);
+    </script>
+  </body>
+</html>

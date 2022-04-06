@@ -59,6 +59,7 @@ export default class Grid implements IGrid {
         loader: true,
         refresh: false,
         selectable: false,
+        mode:"grid",
         culture: {
           labels: {
             search: "Search :",

@@ -33,7 +33,8 @@ export type IGridOptions = {
   selectedSourceId?: string;
   refreshSourceId?: string;
   mode?: IGridType ;
-  widthCard?: IWidthCArd
+  widthCard?: IWidthCArd,
+  modeButtons?: boolean
 };
 
 export type IOffsetOptions = {

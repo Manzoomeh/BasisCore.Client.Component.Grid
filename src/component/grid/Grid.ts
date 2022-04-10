@@ -60,6 +60,7 @@ export default class Grid implements IGrid {
         refresh: false,
         selectable: false,
         mode:"grid",
+        modeButtons:false, 
         culture: {
           labels: {
             search: "Search :",
@@ -165,7 +166,10 @@ export default class Grid implements IGrid {
     modes.setAttribute("data-bc-grid-modes", "");
     const gridHeaderContainer = document.createElement("div");
     gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
-    gridHeaderContainer.appendChild(modes);
+    if(this.options.modeButtons == true){
+      gridHeaderContainer.appendChild(modes);
+    }
+    
     if (this.options.filter == "simple") {
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
@@ -437,7 +441,11 @@ export default class Grid implements IGrid {
     widthCardMode.setAttribute("data-bc-grid-active-mode", "");
     modes.appendChild(gridMode);
     modes.appendChild(widthCardMode);
-    gridHeaderContainer.appendChild(modes);
+    console.log("ssssss", this.options.modeButtons)
+    if(this.options.modeButtons == true ){
+      gridHeaderContainer.appendChild(modes);
+    }
+   
     gridMode.addEventListener("click", (e) => {
       this.options.mode = "grid";
       this._container.innerHTML = "";

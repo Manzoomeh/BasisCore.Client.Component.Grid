@@ -31,8 +31,8 @@ export default class Grid implements IGrid {
   static _defaults: Partial<IGridOptions>;
   private columnsInitialized = false;
   private processManager: IGridProcessManager;
-  public  columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
-  public  cards: IGridCardInfo[] = new Array<IGridCardInfo>();
+  public columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
+  public cards: IGridCardInfo[] = new Array<IGridCardInfo>();
   private readonly _informationFormatter: (
     from: number,
     to: number,
@@ -59,8 +59,8 @@ export default class Grid implements IGrid {
         loader: true,
         refresh: false,
         selectable: false,
-        mode:"grid",
-        modeButtons:false, 
+        mode: "grid",
+        modeButtons: false,
         culture: {
           labels: {
             search: "Search :",
@@ -115,11 +115,10 @@ export default class Grid implements IGrid {
     } else if (this.options.mode == "widthCard") {
       this.createUIWidthCard();
     }
-    
   }
 
   private createUI(): void {
-    this.columns=[]
+    this.columns = [];
     this._table = document.createElement("table");
     this._table.setAttribute("data-bc-table", "");
     this._head = document.createElement("thead");
@@ -158,18 +157,18 @@ export default class Grid implements IGrid {
     widthCardMode.addEventListener("click", (e) => {
       this.options.mode = "widthCard";
       this._container.innerHTML = "";
-      this._head.innerHTML = ""
-      this._body.innerHTML = ""
+      this._head.innerHTML = "";
+      this._body.innerHTML = "";
       this.createUIWidthCard();
       this.setSource(this._rows);
     });
     modes.setAttribute("data-bc-grid-modes", "");
     const gridHeaderContainer = document.createElement("div");
     gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
-    if(this.options.modeButtons == true){
+    if (this.options.modeButtons == true) {
       gridHeaderContainer.appendChild(modes);
     }
-    
+
     if (this.options.filter == "simple") {
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
@@ -282,12 +281,11 @@ export default class Grid implements IGrid {
     this.createTable();
   }
   private addTableRowFilterPart() {
-
     if (this.options.filter === "row") {
       const tr = document.createElement("tr");
       tr.setAttribute("data-bc-no-selection", "");
       tr.setAttribute("data-bc-filter", "");
-      tr.innerHTML= ""
+      tr.innerHTML = "";
       this._head.appendChild(tr);
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
@@ -333,7 +331,7 @@ export default class Grid implements IGrid {
     const tr = document.createElement("tr");
     tr.setAttribute("data-bc-no-selection", "");
     tr.setAttribute("data-bc-column-title", "");
-    tr.innerHTML = ""
+    tr.innerHTML = "";
     this._head.appendChild(tr);
     if (this.options.rowNumber) {
       const col = document.createElement("col");
@@ -400,7 +398,7 @@ export default class Grid implements IGrid {
     }
   }
   private createUIWidthCard(): void {
-    this.cards= []
+    this.cards = [];
     this._table = document.createElement("div");
     this._table.setAttribute("data-bc-table", "");
     this._head = document.createElement("div");
@@ -441,16 +439,15 @@ export default class Grid implements IGrid {
     widthCardMode.setAttribute("data-bc-grid-active-mode", "");
     modes.appendChild(gridMode);
     modes.appendChild(widthCardMode);
-    console.log("ssssss", this.options.modeButtons)
-    if(this.options.modeButtons == true ){
+    if (this.options.modeButtons == true) {
       gridHeaderContainer.appendChild(modes);
     }
-   
+
     gridMode.addEventListener("click", (e) => {
       this.options.mode = "grid";
       this._container.innerHTML = "";
-      this._head.innerHTML = ""
-      this._body.innerHTML = ""
+      this._head.innerHTML = "";
+      this._body.innerHTML = "";
       this.createUI();
       this.setSource(this._rows);
     });
@@ -566,7 +563,7 @@ export default class Grid implements IGrid {
     this.createWrapper();
   }
   private createWrapper(): void {
-    this._head.innerHTML = ""
+    this._head.innerHTML = "";
     const colgroup = document.createElement("div");
     this._table.prepend(colgroup);
     const tr = document.createElement("div");
@@ -617,7 +614,7 @@ export default class Grid implements IGrid {
       const tr = document.createElement("div");
       tr.setAttribute("data-bc-no-selection", "");
       tr.setAttribute("data-bc-filter", "");
-       this._head.appendChild(tr);
+      this._head.appendChild(tr);
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
           const td = document.createElement("div");
@@ -749,7 +746,7 @@ export default class Grid implements IGrid {
         }
       }
     }
-    
+
     this.cards.push(columnInfo);
     return td;
   }

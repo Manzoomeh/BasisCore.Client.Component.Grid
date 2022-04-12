@@ -23,7 +23,13 @@ export default class BasisCoreGridComponent implements IComponentManager {
     this.owner.setContent(this.container);
 
     const optionName = await this.owner.getAttributeValueAsync("options");
-    const option: IGridOptions = optionName ? eval(optionName) : null;
+    const optionUrl = await this.owner.getAttributeValueAsync("optionsUrl");
+    let option: IGridOptions = null;
+    if (optionUrl) {
+      option = await this.owner.getLibAsync(optionName, optionUrl);
+    } else {
+      option = optionName ? eval(optionName) : null;
+    }
 
     const refreshCallback = (data) => {
       if (option.refreshSourceId) {
@@ -44,7 +50,12 @@ export default class BasisCoreGridComponent implements IComponentManager {
         );
       }
     };
-    this.grid = new Grid(this.container, option, refreshCallback, selectionChangeCallback);
+    this.grid = new Grid(
+      this.container,
+      option,
+      refreshCallback,
+      selectionChangeCallback
+    );
     if (sourceId) {
       this.sourceId = sourceId.toLowerCase();
       this.owner.addTrigger([this.sourceId]);

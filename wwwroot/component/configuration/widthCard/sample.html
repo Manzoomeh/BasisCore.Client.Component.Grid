@@ -40,7 +40,7 @@
         dataList.push(data);
       }
       const options = {
-        filter:"row" , 
+        filter:"simple" , 
         columns: {
           id: {
             title: "Data-Id",
@@ -56,7 +56,7 @@
         defaultSort: { name: "count" },
         pageSize: [10,40,50],
         mode: "widthCard",
-        modeButtons : false,
+        modeButtons : true,
         widthCard: {
           image: {
             cellMaker: (row, data, td) =>

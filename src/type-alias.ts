@@ -18,7 +18,6 @@ export type IGridColumnInfo = IColumnInfo & {
 
 export type IGridCardInfo = IColumnInfo & {
   title: string;
-  image: string;
   type: ColumnType;
   name?: string;  
   source: string | IFieldMakerCallback;

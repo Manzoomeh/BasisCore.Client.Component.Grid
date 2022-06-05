@@ -17,8 +17,10 @@
 </head>
 
 <body>
+  <input type="text" name="db.text" value="true" bc-triggers="click" /> 
+  [##db.text.value##]
   <button id="btn">Reload</button>
-  <Basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options">
+  <Basis core="component.grid.grid" run="atclient" triggers="sample.data" dataMemberName="sample.data" options="options">
   </Basis>
   <basis core="callback" run="atclient" triggers="sample.data"></basis>
   <script>

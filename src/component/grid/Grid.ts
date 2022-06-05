@@ -578,18 +578,17 @@ export default class Grid implements IGrid {
         if (typeof value === "string") {
           columnInfo = {
             title: value,
-            image: value,
             source: property,
             name: property,
             sort: this.options.sorting,
             type: ColumnType.data,
             filter: true,
           };
+   
         } else {
           columnInfo = {
             ...{
               title: property,
-              image: property,
               source: property,
               name: property,
               sort: this.options.sorting,

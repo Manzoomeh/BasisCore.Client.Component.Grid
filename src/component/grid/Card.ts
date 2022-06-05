@@ -90,12 +90,12 @@ export default class Card extends Item {
     return retVal;
   }
   public acceptableBySimpleFilter(filter: string): boolean {
-    const colInfo = this._owner.columns
+    const colInfo = this._owner.cards
       .filter((col) => col.type === ColumnType.data)
       .find((col) => {
         let retVal = false;
         if (col.filter) {
-          const value = Reflect.get(this._dataProxy, col.name)
+          const value = Reflect.get(this._dataProxy, col.title)
             ?.toString()
             .toLowerCase();
           retVal = value && value.indexOf(filter) >= 0;

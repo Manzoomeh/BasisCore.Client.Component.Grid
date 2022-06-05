@@ -94,7 +94,7 @@ export default class GridRow extends Item {
     return retVal;
   }
   public acceptableBySimpleFilter(filter: string): boolean {
-    const colInfo = this._owner.columns
+    const colInfo = this._owner.columns    
       .filter((col) => col.type === ColumnType.data)
       .find((col) => {
         let retVal = false;

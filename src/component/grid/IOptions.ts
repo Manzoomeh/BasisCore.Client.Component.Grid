@@ -32,9 +32,10 @@ export type IGridOptions = {
   selectable?: boolean | SelectType;
   selectedSourceId?: string;
   refreshSourceId?: string;
-  mode?: IGridType ;
-  widthCard?: IWidthCArd,
-  modeButtons?: boolean
+  mode?: IGridType;
+  widthCard?: IWidthCArd;
+  modeButtons?: boolean;
+  cardCount?: number;
 };
 
 export type IOffsetOptions = {

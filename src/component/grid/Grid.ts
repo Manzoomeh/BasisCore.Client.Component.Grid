@@ -61,6 +61,7 @@ export default class Grid implements IGrid {
         selectable: false,
         mode: "grid",
         modeButtons: false,
+        cardCount: 5,
         culture: {
           labels: {
             search: "Search :",

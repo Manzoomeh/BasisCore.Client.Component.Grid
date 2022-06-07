@@ -8,6 +8,11 @@ export default class Card extends Item {
     if (!this._uiElement) {
       this._uiElement = document.createElement("div");
       this._uiElement.setAttribute("data-bc-card", "");
+
+      const cardCount = this._owner.options.cardCount;
+      const space = cardCount * 20;
+      this._uiElement.setAttribute("style", `width: calc((100% - ${space}px) / ${cardCount})`);
+      
       const div = document.createElement("div");
       div.setAttribute("data-bc-card-data", "");
       const cardDiv = document.createElement("div");

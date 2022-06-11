@@ -115,6 +115,7 @@ export default class Grid implements IGrid {
       this.createUI();
     } else if (this.options.mode == "widthCard") {
       this.createUIWidthCard();
+      this._container.setAttribute("data-bc-widthcard-mode","")
     }
   }
 
@@ -160,6 +161,7 @@ export default class Grid implements IGrid {
       this._container.innerHTML = "";
       this._head.innerHTML = "";
       this._body.innerHTML = "";
+      this._container.setAttribute("data-bc-widthcard-mode","")
       this.createUIWidthCard();
       this.setSource(this._rows);
     });
@@ -449,6 +451,7 @@ export default class Grid implements IGrid {
       this._container.innerHTML = "";
       this._head.innerHTML = "";
       this._body.innerHTML = "";
+      this._container.removeAttribute("data-bc-widthcard-mode")
       this.createUI();
       this.setSource(this._rows);
     });

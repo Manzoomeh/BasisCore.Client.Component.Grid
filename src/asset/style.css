@@ -391,3 +391,11 @@
 [data-bc-grid-modes] div svg {
   fill: #000;
 }
+[data-bc-widthcard-mode] {
+  border: 1px solid #E9E9EA;
+  border-radius: 5px;
+  padding: 10px;
+}
+[data-bc-widthcard-mode] [data-bc-grid-header-container]{
+  border:none
+}

@@ -15,7 +15,7 @@ export default class Card extends Item {
       
       const div = document.createElement("div");
       div.setAttribute("data-bc-card-data", "");
-      const cardDiv = document.createElement("div");
+      // const cardDiv = document.createElement("div");
       const titleDescDiv = document.createElement("div")
       titleDescDiv.setAttribute("data-bc-card-title","")
       this._owner.cards.forEach((column) => {
@@ -25,18 +25,20 @@ export default class Card extends Item {
           cardSpan.setAttribute("data-bc-card-titleText","")         
           cardSpan.textContent = tmpValue?.toString();
           titleDescDiv.appendChild(cardSpan)
+          div.appendChild(titleDescDiv)
         } 
         else if (column.name == "image") {
+          const cardDiv = document.createElement("div");
           const tmpValue = Reflect.get(this._dataProxy, column.title);
           if (column.cellMaker) {
             cardDiv.innerHTML =  column.cellMaker(this.data, tmpValue, cardDiv) ?? tmpValue;
           }
           else{
-           
             const cardImage = document.createElement("img");
             cardImage.setAttribute("src", tmpValue?.toString());
             cardDiv.appendChild(cardImage);
           }
+          div.appendChild(cardDiv)
          
         }
         else if(column.name == "info"){   
@@ -50,9 +52,22 @@ export default class Card extends Item {
           const tmpValue = Reflect.get(this._dataProxy, column.title);
           const cardAction = document.createElement("div")
           cardAction.innerHTML =column.cellMaker(this.data, tmpValue, div) ?? tmpValue;
-          div.appendChild(cardDiv)
-          div.appendChild(titleDescDiv)
+          // div.appendChild(cardDiv)
+          // div.appendChild(titleDescDiv)
           div.appendChild(cardAction) ;
+        }
+        else {
+          const tmpValue = Reflect.get(this._dataProxy, column.title);
+          if (column.cellMaker) {
+            const cardDiv = document.createElement("div");
+            cardDiv.innerHTML =  column.cellMaker(this.data, tmpValue, cardDiv) ?? tmpValue;
+            div.appendChild(cardDiv)
+          } else {
+            const cardSpan = document.createElement("span") 
+            cardSpan.setAttribute("data-bc-card-text","")         
+            cardSpan.textContent = tmpValue?.toString();
+            div.appendChild(cardSpan)
+          }
         }
   
       });

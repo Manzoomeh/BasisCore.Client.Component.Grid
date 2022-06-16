@@ -90,10 +90,12 @@ export default abstract class PaginateProcessManager extends ProcessManager {
   private initializeUI(): void {
     if (Array.isArray(this.owner.options.paging)) {
       const label = document.createElement("label");
+      label.setAttribute("data-sys-text-colorful", "");
       label.appendChild(
         document.createTextNode(this.owner.options.culture.labels.pageSize)
       );
       const select = document.createElement("select");
+      select.setAttribute("data-sys-text-colorful", "");
       this.owner.options.paging?.forEach((pageSize, index) => {
         const option = document.createElement("option");
         const value = pageSize.toString();
@@ -120,6 +122,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
 
     this.pageNo = document.createElement("input");
     this.pageNo.setAttribute("type", "text");
+    // this.pageNo.setAttribute("data-sys-input-text", "");
     this.pageNo.setAttribute("data-bc-page-number", "");
     this.pageNo.addEventListener("keyup", (e) => {
       e.preventDefault();
@@ -190,21 +193,25 @@ export default abstract class PaginateProcessManager extends ProcessManager {
 
   protected updateState(): void {
     this.nextButton.setAttribute("data-bc-next", "");
+    this.nextButton.setAttribute("data-sys-previous-next", "");
     this.nextButton.setAttribute(
       "data-bc-status",
       this.pageNumber + 1 >= this.totalPage ? "disabled" : ""
     );
     this.lastButton?.setAttribute("data-bc-end", "");
+    this.lastButton?.setAttribute("data-sys-start-end", "");
     this.lastButton?.setAttribute(
       "data-bc-status",
       this.pageNumber + 1 >= this.totalPage ? "disabled" : ""
     );
     this.previousButton.setAttribute("data-bc-previous", "");
+    this.previousButton.setAttribute("data-sys-previous-next", "");
     this.previousButton.setAttribute(
       "data-bc-status",
       this.pageNumber <= 0 ? "disabled" : ""
     );
     this.firstButton?.setAttribute("data-bc-start", "");
+    this.firstButton?.setAttribute("data-sys-start-end", "");
     this.firstButton?.setAttribute(
       "data-bc-status",
       this.pageNumber <= 0 ? "disabled" : ""
@@ -223,10 +230,15 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       .querySelectorAll("[data-bc-page]")
       .forEach((x) => {
         const pageId = parseInt(x.getAttribute("data-bc-page"));
-        x.setAttribute(
-          "data-bc-current",
-          this.pageNumber === pageId ? "true" : "false"
-        );
+        if (this.pageNumber === pageId) {
+          x.setAttribute("data-bc-current", "true");
+          x.setAttribute("data-sys-paging-pageNo", "true");
+          x.setAttribute("data-sys-paging-active", "");
+        } else {
+          x.setAttribute("data-bc-current", "false");
+          x.setAttribute("data-sys-paging-pageNo", "false");
+          x.removeAttribute("data-sys-paging-active");
+        }
       });
   }
 

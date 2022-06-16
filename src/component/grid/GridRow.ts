@@ -9,9 +9,11 @@ export default class GridRow extends Item {
    
     if (!this._uiElement) {
       this._uiElement = document.createElement("tr");
+      this._uiElement.setAttribute("data-sys-tr", "");
       
       this._owner.columns.forEach((column) => {
         const td = document.createElement("td");
+        td.setAttribute("data-sys-td", "");
         
         if (column.cssClass) {
           Array.isArray(column.cssClass)

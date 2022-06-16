@@ -124,6 +124,7 @@ export default class Grid implements IGrid {
     this._table = document.createElement("table");
     this._table.setAttribute("data-bc-table", "");
     this._head = document.createElement("thead");
+    this._head.setAttribute("data-sys-thead", "");
     this._table.appendChild(this._head);
     this._body = document.createElement("tbody");
     this._table.appendChild(this._body);
@@ -137,10 +138,8 @@ export default class Grid implements IGrid {
     this._tableContainer.appendChild(this._table);
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute(
-        "data-bc-information-container",
-        ""
-      );
+      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute("data-sys-text-colorful", "");
     }
     const modes = document.createElement("div");
     const gridMode = document.createElement("div");
@@ -168,6 +167,7 @@ export default class Grid implements IGrid {
     modes.setAttribute("data-bc-grid-modes", "");
     const gridHeaderContainer = document.createElement("div");
     gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+    gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
     if (this.options.modeButtons == true) {
       gridHeaderContainer.appendChild(modes);
     }
@@ -177,11 +177,13 @@ export default class Grid implements IGrid {
       filter.setAttribute("data-bc-filter-container", "");
       gridHeaderContainer.appendChild(filter);
       const label = document.createElement("label");
+      label.setAttribute("data-sys-text-colorful", "");
       label.appendChild(
         document.createTextNode(this.options.culture.labels.search)
       );
       const input = document.createElement("input");
       input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
         const newFilter = input.value.toLowerCase();
@@ -214,6 +216,7 @@ export default class Grid implements IGrid {
       if (!gridHeaderContainer) {
         gridHeaderContainer = document.createElement("div");
         gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+        gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
         this._container.insertBefore(gridHeaderContainer, this._tableContainer);
       }
 
@@ -223,6 +226,7 @@ export default class Grid implements IGrid {
 
       const gridFooterContainer = document.createElement("div");
       gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
 
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
@@ -277,6 +281,7 @@ export default class Grid implements IGrid {
       if (!gridFooterContainer) {
         gridFooterContainer = document.createElement("div");
         gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+        gridFooterContainer.setAttribute("data-sys-paging-container", "");
         this._container.appendChild(gridFooterContainer);
       }
       gridFooterContainer.appendChild(this._informationContainer);
@@ -288,13 +293,16 @@ export default class Grid implements IGrid {
       const tr = document.createElement("tr");
       tr.setAttribute("data-bc-no-selection", "");
       tr.setAttribute("data-bc-filter", "");
+      tr.setAttribute("data-sys-tr", "");
       tr.innerHTML = "";
       this._head.appendChild(tr);
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
           const td = document.createElement("td");
+          td.setAttribute("data-sys-th", "");
           const input = document.createElement("input");
           input.setAttribute("type", "text");
+          input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
           input.addEventListener("keyup", (_) => {
             const newFilter = input.value.toLowerCase();
@@ -323,7 +331,9 @@ export default class Grid implements IGrid {
           td.appendChild(input);
           tr.appendChild(td);
         } else {
-          tr.appendChild(document.createElement("td"));
+          const td = document.createElement("td");
+          td.setAttribute("data-sys-th", "");
+          tr.appendChild(td);
         }
       });
     }
@@ -334,6 +344,7 @@ export default class Grid implements IGrid {
     const tr = document.createElement("tr");
     tr.setAttribute("data-bc-no-selection", "");
     tr.setAttribute("data-bc-column-title", "");
+    tr.setAttribute("data-sys-tr", "");
     tr.innerHTML = "";
     this._head.appendChild(tr);
     if (this.options.rowNumber) {
@@ -419,10 +430,8 @@ export default class Grid implements IGrid {
     this._tableContainer.appendChild(this._table);
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute(
-        "data-bc-information-container",
-        ""
-      );
+      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute("data-sys-text-colorful", "");
     }
     const modes = document.createElement("div");
     modes.setAttribute("data-bc-grid-modes", "");
@@ -439,6 +448,7 @@ export default class Grid implements IGrid {
     `;
     const gridHeaderContainer = document.createElement("div");
     gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+    gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
     widthCardMode.setAttribute("data-bc-grid-active-mode", "");
     modes.appendChild(gridMode);
     modes.appendChild(widthCardMode);
@@ -462,11 +472,13 @@ export default class Grid implements IGrid {
       gridHeaderContainer.appendChild(filter);
 
       const label = document.createElement("label");
+      label.setAttribute("data-sys-text-colorful", "");
       label.appendChild(
         document.createTextNode(this.options.culture.labels.search)
       );
       const input = document.createElement("input");
       input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
         const newFilter = input.value.toLowerCase();
@@ -499,6 +511,7 @@ export default class Grid implements IGrid {
       if (!gridHeaderContainer) {
         gridHeaderContainer = document.createElement("div");
         gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+        gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
         this._container.insertBefore(gridHeaderContainer, this._tableContainer);
       }
       const pageSizeContainer = document.createElement("div");
@@ -506,6 +519,7 @@ export default class Grid implements IGrid {
       gridHeaderContainer.appendChild(pageSizeContainer);
       const gridFooterContainer = document.createElement("div");
       gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
 
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
@@ -560,6 +574,7 @@ export default class Grid implements IGrid {
       if (!gridFooterContainer) {
         gridFooterContainer = document.createElement("div");
         gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+        gridFooterContainer.setAttribute("data-sys-paging-container", "");
         this._container.appendChild(gridFooterContainer);
       }
       gridFooterContainer.appendChild(this._informationContainer);
@@ -623,6 +638,7 @@ export default class Grid implements IGrid {
           const td = document.createElement("div");
           const input = document.createElement("input");
           input.setAttribute("type", "text");
+          input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
           input.addEventListener("keyup", (_) => {
             const newFilter = input.value.toLowerCase();
@@ -658,6 +674,7 @@ export default class Grid implements IGrid {
   }
   private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
     const td = document.createElement("td");
+    td.setAttribute("data-sys-th", "");
     // td.appendChild(document.createTextNode(columnInfo.title));
     td.innerHTML = columnInfo.title;
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
@@ -803,7 +820,9 @@ export default class Grid implements IGrid {
       this.options.noData
     ) {
       const tr = document.createElement("tr");
+      tr.setAttribute("data-sys-tr", "");
       const td = document.createElement("td");
+      td.setAttribute("data-sys-td", "");
       tr.appendChild(td);
       td.colSpan = this.columns.length;
       td.setAttribute("data-bc-no-data", "");

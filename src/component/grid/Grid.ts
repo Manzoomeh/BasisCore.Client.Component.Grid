@@ -420,6 +420,7 @@ export default class Grid implements IGrid {
     this._body = document.createElement("div");
     this._table.appendChild(this._body);
     this._body.setAttribute("data-bc-card-wrapper", "");
+    this._body.setAttribute("data-sys-grid-border-color", "");
     this._tableContainer = document.createElement("div");
     this._tableContainer.setAttribute("data-bc-table-container", "");
     if (typeof this.options.loader === "function") {
@@ -461,7 +462,7 @@ export default class Grid implements IGrid {
       this._container.innerHTML = "";
       this._head.innerHTML = "";
       this._body.innerHTML = "";
-      this._container.removeAttribute("data-bc-widthcard-mode")
+      // this._container.removeAttribute("data-bc-widthcard-mode")
       this.createUI();
       this.setSource(this._rows);
     });

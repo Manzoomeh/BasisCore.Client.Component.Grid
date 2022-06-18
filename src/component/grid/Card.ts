@@ -8,6 +8,7 @@ export default class Card extends Item {
     if (!this._uiElement) {
       this._uiElement = document.createElement("div");
       this._uiElement.setAttribute("data-bc-card", "");
+      this._uiElement.setAttribute("data-sys-tile", "");
 
       const cardCount = this._owner.options.cardCount;
       const space = cardCount * 20;
@@ -16,16 +17,17 @@ export default class Card extends Item {
       const div = document.createElement("div");
       div.setAttribute("data-bc-card-data", "");
       // const cardDiv = document.createElement("div");
-      const titleDescDiv = document.createElement("div")
-      titleDescDiv.setAttribute("data-bc-card-title","")
+      const titleDescDiv = document.createElement("div");
+      titleDescDiv.setAttribute("data-bc-card-title","");
       this._owner.cards.forEach((column) => {
         if (column.name == "title") {
           const tmpValue = Reflect.get(this._dataProxy, column.title);    
-          const cardSpan = document.createElement("span") 
-          cardSpan.setAttribute("data-bc-card-titleText","")         
+          const cardSpan = document.createElement("span");
+          cardSpan.setAttribute("data-bc-card-titleText","");
+          cardSpan.setAttribute("data-sys-text","");
           cardSpan.textContent = tmpValue?.toString();
-          titleDescDiv.appendChild(cardSpan)
-          div.appendChild(titleDescDiv)
+          titleDescDiv.appendChild(cardSpan);
+          div.appendChild(titleDescDiv);
         } 
         else if (column.name == "image") {
           const cardDiv = document.createElement("div");
@@ -33,25 +35,25 @@ export default class Card extends Item {
           if (column.cellMaker) {
             cardDiv.innerHTML =  column.cellMaker(this.data, tmpValue, cardDiv) ?? tmpValue;
           }
-          else{
+          else {
             const cardImage = document.createElement("img");
             cardImage.setAttribute("src", tmpValue?.toString());
             cardDiv.appendChild(cardImage);
           }
-          div.appendChild(cardDiv)
-         
+          div.appendChild(cardDiv);
         }
         else if(column.name == "info"){   
           const tmpValue = Reflect.get(this._dataProxy, column.title);          
-          const cardSpan = document.createElement("span")
-          cardSpan.setAttribute("data-bc-card-info","")       
+          const cardSpan = document.createElement("span");
+          cardSpan.setAttribute("data-bc-card-info","");
+          cardSpan.setAttribute("data-sys-text","");
           cardSpan.textContent = tmpValue?.toString();
-          titleDescDiv.appendChild(cardSpan)
+          titleDescDiv.appendChild(cardSpan);
         }
-        else if(column.name == "action"){   
+        else if(column.name == "action") {   
           const tmpValue = Reflect.get(this._dataProxy, column.title);
-          const cardAction = document.createElement("div")
-          cardAction.innerHTML =column.cellMaker(this.data, tmpValue, div) ?? tmpValue;
+          const cardAction = document.createElement("div");
+          cardAction.innerHTML = column.cellMaker(this.data, tmpValue, div) ?? tmpValue;
           // div.appendChild(cardDiv)
           // div.appendChild(titleDescDiv)
           div.appendChild(cardAction) ;
@@ -61,12 +63,13 @@ export default class Card extends Item {
           if (column.cellMaker) {
             const cardDiv = document.createElement("div");
             cardDiv.innerHTML =  column.cellMaker(this.data, tmpValue, cardDiv) ?? tmpValue;
-            div.appendChild(cardDiv)
+            div.appendChild(cardDiv);
           } else {
-            const cardSpan = document.createElement("span") 
-            cardSpan.setAttribute("data-bc-card-text","")         
+            const cardSpan = document.createElement("span");
+            cardSpan.setAttribute("data-bc-card-text","");
+            cardSpan.setAttribute("data-sys-text","");
             cardSpan.textContent = tmpValue?.toString();
-            div.appendChild(cardSpan)
+            div.appendChild(cardSpan);
           }
         }
   

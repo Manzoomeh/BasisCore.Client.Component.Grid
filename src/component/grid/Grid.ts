@@ -273,7 +273,9 @@ export default class Grid implements IGrid {
       }
     } else {
       this.processManager = new NoPaginate(this);
-      gridHeaderContainer.remove();
+      if (gridHeaderContainer.innerHTML == "") {
+        gridHeaderContainer.remove();
+      }
     }
     if (this._informationContainer) {
       let gridFooterContainer = this._container.querySelector(
@@ -568,7 +570,9 @@ export default class Grid implements IGrid {
       }
     } else {
       this.processManager = new NoPaginate(this);
-      gridHeaderContainer.remove();
+      if (gridHeaderContainer.innerHTML == "") {
+        gridHeaderContainer.remove();
+      }
     }
     if (this._informationContainer) {
       let gridFooterContainer = this._container.querySelector(

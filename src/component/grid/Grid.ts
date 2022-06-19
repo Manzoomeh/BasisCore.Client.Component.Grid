@@ -273,6 +273,7 @@ export default class Grid implements IGrid {
       }
     } else {
       this.processManager = new NoPaginate(this);
+      gridHeaderContainer.remove();
     }
     if (this._informationContainer) {
       let gridFooterContainer = this._container.querySelector(
@@ -415,8 +416,8 @@ export default class Grid implements IGrid {
     this.cards = [];
     this._table = document.createElement("div");
     this._table.setAttribute("data-bc-table", "");
-    this._head = document.createElement("div");
-    this._table.appendChild(this._head);
+    // this._head = document.createElement("div");
+    // this._table.appendChild(this._head);
     this._body = document.createElement("div");
     this._table.appendChild(this._body);
     this._body.setAttribute("data-bc-card-wrapper", "");
@@ -460,7 +461,7 @@ export default class Grid implements IGrid {
     gridMode.addEventListener("click", (e) => {
       this.options.mode = "grid";
       this._container.innerHTML = "";
-      this._head.innerHTML = "";
+      // this._head.innerHTML = "";
       this._body.innerHTML = "";
       // this._container.removeAttribute("data-bc-widthcard-mode")
       this.createUI();
@@ -567,6 +568,7 @@ export default class Grid implements IGrid {
       }
     } else {
       this.processManager = new NoPaginate(this);
+      gridHeaderContainer.remove();
     }
     if (this._informationContainer) {
       let gridFooterContainer = this._container.querySelector(
@@ -583,17 +585,17 @@ export default class Grid implements IGrid {
     this.createWrapper();
   }
   private createWrapper(): void {
-    this._head.innerHTML = "";
-    const colgroup = document.createElement("div");
-    this._table.prepend(colgroup);
-    const tr = document.createElement("div");
-    tr.setAttribute("data-bc-no-selection", "");
-    tr.setAttribute("data-bc-column-title", "");
-    this._head.appendChild(tr);
+    // this._head.innerHTML = "";
+    // const colgroup = document.createElement("div");
+    // this._table.prepend(colgroup);
+    // const tr = document.createElement("div");
+    // tr.setAttribute("data-bc-no-selection", "");
+    // tr.setAttribute("data-bc-column-title", "");
+    // this._head.appendChild(tr);
     if (this.options.columns) {
       Object.getOwnPropertyNames(this.options.widthCard).forEach((property) => {
         var value = this.options.widthCard[property];
-        const col = document.createElement("col");
+        // const col = document.createElement("col");
         let columnInfo: IGridCardInfo;
         if (typeof value === "string") {
           columnInfo = {
@@ -621,8 +623,9 @@ export default class Grid implements IGrid {
           //   col.setAttribute("width", value.width);
           // }
         }
-        colgroup.appendChild(col);
-        tr.appendChild(this.createItems(columnInfo));
+        // colgroup.appendChild(col);
+        // tr.appendChild(this.createItems(columnInfo));
+        this.createItems(columnInfo);
       });
       this.columnsInitialized = true;
       // this.addWidthCArdFilterPart();
@@ -820,12 +823,22 @@ export default class Grid implements IGrid {
       typeof this.options.noData !== "undefined" &&
       this.options.noData
     ) {
-      const tr = document.createElement("tr");
-      tr.setAttribute("data-sys-tr", "");
-      const td = document.createElement("td");
-      td.setAttribute("data-sys-td", "");
-      tr.appendChild(td);
-      td.colSpan = this.columns.length;
+      let tr;
+      let td;
+
+      if (this.options.mode == "grid") {
+        tr = document.createElement("tr");
+        tr.setAttribute("data-sys-tr", "");
+        td = document.createElement("td");
+        td.setAttribute("data-sys-td", "");
+        tr.appendChild(td);
+        td.colSpan = this.columns.length;
+      } else if (this.options.mode == "widthCard") {
+        tr = document.createElement("div");
+        td = document.createElement("div");
+        tr.appendChild(td);
+      }
+
       td.setAttribute("data-bc-no-data", "");
       switch (typeof this.options.noData) {
         case "boolean": {

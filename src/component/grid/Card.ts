@@ -43,12 +43,20 @@ export default class Card extends Item {
           div.appendChild(cardDiv);
         }
         else if(column.name == "info"){   
-          const tmpValue = Reflect.get(this._dataProxy, column.title);          
-          const cardSpan = document.createElement("span");
-          cardSpan.setAttribute("data-bc-card-info","");
-          cardSpan.setAttribute("data-sys-text","");
-          cardSpan.textContent = tmpValue?.toString();
-          titleDescDiv.appendChild(cardSpan);
+          const cardDiv = document.createElement("div");
+          const tmpValue = Reflect.get(this._dataProxy, column.title);   
+          if (column.cellMaker) {           
+            cardDiv.innerHTML =  column.cellMaker(this.data, tmpValue, cardDiv) ?? tmpValue;
+          }   
+          else {
+            const cardSpan = document.createElement("span");
+            cardSpan.setAttribute("data-bc-card-info","");
+            cardSpan.setAttribute("data-sys-text","");
+            cardSpan.textContent = tmpValue?.toString();
+            cardDiv.appendChild(cardSpan)
+          }    
+          console.log(cardDiv)
+          titleDescDiv.appendChild(cardDiv);
         }
         else if(column.name == "action") {   
           const tmpValue = Reflect.get(this._dataProxy, column.title);

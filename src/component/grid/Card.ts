@@ -55,7 +55,7 @@ export default class Card extends Item {
             cardSpan.textContent = tmpValue?.toString();
             cardDiv.appendChild(cardSpan)
           }    
-          console.log(cardDiv)
+          
           titleDescDiv.appendChild(cardDiv);
         }
         else if(column.name == "action") {   

@@ -1,6 +1,9 @@
 var express = require("express");
 var router = express.Router();
-
+const MergeType = {
+  replace: 0,
+  append: 1,
+};
 const apiDataList = [];
 
 for (let index = 1; index < 1000; index++) {
@@ -23,9 +26,21 @@ router.post("/dbsource", function (req, res) {
       Math.random().toString(36).substring(7),
     ]);
   }
-  res.json({
-    "book.list": dataList,
-  });
+  const data = {
+    setting: {
+      keepalive: timeCounter > 0,
+    },
+    sources: [
+      {
+        options: {
+          tableName: "book.list",
+          mergeType: MergeType.replace,
+        },
+        data: dataList,
+      },
+    ],
+  };
+  res.json(data);
 });
 
 router.get("/api", function (req, res) {
@@ -50,11 +65,11 @@ router.get("/api/server", function (req, res) {
 
   const rootData = filter
     ? apiDataList.filter(
-      (x) =>
-        x.id.toString().indexOf(filter) != -1 ||
-        x.count.toString().indexOf(filter) != -1 ||
-        x.data.indexOf(filter) != -1
-    )
+        (x) =>
+          x.id.toString().indexOf(filter) != -1 ||
+          x.count.toString().indexOf(filter) != -1 ||
+          x.data.indexOf(filter) != -1
+      )
     : apiDataList;
 
   const sortInfo = clientData?.sortInfo;
@@ -71,10 +86,12 @@ router.get("/api/server", function (req, res) {
   let data = rootData.filter((_, i) => i > minId && i <= maxId);
 
   console.log({ pageSize, pageNumber, sortInfo, filter });
-  res.send({
-    sources: {
-      "api.demo": {
+  const result = {
+    sources: [
+      {
         options: {
+          tableName: "api.demo",
+          mergeType: MergeType.replace,
           extra: {
             total: rootData.length,
             from: minId,
@@ -82,8 +99,9 @@ router.get("/api/server", function (req, res) {
         },
         data: data,
       },
-    },
-  });
+    ],
+  };
+  res.send(result);
 });
 
 router.get("/api/server/loader", function (req, res) {
@@ -95,11 +113,11 @@ router.get("/api/server/loader", function (req, res) {
 
   const rootData = filter
     ? apiDataList.filter(
-      (x) =>
-        x.id.toString().indexOf(filter) != -1 ||
-        x.count.toString().indexOf(filter) != -1 ||
-        x.data.indexOf(filter) != -1
-    )
+        (x) =>
+          x.id.toString().indexOf(filter) != -1 ||
+          x.count.toString().indexOf(filter) != -1 ||
+          x.data.indexOf(filter) != -1
+      )
     : apiDataList;
 
   const sortInfo = clientData?.sortInfo;
@@ -116,9 +134,7 @@ router.get("/api/server/loader", function (req, res) {
   let data = rootData.filter((_, i) => i > minId && i <= maxId);
 
   for (let i = 0; i < 100000; i++) {
-    for (let j = 0; j < 10000; j++) {
-
-    }
+    for (let j = 0; j < 10000; j++) {}
   }
   console.log({ pageSize, pageNumber, sortInfo, filter });
   const source = {};
@@ -142,11 +158,11 @@ router.get("/api/mix", function (req, res) {
 
   const rootData = filter
     ? apiDataList.filter(
-      (x) =>
-        x.id.toString().indexOf(filter) != -1 ||
-        x.count.toString().indexOf(filter) != -1 ||
-        x.data.indexOf(filter) != -1
-    )
+        (x) =>
+          x.id.toString().indexOf(filter) != -1 ||
+          x.count.toString().indexOf(filter) != -1 ||
+          x.data.indexOf(filter) != -1
+      )
     : apiDataList;
 
   const sortInfo = clientData?.sortInfo;
@@ -154,10 +170,12 @@ router.get("/api/mix", function (req, res) {
   }
 
   console.log({ sortInfo, filter });
-  res.send({
-    sources: {
-      "api.demo": {
+  const result = {
+    sources: [
+      {
         options: {
+          tableName: "api.demo",
+          mergeType: MergeType.replace,
           extra: {
             total: rootData.length,
             from: 0,
@@ -165,7 +183,8 @@ router.get("/api/mix", function (req, res) {
         },
         data: rootData,
       },
-    },
-  });
+    ],
+  };
+  res.send(result);
 });
 module.exports = router;

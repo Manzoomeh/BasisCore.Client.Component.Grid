@@ -833,6 +833,7 @@ export default class Grid implements IGrid {
       if (this.options.mode == "grid") {
         tr = document.createElement("tr");
         tr.setAttribute("data-sys-tr", "");
+        tr.setAttribute("data-sys-tr-no-data", "");
         td = document.createElement("td");
         td.setAttribute("data-sys-td", "");
         tr.appendChild(td);

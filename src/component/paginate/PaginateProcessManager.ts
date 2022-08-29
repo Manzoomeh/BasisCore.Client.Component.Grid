@@ -122,7 +122,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
 
     this.pageNo = document.createElement("input");
     this.pageNo.setAttribute("type", "text");
-    // this.pageNo.setAttribute("data-sys-input-text", "");
+    this.pageNo.setAttribute("data-sys-input-text", "");
     this.pageNo.setAttribute("data-bc-page-number", "");
     this.pageNo.addEventListener("keyup", (e) => {
       e.preventDefault();

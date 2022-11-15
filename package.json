@@ -16,6 +16,9 @@
   ],
   "author": "Manzoomeh",
   "license": "ISC",
+  "dependencies": {
+    "basiscore": "^2.15.2"
+  },
   "devDependencies": {
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^6.4.0",

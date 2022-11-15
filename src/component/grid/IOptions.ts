@@ -8,6 +8,8 @@ export type ProcessType = "server" | "client" | "mix";
 
 export type SelectType = "none" | "single" | "multi";
 
+export type ITemplate = "template1" | "template2";
+
 export type IGridOptions = {
   columns: IDictionary<IColumn>;
   filter?: FilterType;
@@ -19,6 +21,8 @@ export type IGridOptions = {
   pageNumber?: number;
   sorting?: boolean;
   culture: {
+    deviceId?: number | string;
+    template?: ITemplate;
     labels: IDictionary<string>;
   };
   rowMaker?: IRowMakerCallback;

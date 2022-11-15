@@ -39,8 +39,21 @@ module.exports = (env, options) => {
         },
       },
     },
+    externals: {
+      basiscore: "basiscore",
+    },
     devServer: {
-      static: path.resolve(__dirname, "wwwroot"),
+      static: [
+        {
+          directory: path.resolve(__dirname, "wwwroot"),
+        },
+        {
+          directory: path.resolve(__dirname, "node_modules/alasql/dist"),
+        },
+        {
+          directory: path.resolve(__dirname, "node_modules/basiscore/dist"),
+        },
+      ],
       onBeforeSetupMiddleware: function (server) {
         server.app.use("/server", demoHttpServer);
       },
@@ -66,13 +79,17 @@ module.exports = (env, options) => {
           use: ["style-loader", "css-loader"],
         },
         {
+          test: /\.html$/i,
+          type: "asset/source",
+        },
+        {
           test: /\.(png|gif)/i,
           type: "asset/inline",
         },
       ],
     },
     resolve: {
-      extensions: [".ts", ".tsx", ".js", ".jsx", ".css", ".png"], // there's a dot missing
+      extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".png"], // there's a dot missing
     },
     plugins: [
       new CircularDependencyPlugin({

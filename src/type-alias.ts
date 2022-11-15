@@ -13,6 +13,7 @@ export type IGridColumnInfo = IColumnInfo & {
   title: string;
   type: ColumnType;
   name?: string;
+  position?: string;
   source: string | IFieldMakerCallback;
 };
 

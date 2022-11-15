@@ -6,7 +6,10 @@ import {
   SignalSourceCallback,
   IGridCardInfo,
 } from "../../type-alias";
+// import template1Layout from "./../../asset/layout-template1.html";
 import "./../../asset/style.css";
+import "./../../asset/style-desktop.css";
+import "./../../asset/style-mobile.css";
 import GridRow from "./GridRow";
 import IGrid from "./IGrid";
 import ClientProcess from "../paginate/ClientPaginate";
@@ -17,10 +20,14 @@ import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 import Item from "./Item";
 import Card from "./Card";
+// import { IBCUtil } from "basiscore";
+
+// declare const $bc:IBCUtil;
 export default class Grid implements IGrid {
   private readonly _container: HTMLElement;
   private _table: HTMLElement;
   readonly options: IGridOptions;
+  readonly deviceId: number | string;
   private _head: HTMLElement;
   private _body: HTMLElement;
   private _tableContainer: HTMLElement;
@@ -63,6 +70,8 @@ export default class Grid implements IGrid {
         modeButtons: false,
         cardCount: 5,
         culture: {
+          deviceId: 1,
+          template: "template1",
           labels: {
             search: "Search :",
             pageSize: "Page Size :",
@@ -97,8 +106,25 @@ export default class Grid implements IGrid {
       ...Grid.getDefaults().culture.labels,
       ...(options?.culture?.labels ?? {}),
     };
+
+    // initialize deviceId
+    const optionDeviceId = this.options.culture?.deviceId;
+    if (optionDeviceId) {
+      if (typeof optionDeviceId == "string") {
+        const devicesList = require("../../devicesList.json");
+        const deviceId = devicesList.find(ex => ex.title.toLowerCase() === optionDeviceId.toString().toLowerCase());
+        this.deviceId = deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
+      } else if (typeof optionDeviceId == "number") {
+        const devicesList = require("../../devicesList.json");
+        const deviceId = devicesList.find(ex => ex.deviceId === optionDeviceId);
+        this.deviceId = deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
+      }
+    } else {
+      this.deviceId = Grid.getDefaults().culture.deviceId;
+    }
+
     this._container = container;
-    this._container.setAttribute("data-bc-grid", "");
+    this._container.setAttribute("data-bc-grid", `d${this.deviceId}`);
     if (this.options.direction) {
       this._container.style["direction"] = this.options.direction;
     }
@@ -112,12 +138,225 @@ export default class Grid implements IGrid {
     this._selectionChangeCallback = selectionChangeCallback;
     this.id = Math.random().toString(36).substring(2);
     if (this.options.mode == "grid") {
-      this.createUI();
+      if (this.deviceId == 1) {
+        this.createUI();
+      } else if (this.deviceId == 2) {
+        this.createTemplateUI();
+      }
     } else if (this.options.mode == "widthCard") {
       this.createUIWidthCard();
       this._container.setAttribute("data-bc-widthcard-mode","")
     }
   }
+
+  private createTemplateUI(): void {
+    this.columns = [];
+    this._table = document.createElement("div");
+    this._table.setAttribute("data-bc-table", "");
+    // this._head = document.createElement("div");
+    // this._table.appendChild(this._head);
+    this._body = document.createElement("div");
+    this._table.appendChild(this._body);
+    this._body.setAttribute("data-bc-table-body", "");
+    this._body.setAttribute("data-sys-grid-border-color", "");
+    this._tableContainer = document.createElement("div");
+    this._tableContainer.setAttribute("data-bc-table-container", "");
+    
+    if (typeof this.options.loader === "function") {
+      this._loaderContainer = document.createElement("div");
+      this._loaderContainer.setAttribute("data-bc-loader-container", "");
+      this._tableContainer.appendChild(this._loaderContainer);
+    }
+    this._tableContainer.appendChild(this._table);
+
+    if (this.options.information) {
+      this._informationContainer = document.createElement("div");
+      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute("data-sys-text-colorful", "");
+    }
+
+    const gridHeaderContainer = document.createElement("div");
+    gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+    gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
+    
+    if (this.options.filter == "simple") {
+      const filter = document.createElement("div");
+      filter.setAttribute("data-bc-filter-container", "");
+      gridHeaderContainer.appendChild(filter);
+      const label = document.createElement("label");
+      label.setAttribute("data-sys-text-colorful", "");
+      label.appendChild(
+        document.createTextNode(this.options.culture.labels.search)
+      );
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
+      label.appendChild(input);
+      input.addEventListener("keyup", (_) => {
+        const newFilter = input.value.toLowerCase();
+        if (this.processManager.filter != newFilter) {
+          this.processManager.filter = newFilter;
+          this.processManager.applyUserAction();
+        }
+      });
+      filter.appendChild(label);
+    }
+    
+    this._container.appendChild(gridHeaderContainer);
+
+    if (this.options.refresh) {
+      const div = document.createElement("div");
+      div.setAttribute("data-bc-refresh-container", "");
+      this._container.appendChild(div);
+      var btn = document.createElement("span");
+      btn.innerHTML = this.options.culture.labels.refresh;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.tryLoadData();
+      });
+      div.appendChild(btn);
+    }
+    this._container.appendChild(this._tableContainer);
+    if (this.options.paging) {
+      let gridHeaderContainer = this._container.querySelector(
+        "[data-bc-grid-header-container]"
+      );
+      if (!gridHeaderContainer) {
+        gridHeaderContainer = document.createElement("div");
+        gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
+        gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
+        this._container.insertBefore(gridHeaderContainer, this._tableContainer);
+      }
+
+      const pageSizeContainer = document.createElement("div");
+      pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
+      gridHeaderContainer.appendChild(pageSizeContainer);
+
+      const gridFooterContainer = document.createElement("div");
+      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
+
+      const pagingContainer = document.createElement("div");
+      pagingContainer.setAttribute("data-bc-paging-container", "");
+      pagingContainer.setAttribute("data-bc-no-selection", "");
+      gridFooterContainer.appendChild(pagingContainer);
+
+      this._container.appendChild(gridFooterContainer);
+
+      switch (this.options.process) {
+        case "server": {
+          this.processManager = new ServerProcess(
+            this,
+            pageSizeContainer,
+            pagingContainer
+          );
+          break;
+        }
+        case "client": {
+          this.processManager = new ClientProcess(
+            this,
+            pageSizeContainer,
+            pagingContainer
+          );
+          break;
+        }
+        case "mix": {
+          this.processManager = new MixedProcess(
+            this,
+            pageSizeContainer,
+            pagingContainer
+          );
+          break;
+        }
+        default: {
+          throw Error(`Type '${this.options.process}' not support in grid`);
+        }
+      }
+      if (typeof this.options.paging == "number") {
+        // pageSizeContainer.style.display = "none";
+        pageSizeContainer.remove();
+        if (gridHeaderContainer.innerHTML == "") {
+          gridHeaderContainer.remove();
+        }
+      }
+    } else {
+      this.processManager = new NoPaginate(this);
+      if (gridHeaderContainer.innerHTML == "") {
+        gridHeaderContainer.remove();
+      }
+    }
+    if (this._informationContainer) {
+      let gridFooterContainer = this._container.querySelector(
+        "[data-bc-grid-footer-container]"
+      );
+      if (!gridFooterContainer) {
+        gridFooterContainer = document.createElement("div");
+        gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+        gridFooterContainer.setAttribute("data-sys-paging-container", "");
+        this._container.appendChild(gridFooterContainer);
+      }
+      gridFooterContainer.appendChild(this._informationContainer);
+    }
+
+    this.createTemplate1();
+  }
+
+  private createTemplate1(): void {
+    if (this.options.columns) {
+      Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
+        var value = this.options.columns[property];
+        let columnInfo: IGridColumnInfo;
+        if (typeof value === "string") {
+          columnInfo = {
+            title: value,
+            source: property,
+            name: property,
+            sort: this.options.sorting,
+            type: ColumnType.data,
+            filter: true,
+          };
+        } else {
+          columnInfo = {
+            ...{
+              title: property,
+              source: property,
+              name: property,
+              sort: this.options.sorting,
+              type: ColumnType.data,
+              filter: true,
+            },
+            ...value,
+          };
+        }
+        this.columns.push(columnInfo);
+        // const item = this.createTemplate1Item(columnInfo);
+        // this._body.appendChild(item);
+      });
+      const clr = document.createElement("div");
+      clr.setAttribute("class", "clr");
+      this._body.appendChild(clr);
+
+      this.columnsInitialized = true;
+      // this.addTableRowFilterPart();
+    }
+  }
+
+  // private createTemplate1Item(columnInfo: IGridColumnInfo): HTMLDivElement {
+  //   const copytemplate1Layout = template1Layout;
+  //   const item = $bc.util.toHTMLElement(copytemplate1Layout) as HTMLDivElement;
+
+  //   this.fillTemplate1Item(columnInfo, item);
+
+  //   return item;
+  // }
+
+  // private fillTemplate1Item(columnInfo: IGridColumnInfo, itemContainer: HTMLDivElement) {
+  //   if (columnInfo.position) {
+  //     const container = (itemContainer.querySelector(`[data-position="${columnInfo.position}"]`) as HTMLElement);
+  //     container.innerHTML = "";
+
+  //   }
+  // }
 
   private createUI(): void {
     this.columns = [];
@@ -823,6 +1062,11 @@ export default class Grid implements IGrid {
     this._body.innerHTML = "";
     if (rows?.length > 0) {
       rows?.forEach((row) => this._body.appendChild(row.uiElement));
+      if (this.deviceId == 2) {
+        const clr = document.createElement("div");
+        clr.setAttribute("class", "clr");
+        this._body.appendChild(clr);
+      }
     } else if (
       typeof this.options.noData !== "undefined" &&
       this.options.noData

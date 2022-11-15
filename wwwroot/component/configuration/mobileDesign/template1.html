@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+    <title>Grid Command - With Config</title>
+    <script>
+        const host = {
+            repositories: {
+                "grid.grid": "/basiscore.grid.component.js",
+            },
+        };
+    </script>
+</head>
+
+<body>
+    <basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options"></basis>
+
+    <script>
+        function setSource() {
+            const MIN_ID = 1000;
+            const MAX_ID = 1200;
+            const MIN_COUNT = 10;
+
+            const dataList = [];
+            for (let index = MIN_ID; index < MAX_ID; index++) {
+                const data = {
+                    id: index,
+                    image: null,
+                    title: `test${index}`,
+                    createdate: `1401/4/27 ${index}`,
+                    updatedate: `1401/4/28 ${index}`,
+                    count: Math.floor(Math.random() * 80) + MIN_COUNT,
+                    data: Math.random().toString(36).substring(7),
+                };
+                dataList.push(data);
+            }
+
+            $bc.setSource("sample.data", dataList);
+        }
+        setSource();
+
+        const options = {
+            // process: "server",
+            filter: "simple",
+            columns: {
+                id: {
+                    title: "ID",
+                    width: '5%',
+                    sort: false
+                },
+                image: {
+                    title: "تصویر محصول",
+                    position: "#1",
+                    width: '5%',
+                    filter: false,
+                    sort: false,
+                    source: "image",
+                    cellMaker: (row, data, td) => {
+                        return `<img src="${row.image}" width="50" height="50" class="objectImage" />`
+                    }
+                },
+                title: {
+                    title: "title",
+                    position: "#4",
+                    width: '15%',
+                    cssClass: "textRight"
+                },
+                count: {
+                    title: "count",
+                    position: "#7",
+                    width: '15%',
+                    cssClass: ["textRight", "dirRight"]
+                },
+                createdate: {
+                    title: "create date",
+                    position: "#9",
+                    width: '10%',
+                    filter: false,
+                    cssClass: "textRight"
+                },
+                updatedate: {
+                    title: "update date",
+                    position: "#10",
+                    width: '10%',
+                    filter: false,
+                    cssClass: "textRight"
+                },
+                data: {
+                    title: "data",
+                    position: "#5",
+                    width: '5%',
+                    filter: false,
+                    sort: false
+                }
+            },
+            defaultSort: {
+                name: "id",
+                sort: "desc"
+            },
+            direction: "rtl",
+            paging: [10, 20, 30],
+            culture: {
+                deviceId: 2,
+                template: "template1",
+                labels: {
+                    "search": "",
+                    "pageSize": "Page Size :",
+                    "next": "to next",
+                    "previous": "to previous",
+                    "first": "to first",
+                    "last": "to last"
+                }
+            },
+            // information: false,
+            firstAndLastBtn: false,
+            pageCount: 5,
+        };
+    </script>
+</body>
+
+</html>

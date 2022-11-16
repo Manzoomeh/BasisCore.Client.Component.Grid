@@ -31,8 +31,6 @@
                     id: index,
                     image: null,
                     title: `test${index}`,
-                    createdate: `1401/4/27 ${index}`,
-                    updatedate: `1401/4/28 ${index}`,
                     count: Math.floor(Math.random() * 80) + MIN_COUNT,
                     data: Math.random().toString(36).substring(7),
                 };
@@ -45,7 +43,7 @@
 
         const options = {
             // process: "server",
-            filter: "simple",
+            filter: "row",
             columns: {
                 id: {
                     title: "ID",
@@ -60,7 +58,7 @@
                     sort: false,
                     source: "image",
                     cellMaker: (row, data, td) => {
-                        return `<img src="${row.image}" width="50" height="50" class="objectImage" />`
+                        return `<img src="${row.image}" width="100%" height="100%" class="objectImage" />`
                     }
                 },
                 title: {
@@ -75,20 +73,6 @@
                     width: '15%',
                     cssClass: ["textRight", "dirRight"]
                 },
-                createdate: {
-                    title: "create date",
-                    position: "#9",
-                    width: '10%',
-                    filter: false,
-                    cssClass: "textRight"
-                },
-                updatedate: {
-                    title: "update date",
-                    position: "#10",
-                    width: '10%',
-                    filter: false,
-                    cssClass: "textRight"
-                },
                 data: {
                     title: "data",
                     position: "#5",
@@ -102,7 +86,7 @@
                 sort: "desc"
             },
             direction: "rtl",
-            paging: [10, 20, 30],
+            paging: 10,
             culture: {
                 deviceId: 2,
                 template: "template2",
@@ -117,7 +101,7 @@
             },
             // information: false,
             firstAndLastBtn: false,
-            pageCount: 5,
+            pageCount: 3,
         };
     </script>
 </body>

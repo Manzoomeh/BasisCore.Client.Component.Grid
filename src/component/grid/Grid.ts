@@ -6,7 +6,7 @@ import {
   SignalSourceCallback,
   IGridCardInfo,
 } from "../../type-alias";
-// import template1Layout from "./../../asset/layout-template1.html";
+import showFilterLayout from "./../../asset/layout-showFilter.html";
 import "./../../asset/style.css";
 import "./../../asset/style-desktop.css";
 import "./../../asset/style-mobile.css";
@@ -20,9 +20,9 @@ import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 import Item from "./Item";
 import Card from "./Card";
-// import { IBCUtil } from "basiscore";
+import { IBCUtil } from "basiscore";
 
-// declare const $bc:IBCUtil;
+declare const $bc:IBCUtil;
 export default class Grid implements IGrid {
   private readonly _container: HTMLElement;
   private _table: HTMLElement;
@@ -200,8 +200,17 @@ export default class Grid implements IGrid {
         }
       });
       filter.appendChild(label);
+    } else if (this.options.filter == "row") {
+      const copyShowFilterLayout = showFilterLayout;
+      const showFilter = $bc.util.toHTMLElement(copyShowFilterLayout) as HTMLDivElement;
+      gridHeaderContainer.appendChild(showFilter);
+      const showFilterBtn = showFilter.querySelector("[data-bc-filter-btn]");
+      showFilterBtn.addEventListener("click", (_) => {
+        showFilterBtn.classList.toggle("active");
+        showFilter.classList.toggle("active");
+      });
     }
-    
+  
     this._container.appendChild(gridHeaderContainer);
 
     if (this.options.refresh) {
@@ -298,10 +307,10 @@ export default class Grid implements IGrid {
       gridFooterContainer.appendChild(this._informationContainer);
     }
 
-    this.createTemplate1();
+    this.createTemplate();
   }
 
-  private createTemplate1(): void {
+  private createTemplate(): void {
     if (this.options.columns) {
       Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
         var value = this.options.columns[property];
@@ -337,26 +346,64 @@ export default class Grid implements IGrid {
       this._body.appendChild(clr);
 
       this.columnsInitialized = true;
-      // this.addTableRowFilterPart();
+      this.addTemplateRowFilterPart();
     }
   }
 
-  // private createTemplate1Item(columnInfo: IGridColumnInfo): HTMLDivElement {
-  //   const copytemplate1Layout = template1Layout;
-  //   const item = $bc.util.toHTMLElement(copytemplate1Layout) as HTMLDivElement;
-
-  //   this.fillTemplate1Item(columnInfo, item);
-
-  //   return item;
-  // }
-
-  // private fillTemplate1Item(columnInfo: IGridColumnInfo, itemContainer: HTMLDivElement) {
-  //   if (columnInfo.position) {
-  //     const container = (itemContainer.querySelector(`[data-position="${columnInfo.position}"]`) as HTMLElement);
-  //     container.innerHTML = "";
-
-  //   }
-  // }
+  private addTemplateRowFilterPart() {
+    if (this.options.filter === "row") {
+      const filterItemsWrapper = this._container.querySelector("[data-bc-grid-header-container]").querySelector("[data-bc-filter-items]");
+      filterItemsWrapper.innerHTML = "";
+      this.columns.forEach((columnInfo) => {
+        if (columnInfo.filter) {
+          const li = document.createElement("li");
+          li.setAttribute("data-bc-no-selection", "");
+          li.setAttribute("data-bc-filter-item", "");
+          li.setAttribute("data-sys-tr", "");
+          li.innerHTML = "";
+  
+          const input = document.createElement("input");
+          input.setAttribute("type", "text");
+          input.setAttribute("data-sys-input-text", "");
+          input.setAttribute("placeholder", columnInfo.title);
+          input.addEventListener("keyup", (_) => {
+            const newFilter = input.value.toLowerCase();
+            let mustUpdate = false;
+            if (newFilter.length > 0) {
+              if (!this.processManager.filter) {
+                this.processManager.filter = {};
+              }
+              if (newFilter != this.processManager.filter[columnInfo.name]) {
+                this.processManager.filter[columnInfo.name] = newFilter;
+                mustUpdate = true;
+              }
+            } else {
+              if (
+                typeof this.processManager.filter[columnInfo.name] !==
+                "undefined"
+              ) {
+                delete this.processManager.filter[columnInfo.name];
+                mustUpdate = true;
+              }
+            }
+            if (mustUpdate) {
+              this.processManager.applyUserAction();
+            }
+          });
+          li.appendChild(input);
+          // this._head.appendChild(tr);
+          filterItemsWrapper.appendChild(li);
+        }
+      });
+      if (filterItemsWrapper.innerHTML == "") {
+        filterItemsWrapper.remove();
+      }
+      const gridHeaderContainer = this._container.querySelector("[data-bc-grid-header-container]");
+      if (gridHeaderContainer.innerHTML == "") {
+        gridHeaderContainer.remove();
+      }
+    }
+  }
 
   private createUI(): void {
     this.columns = [];

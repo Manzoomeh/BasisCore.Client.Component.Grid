@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.basiscore.net/basispanel.ir/_js/basiscore-2.15.2.js?v=8"></script>
+  <title>Grid Command - With Config</title>
+  <script>
+    const host = {
+      repositories: {
+        "grid.grid": "/basiscore.grid.component.js",
+      },
+      "settings": {
+	 
+	  "default.binding.regex":"\\{##([^#]*)##\\}"
+	}
+    };
+  </script>
+</head>
+
+<body>
+  <button id="btn">Reload</button>
+  {##db.run.value|(false)##}
+      
+  <Basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" ResetSourceId="db.run" options="options"  triggers="db.run"  if="{##db.run.value|(false)##}">
+  </Basis>
+  <basis core="callback" run="atclient" triggers="sample.data"></basis>
+  <script>
+    const MIN_ID = 1000;
+    const MAX_ID = 1200;
+    const MIN_COUNT = 10;
+
+    const dataList = [];
+    for (let index = MIN_ID; index < MAX_ID; index++) {
+      const data = {
+        id: index,
+        count: Math.floor(Math.random() * 80) + MIN_COUNT,
+        data: Math.random().toString(36).substring(7),
+      };
+      dataList.push(data);
+    }
+
+    function setSource() {
+      $bc.setSource("sample.data", dataList);
+    }
+
+    document.getElementById("btn").addEventListener("click", (e) => {
+      setSource();
+    });
+
+    setSource();
+
+    const options = {
+      paging: 10
+      
+    };
+    setHandler()
+    function setHandler(){
+      setTimeout( e=> {
+        $bc.setSource("db.run", true)
+        
+      },4000)
+    }
+    
+  </script>
+</body>
+
+</html>

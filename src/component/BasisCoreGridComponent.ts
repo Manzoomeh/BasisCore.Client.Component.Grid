@@ -11,17 +11,33 @@ export default class BasisCoreGridComponent implements IComponentManager {
   private grid: Grid;
   private container: HTMLDivElement;
   private sourceId: SourceId = null;
+  private resetSourceId: SourceId = null;
 
   constructor(owner: IUserDefineComponent) {
     this.owner = owner;
-    this.owner.priority = Priority.none;
+    // this.owner.priority = Priority.none;
   }
 
+
   public async initializeAsync(): Promise<void> {
-    const sourceId = await this.owner.getAttributeValueAsync("DataMemberName");
     this.container = document.createElement("div");
     this.owner.setContent(this.container);
+    const sourceId = await this.owner.getAttributeValueAsync("DataMemberName");
+    if (sourceId) {
+      this.sourceId = sourceId.toLowerCase();
+      this.owner.addTrigger([this.sourceId]);
+    }
+    const resetSourceId = await this.owner.getAttributeValueAsync(
+      "ResetSourceId"
+    );
+    if (resetSourceId) {
+      this.resetSourceId = resetSourceId.toLowerCase();
+      this.owner.addTrigger([this.resetSourceId]);
+      
+    }
+  }
 
+  private async initGridAsync(): Promise<void> {
     const optionName = await this.owner.getAttributeValueAsync("options");
     const optionUrl = await this.owner.getAttributeValueAsync("optionsUrl");
     let option: IGridOptions = null;
@@ -50,25 +66,43 @@ export default class BasisCoreGridComponent implements IComponentManager {
         );
       }
     };
+    this.container.innerHTML = "";
     this.grid = new Grid(
       this.container,
       option,
       refreshCallback,
       selectionChangeCallback
     );
-    if (sourceId) {
-      this.sourceId = sourceId.toLowerCase();
-      this.owner.addTrigger([this.sourceId]);
+  }
+
+  private async displayDataIfExistsAsync(): Promise<void> {
+    if (this.sourceId) {
       const source = this.owner.tryToGetSource(this.sourceId);
       if (source) {
-        this.grid.setSource(source.rows, source.extra);
+        await this.runAsync(source);
       }
     }
   }
 
-  public runAsync(source?: ISource): boolean {
-    if (source?.id === this.sourceId) {
-      this.grid.setSource(source.rows, source.extra);
+
+
+
+  public async runAsync(source?: ISource): Promise<boolean> {
+    if (source?.id == this.resetSourceId) {
+      this.grid = null;
+      await this.displayDataIfExistsAsync();
+    } else {
+      if (this.grid == null) {
+        await this.initGridAsync();
+      }
+      if (source?.id === this.sourceId) {
+        this.grid.setSource(source.rows, source.extra);
+      } else if (
+        source == null ||
+        (this.owner.triggers && this.owner.triggers.indexOf(source.id) >= 0)
+      ) {
+        await this.displayDataIfExistsAsync();
+      }
     }
     return true;
   }

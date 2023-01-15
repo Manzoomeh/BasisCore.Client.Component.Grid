@@ -8,7 +8,7 @@ import { IGridOptions } from "./grid/IOptions";
 
 export default class BasisCoreGridComponent implements IComponentManager {
   readonly owner: IUserDefineComponent;
-  private grid: Grid;
+  private grid: Grid = null;
   private container: HTMLDivElement;
   private sourceId: SourceId = null;
   private resetSourceId: SourceId = null;

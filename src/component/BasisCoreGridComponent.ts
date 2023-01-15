@@ -15,7 +15,6 @@ export default class BasisCoreGridComponent implements IComponentManager {
 
   constructor(owner: IUserDefineComponent) {
     this.owner = owner;
-    // this.owner.priority = Priority.none;
   }
 
 
@@ -33,7 +32,6 @@ export default class BasisCoreGridComponent implements IComponentManager {
     if (resetSourceId) {
       this.resetSourceId = resetSourceId.toLowerCase();
       this.owner.addTrigger([this.resetSourceId]);
-      
     }
   }
 
@@ -83,9 +81,6 @@ export default class BasisCoreGridComponent implements IComponentManager {
       }
     }
   }
-
-
-
 
   public async runAsync(source?: ISource): Promise<boolean> {
     if (source?.id == this.resetSourceId) {

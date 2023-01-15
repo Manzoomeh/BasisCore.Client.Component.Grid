@@ -71,10 +71,11 @@
     font-size: 12px;
     box-sizing: border-box;
     color: #555;
-    background: #f5f8f9;
-    border: 1px solid #c7d6db;
-    border-radius: 3px;
+    background: #ffffff !important;
+    border: 1px solid #fff !important;
+    border-radius: 5px;
     transition: border 0.3s linear 0s;
+    /* height: 35px; */
 }
 
 [data-bc-grid="d1"] [data-bc-filter] input[type="text"]:focus,
@@ -116,22 +117,25 @@
 }
 
 [data-bc-grid="d1"] table[data-bc-table] thead input[type="text"] {
-    width: 100% !important;
+    width: 80% !important;
     margin: 0 !important;
     text-align: center;
 }
 
 [data-bc-grid="d1"] table[data-bc-table] thead td {
     /* background-color: #DBE8F1; */
-    text-align: center;
+    text-align: right;
     padding: 10px 10px;
     font-size: 13px;
     /* border-left: 1px solid #f8f9fa; */
     /* border-right: 1px solid #f8f9fa; */
     color: #004B85;
     font-weight: bold;
+    /* padding-top: 0; */
 }
-
+[data-bc-filter] [data-sys-th]{
+    padding-top: 0 !important;
+}
 [data-bc-grid="d1"] table[data-bc-table] thead td:first-child,
 [data-bc-grid="d1"] table[data-bc-table] thead td:last-child {
     border: none;

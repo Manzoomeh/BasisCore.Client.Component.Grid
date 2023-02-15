@@ -74,6 +74,7 @@ export default class Grid implements IGrid {
           template: "template1",
           labels: {
             search: "Search :",
+            searchPlaceholder: "",
             pageSize: "Page Size :",
             next: "Next",
             previous: "Previous",
@@ -191,6 +192,9 @@ export default class Grid implements IGrid {
       const input = document.createElement("input");
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
+      if (this.options.culture.labels.searchPlaceholder != "") {
+        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+      }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
         const newFilter = input.value.toLowerCase();
@@ -470,6 +474,9 @@ export default class Grid implements IGrid {
       const input = document.createElement("input");
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
+      if (this.options.culture.labels.searchPlaceholder != "") {
+        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+      }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
         const newFilter = input.value.toLowerCase();
@@ -769,6 +776,9 @@ export default class Grid implements IGrid {
       const input = document.createElement("input");
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
+      if (this.options.culture.labels.searchPlaceholder != "") {
+        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+      }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
         const newFilter = input.value.toLowerCase();

@@ -66,6 +66,7 @@ export default class Grid implements IGrid {
         loader: true,
         refresh: false,
         selectable: false,
+        selectAll: false,
         mode: "grid",
         modeButtons: false,
         cardCount: 5,
@@ -661,8 +662,16 @@ export default class Grid implements IGrid {
       col.setAttribute("width", "5%");
       colgroup.appendChild(col);
 
+      let title = "";
+      if (this.options.selectable == "multi" && this.options.selectAll) {
+        const checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        title = checkBox.outerHTML;
+      }
+
       const columnInfo: IGridColumnInfo = {
-        title: "",
+        title: title,
+        selectable: this.options.selectAll === true ? true : false,
         source: null,
         name: null,
         type: ColumnType.select,
@@ -981,6 +990,28 @@ export default class Grid implements IGrid {
     td.setAttribute("data-sys-th", "");
     // td.appendChild(document.createTextNode(columnInfo.title));
     td.innerHTML = columnInfo.title;
+    if (this.options.selectable == "multi" && columnInfo.selectable) {
+      td.setAttribute("data-bc-select-all", "");
+      const checkbox = td.querySelector('input[type="checkbox"]');
+
+      checkbox.addEventListener("change", (e) => {
+        e.preventDefault();
+        const tdSelects = this._container.querySelector("[data-bc-table-container] tbody").querySelectorAll("[data-bc-select]");
+        if ((checkbox as HTMLInputElement).checked) {
+          tdSelects.forEach(td => {
+            td.querySelector('input[type="checkbox"]').setAttribute("checked", "");
+            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = true;
+          });
+        } else {
+          tdSelects.forEach(td => {
+            td.querySelector('input[type="checkbox"]').removeAttribute("checked");
+            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = false;
+          });
+        }
+       
+        this.onSelectionChange();
+      });
+    }
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       td.setAttribute("data-bc-sorting", "");
       td.addEventListener("click", (_) => {
@@ -1235,5 +1266,13 @@ export default class Grid implements IGrid {
       .filter((x) => x.selected)
       .map((x) => x.data);
     this._selectionChangeCallback(selectedRows);
+  }
+
+  public resetSelectAll() {
+    const selectAllInput = this._container.querySelector("[data-bc-table-container] thead").querySelector('[data-bc-select-all] input[type="checkbox"]');
+    if (selectAllInput) {
+      selectAllInput.removeAttribute("checked");
+      (selectAllInput as HTMLInputElement).checked = false;
+    }
   }
 }

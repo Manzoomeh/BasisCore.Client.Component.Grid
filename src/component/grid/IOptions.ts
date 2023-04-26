@@ -34,6 +34,7 @@ export type IGridOptions = {
   loader?: string | ILoaderMaker | boolean;
   refresh?: boolean;
   selectable?: boolean | SelectType;
+  selectAll?: boolean;
   selectedSourceId?: string;
   refreshSourceId?: string;
   mode?: IGridType;

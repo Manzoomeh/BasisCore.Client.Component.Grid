@@ -52,6 +52,8 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     const to = fromId + rows.length;
     const total = this.filteredData.length;
     super.displayRows(rows, from, to, total);
+
+    this.owner.resetSelectAll();
   }
 
   public updatePaging(): void {

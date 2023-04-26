@@ -33,6 +33,11 @@
     <Basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options3">
     </Basis>
   </fieldset>
+  <fieldset>
+    <legend>Multi With Select All</legend>
+    <Basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options4">
+    </Basis>
+  </fieldset>
 
   <basis core="callback" run="atclient" triggers="sample.selected1 sample.selected2"></basis>
   <script>
@@ -68,6 +73,11 @@
     const options3 = {
       selectable: "multi",
       selectedSourceId: "sample.selected2"
+    };
+    const options4 = {
+      selectable: "multi",
+      selectAll: true,
+      selectedSourceId: "sample.selected3"
     };
   </script>
 </body>

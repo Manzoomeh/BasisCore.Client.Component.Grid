@@ -11,6 +11,7 @@ export type IGridType = "grid" | "widthCard";
 
 export type IGridColumnInfo = IColumnInfo & {
   title: string;
+  selectable?: boolean;
   type: ColumnType;
   name?: string;
   position?: string;

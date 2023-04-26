@@ -52,6 +52,13 @@ export default class GridRow extends Item {
               this._checkBox.name = this._owner.id;
               this._checkBox.addEventListener("change", (e) => {
                 e.preventDefault();
+                if ((this._checkBox as HTMLInputElement).checked) {
+                  this._checkBox.setAttribute("checked", "");
+                  (this._checkBox as HTMLInputElement).checked = true;
+                } else {
+                  this._checkBox.removeAttribute("checked");
+                  (this._checkBox as HTMLInputElement).checked = false;
+                }
                 this._owner.onSelectionChange();
               });
               td.appendChild(this._checkBox);

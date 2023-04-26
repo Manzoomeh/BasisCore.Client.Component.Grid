@@ -133,17 +133,22 @@
     font-weight: bold;
     /* padding-top: 0; */
 }
-[data-bc-filter] [data-sys-th]{
+
+[data-bc-filter] [data-sys-th] {
     padding-top: 0 !important;
 }
+
 [data-bc-grid="d1"] table[data-bc-table] thead td:first-child,
 [data-bc-grid="d1"] table[data-bc-table] thead td:last-child {
     border: none;
 }
 
-
 [data-bc-grid="d1"] table[data-bc-table] thead td * {
     color: #004B85;
+}
+
+[data-bc-grid="d1"] table[data-bc-table] thead td[data-bc-select-all] {
+    text-align: center;
 }
 
 /* [data-bc-grid="d1"] table[data-bc-table] thead tr:first-child td:first-child {

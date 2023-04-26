@@ -5,4 +5,5 @@ export default interface IGrid {
   options: IGridOptions;
   displayRows(rows: GridRow[], from: number, to: number, total: number): void;
   tryLoadData(): void;
+  resetSelectAll();
 }

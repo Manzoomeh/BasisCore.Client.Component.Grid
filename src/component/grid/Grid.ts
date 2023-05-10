@@ -201,6 +201,7 @@ export default class Grid implements IGrid {
         const newFilter = input.value.toLowerCase();
         if (this.processManager.filter != newFilter) {
           this.processManager.filter = newFilter;
+          this.processManager.pageNumber = 0;
           this.processManager.applyUserAction();
         }
       });
@@ -392,6 +393,7 @@ export default class Grid implements IGrid {
               }
             }
             if (mustUpdate) {
+              this.processManager.pageNumber = 0;
               this.processManager.applyUserAction();
             }
           });
@@ -483,6 +485,7 @@ export default class Grid implements IGrid {
         const newFilter = input.value.toLowerCase();
         if (this.processManager.filter != newFilter) {
           this.processManager.filter = newFilter;
+          this.processManager.pageNumber = 0;
           this.processManager.applyUserAction();
         }
       });
@@ -622,6 +625,7 @@ export default class Grid implements IGrid {
               }
             }
             if (mustUpdate) {
+              this.processManager.pageNumber = 0;
               this.processManager.applyUserAction();
             }
           });
@@ -793,6 +797,7 @@ export default class Grid implements IGrid {
         const newFilter = input.value.toLowerCase();
         if (this.processManager.filter != newFilter) {
           this.processManager.filter = newFilter;
+          this.processManager.pageNumber = 0;
           this.processManager.applyUserAction();
         }
       });
@@ -974,6 +979,7 @@ export default class Grid implements IGrid {
               }
             }
             if (mustUpdate) {
+              this.processManager.pageNumber = 0;
               this.processManager.applyUserAction();
             }
           });

@@ -648,19 +648,6 @@ export default class Grid implements IGrid {
     tr.setAttribute("data-sys-tr", "");
     tr.innerHTML = "";
     this._head.appendChild(tr);
-    if (this.options.rowNumber) {
-      const col = document.createElement("col");
-      col.setAttribute("width", "5%");
-      colgroup.appendChild(col);
-
-      const columnInfo: IGridColumnInfo = {
-        title: this.options.rowNumber,
-        source: null,
-        name: null,
-        type: ColumnType.sort,
-      };
-      tr.appendChild(this.createColumn(columnInfo));
-    }
     if (this.options.selectable) {
       const col = document.createElement("col");
       col.setAttribute("width", "5%");
@@ -679,6 +666,19 @@ export default class Grid implements IGrid {
         source: null,
         name: null,
         type: ColumnType.select,
+      };
+      tr.appendChild(this.createColumn(columnInfo));
+    }
+    if (this.options.rowNumber) {
+      const col = document.createElement("col");
+      col.setAttribute("width", "5%");
+      colgroup.appendChild(col);
+
+      const columnInfo: IGridColumnInfo = {
+        title: this.options.rowNumber,
+        source: null,
+        name: null,
+        type: ColumnType.sort,
       };
       tr.appendChild(this.createColumn(columnInfo));
     }

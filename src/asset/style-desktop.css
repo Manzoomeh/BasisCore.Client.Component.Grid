@@ -202,6 +202,7 @@
 [data-bc-grid="d1"] table[data-bc-table] tbody td {
     text-align: center;
     padding: 5px 10px;
+    word-break: break-word;
 }
 
 [data-bc-grid="d1"] table[data-bc-table] tbody td[data-bc-no-data] {

@@ -22,7 +22,7 @@ import Item from "./Item";
 import Card from "./Card";
 import { IBCUtil } from "basiscore";
 
-declare const $bc:IBCUtil;
+declare const $bc: IBCUtil;
 export default class Grid implements IGrid {
   private readonly _container: HTMLElement;
   private _table: HTMLElement;
@@ -40,6 +40,7 @@ export default class Grid implements IGrid {
   private processManager: IGridProcessManager;
   public columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
   public cards: IGridCardInfo[] = new Array<IGridCardInfo>();
+  public newRow: boolean;
   private readonly _informationFormatter: (
     from: number,
     to: number,
@@ -114,12 +115,19 @@ export default class Grid implements IGrid {
     if (optionDeviceId) {
       if (typeof optionDeviceId == "string") {
         const devicesList = require("../../devicesList.json");
-        const deviceId = devicesList.find(ex => ex.title.toLowerCase() === optionDeviceId.toString().toLowerCase());
-        this.deviceId = deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
+        const deviceId = devicesList.find(
+          (ex) =>
+            ex.title.toLowerCase() === optionDeviceId.toString().toLowerCase()
+        );
+        this.deviceId =
+          deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
       } else if (typeof optionDeviceId == "number") {
         const devicesList = require("../../devicesList.json");
-        const deviceId = devicesList.find(ex => ex.deviceId === optionDeviceId);
-        this.deviceId = deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
+        const deviceId = devicesList.find(
+          (ex) => ex.deviceId === optionDeviceId
+        );
+        this.deviceId =
+          deviceId?.deviceId ?? Grid.getDefaults().culture.deviceId;
       }
     } else {
       this.deviceId = Grid.getDefaults().culture.deviceId;
@@ -147,7 +155,7 @@ export default class Grid implements IGrid {
       }
     } else if (this.options.mode == "widthCard") {
       this.createUIWidthCard();
-      this._container.setAttribute("data-bc-widthcard-mode","")
+      this._container.setAttribute("data-bc-widthcard-mode", "");
     }
   }
 
@@ -163,7 +171,7 @@ export default class Grid implements IGrid {
     this._body.setAttribute("data-sys-grid-border-color", "");
     this._tableContainer = document.createElement("div");
     this._tableContainer.setAttribute("data-bc-table-container", "");
-    
+
     if (typeof this.options.loader === "function") {
       this._loaderContainer = document.createElement("div");
       this._loaderContainer.setAttribute("data-bc-loader-container", "");
@@ -173,14 +181,17 @@ export default class Grid implements IGrid {
 
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute(
+        "data-bc-information-container",
+        ""
+      );
       this._informationContainer.setAttribute("data-sys-text-colorful", "");
     }
 
     const gridHeaderContainer = document.createElement("div");
     gridHeaderContainer.setAttribute("data-bc-grid-header-container", "");
     gridHeaderContainer.setAttribute("data-sys-grid-border-color", "");
-    
+
     if (this.options.filter == "simple") {
       const filter = document.createElement("div");
       filter.setAttribute("data-bc-filter-container", "");
@@ -194,7 +205,10 @@ export default class Grid implements IGrid {
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
       if (this.options.culture.labels.searchPlaceholder != "") {
-        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+        input.setAttribute(
+          "placeholder",
+          this.options.culture.labels.searchPlaceholder
+        );
       }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
@@ -208,7 +222,9 @@ export default class Grid implements IGrid {
       filter.appendChild(label);
     } else if (this.options.filter == "row") {
       const copyShowFilterLayout = showFilterLayout;
-      const showFilter = $bc.util.toHTMLElement(copyShowFilterLayout) as HTMLDivElement;
+      const showFilter = $bc.util.toHTMLElement(
+        copyShowFilterLayout
+      ) as HTMLDivElement;
       gridHeaderContainer.appendChild(showFilter);
       const showFilterBtn = showFilter.querySelector("[data-bc-filter-btn]");
       showFilterBtn.addEventListener("click", (_) => {
@@ -216,7 +232,7 @@ export default class Grid implements IGrid {
         showFilter.classList.toggle("active");
       });
     }
-  
+
     this._container.appendChild(gridHeaderContainer);
 
     if (this.options.refresh) {
@@ -257,7 +273,6 @@ export default class Grid implements IGrid {
       gridFooterContainer.appendChild(pagingContainer);
 
       this._container.appendChild(gridFooterContainer);
-
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(
@@ -358,7 +373,9 @@ export default class Grid implements IGrid {
 
   private addTemplateRowFilterPart() {
     if (this.options.filter === "row") {
-      const filterItemsWrapper = this._container.querySelector("[data-bc-grid-header-container]").querySelector("[data-bc-filter-items]");
+      const filterItemsWrapper = this._container
+        .querySelector("[data-bc-grid-header-container]")
+        .querySelector("[data-bc-filter-items]");
       filterItemsWrapper.innerHTML = "";
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
@@ -367,7 +384,7 @@ export default class Grid implements IGrid {
           li.setAttribute("data-bc-filter-item", "");
           li.setAttribute("data-sys-tr", "");
           li.innerHTML = "";
-  
+
           const input = document.createElement("input");
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
@@ -405,7 +422,9 @@ export default class Grid implements IGrid {
       if (filterItemsWrapper.innerHTML == "") {
         filterItemsWrapper.remove();
       }
-      const gridHeaderContainer = this._container.querySelector("[data-bc-grid-header-container]");
+      const gridHeaderContainer = this._container.querySelector(
+        "[data-bc-grid-header-container]"
+      );
       if (gridHeaderContainer.innerHTML == "") {
         gridHeaderContainer.remove();
       }
@@ -431,7 +450,10 @@ export default class Grid implements IGrid {
     this._tableContainer.appendChild(this._table);
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute(
+        "data-bc-information-container",
+        ""
+      );
       this._informationContainer.setAttribute("data-sys-text-colorful", "");
     }
     const modes = document.createElement("div");
@@ -453,7 +475,7 @@ export default class Grid implements IGrid {
       this._container.innerHTML = "";
       this._head.innerHTML = "";
       this._body.innerHTML = "";
-      this._container.setAttribute("data-bc-widthcard-mode","")
+      this._container.setAttribute("data-bc-widthcard-mode", "");
       this.createUIWidthCard();
       this.setSource(this._rows);
     });
@@ -478,7 +500,10 @@ export default class Grid implements IGrid {
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
       if (this.options.culture.labels.searchPlaceholder != "") {
-        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+        input.setAttribute(
+          "placeholder",
+          this.options.culture.labels.searchPlaceholder
+        );
       }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
@@ -740,7 +765,10 @@ export default class Grid implements IGrid {
     this._tableContainer.appendChild(this._table);
     if (this.options.information) {
       this._informationContainer = document.createElement("div");
-      this._informationContainer.setAttribute("data-bc-information-container", "");
+      this._informationContainer.setAttribute(
+        "data-bc-information-container",
+        ""
+      );
       this._informationContainer.setAttribute("data-sys-text-colorful", "");
     }
     const modes = document.createElement("div");
@@ -773,6 +801,7 @@ export default class Grid implements IGrid {
       this._body.innerHTML = "";
       // this._container.removeAttribute("data-bc-widthcard-mode")
       this.createUI();
+
       this.setSource(this._rows);
     });
     if (this.options.filter == "simple") {
@@ -790,7 +819,10 @@ export default class Grid implements IGrid {
       input.setAttribute("type", "text");
       input.setAttribute("data-sys-input-text", "");
       if (this.options.culture.labels.searchPlaceholder != "") {
-        input.setAttribute("placeholder", this.options.culture.labels.searchPlaceholder);
+        input.setAttribute(
+          "placeholder",
+          this.options.culture.labels.searchPlaceholder
+        );
       }
       label.appendChild(input);
       input.addEventListener("keyup", (_) => {
@@ -920,7 +952,6 @@ export default class Grid implements IGrid {
             type: ColumnType.data,
             filter: true,
           };
-   
         } else {
           columnInfo = {
             ...{
@@ -1002,19 +1033,30 @@ export default class Grid implements IGrid {
 
       checkbox.addEventListener("change", (e) => {
         e.preventDefault();
-        const tdSelects = this._container.querySelector("[data-bc-table-container] tbody").querySelectorAll("[data-bc-select]");
+        const tdSelects = this._container
+          .querySelector("[data-bc-table-container] tbody")
+          .querySelectorAll("[data-bc-select]");
         if ((checkbox as HTMLInputElement).checked) {
-          tdSelects.forEach(td => {
-            td.querySelector('input[type="checkbox"]').setAttribute("checked", "");
-            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = true;
+          tdSelects.forEach((td) => {
+            td.querySelector('input[type="checkbox"]').setAttribute(
+              "checked",
+              ""
+            );
+            (
+              td.querySelector('input[type="checkbox"]') as HTMLInputElement
+            ).checked = true;
           });
         } else {
-          tdSelects.forEach(td => {
-            td.querySelector('input[type="checkbox"]').removeAttribute("checked");
-            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = false;
+          tdSelects.forEach((td) => {
+            td.querySelector('input[type="checkbox"]').removeAttribute(
+              "checked"
+            );
+            (
+              td.querySelector('input[type="checkbox"]') as HTMLInputElement
+            ).checked = false;
           });
         }
-       
+
         this.onSelectionChange();
       });
     }
@@ -1085,7 +1127,6 @@ export default class Grid implements IGrid {
           sort: sortType,
         };
         td.setAttribute("data-bc-sorting", sortType);
-        this.processManager.applyUserAction();
       });
       if (this.options.defaultSort) {
         let sortType: ISortType = null;
@@ -1156,6 +1197,144 @@ export default class Grid implements IGrid {
     this._body.innerHTML = "";
     if (rows?.length > 0) {
       rows?.forEach((row) => this._body.appendChild(row.uiElement));
+      if (this.options.editMode) {
+        if (this.deviceId == 1) {
+          const newRowElement = document.createElement("tr");
+          let addedColumns = 0;
+          this.columns.map((col) => {
+            const td = document.createElement("td");
+
+            const found = this.options.editMode.columns.find(
+              (i) => i.key === col.title
+            );
+            if (found) {
+              const input = document.createElement("input");
+              input.setAttribute(
+                "required",
+                found.type === "1" ? "true" : "false"
+              );
+              input.setAttribute("key", found.key);
+              input.setAttribute("data-bc-grid-input", "");
+              input.addEventListener("input", (e) => {
+                if ((e.target as HTMLInputElement).value) {
+                  input.removeAttribute("data-bc-grid-input-error");
+                }
+              });
+              addedColumns++;
+              if (addedColumns == this.options.editMode.columns.length) {
+                input.addEventListener("keydown", (e) => {
+                  let isValid = true;
+                  if (e.keyCode == 9) {
+                    e.preventDefault();
+                    const elements = document.querySelectorAll(
+                      "[data-bc-grid-input]"
+                    );
+
+                    const d = {};
+                    elements?.forEach((el: HTMLInputElement) => {
+                      const attrs = el.attributes;
+                      const required = attrs.getNamedItem("required").value;
+                      const key = attrs.getNamedItem("key").value;
+                      if (required == "true" && !el.value) {
+                        isValid = false;
+                        el.setAttribute("data-bc-grid-input-error", "");
+                      }
+
+                      d[key] = el.value;
+                    });
+                    if (isValid) {
+                      this.columns.map((c) => {
+                        if (!Object.keys(d).includes(c.title)) {
+                          d[c.title] = "";
+                        }
+                      });
+                      //@ts-ignore
+                      $bc.setSource(this.options.editMode.newRowsSourceId, {
+                        run: true,
+                        body: JSON.stringify(d),
+                      });
+                      this.source.splice(rows[rows.length - 1].order - 1, 0, d);
+                      const temp = this.source;
+                      this.setSource(temp, { from: from, total: total + 1 });
+                    }
+                  }
+                });
+              }
+              td.appendChild(input);
+            }
+            newRowElement.appendChild(td);
+          });
+          this._body.appendChild(newRowElement);
+        }
+        if (this.deviceId == 2) {
+          const container = document.createElement("div");
+          container.setAttribute("data-bc-inputs-container", "");
+          let addedColumns = 0;
+
+          this.options.editMode.columns.map((i) => {
+            addedColumns++;
+
+            const inputRow = document.createElement("div");
+            inputRow.setAttribute("data-bc-input-row", "");
+            const title = document.createElement("div");
+            title.setAttribute("data-bc-input-title", "");
+
+            title.innerText = i.key;
+            const input = document.createElement("input");
+            input.setAttribute("required", i.type === "1" ? "true" : "false");
+            input.setAttribute("key", i.key);
+            input.setAttribute("data-bc-grid-input", "");
+            input.addEventListener("input", (e) => {
+              if ((e.target as HTMLInputElement).value) {
+                input.removeAttribute("data-bc-grid-input-error");
+              }
+            });
+            if (this.options.editMode.columns.length === addedColumns) {
+              input.addEventListener("keydown", (e) => {
+                let isValid = true;
+                if (e.keyCode == 9) {
+                  e.preventDefault();
+                  const elements = document.querySelectorAll(
+                    "[data-bc-grid-input]"
+                  );
+
+                  const d = {};
+                  elements?.forEach((el: HTMLInputElement) => {
+                    const attrs = el.attributes;
+                    const required = attrs.getNamedItem("required").value;
+                    const key = attrs.getNamedItem("key").value;
+                    if (required == "true" && !el.value) {
+                      isValid = false;
+                      el.setAttribute("data-bc-grid-input-error", "");
+                    }
+
+                    d[key] = el.value;
+                  });
+                  if (isValid) {
+                    this.columns.map((c) => {
+                      if (!Object.keys(d).includes(c.name)) {
+                        d[c.name] = "";
+                      }
+                    });
+                    //@ts-ignore
+                    $bc.setSource(this.options.editMode.newRowsSourceId, {
+                      run: true,
+                      body: JSON.stringify(d),
+                    });
+                    this.source.splice(rows[rows.length - 1].order - 1, 0, d);
+                    const temp = this.source;
+                    this.setSource(temp, { from: from, total: total + 1 });
+                  }
+                }
+              });
+            }
+            inputRow.appendChild(input);
+            inputRow.appendChild(title);
+            container.appendChild(inputRow);
+          });
+          this._body.appendChild(container);
+        }
+      }
       if (this.deviceId == 2) {
         const clr = document.createElement("div");
         clr.setAttribute("class", "clr");
@@ -1275,7 +1454,9 @@ export default class Grid implements IGrid {
   }
 
   public resetSelectAll() {
-    const selectAllInput = this._container.querySelector("[data-bc-table-container] thead").querySelector('[data-bc-select-all] input[type="checkbox"]');
+    const selectAllInput = this._container
+      .querySelector("[data-bc-table-container]")
+      .querySelector('[data-bc-select-all] input[type="checkbox"]');
     if (selectAllInput) {
       selectAllInput.removeAttribute("checked");
       (selectAllInput as HTMLInputElement).checked = false;

@@ -21,26 +21,50 @@
       core="component.grid.grid"
       run="atclient"
       dataMemberName="sample.data"
+      options="options"
     >
     </Basis>
+    <basis
+      core="api"
+      url="http://localhost:8080/server/dbsource/save"
+      body="[##db.save.body##]"
+      triggers="db.save"
+      method="post"
+      if="[##db.save.run|(false)##]"
+      run="atclient"
+    ></basis>
     <basis core="callback" run="atclient" triggers="sample.data"></basis>
     <script>
+      const options = {
+        editMode: {
+          newRowsSourceId: "db.save",
+          columns: [
+            {
+              key: "id",
+              type: "1",
+            },
+            {
+              key: "data",
+              type: "1",
+            },
+          ],
+        },
+      };
       function setSource() {
         const MIN_ID = 1000;
         const MAX_ID = 1200;
-        const MIN_COUNT = 10;
 
         const dataList = [];
         for (let index = MIN_ID; index < MAX_ID; index++) {
           const data = {
             id: index,
-            count: Math.floor(Math.random() * 80) + MIN_COUNT,
             data: Math.random().toString(36).substring(7),
           };
           dataList.push(data);
         }
         $bc.setSource("sample.data", dataList);
       }
+
       document.getElementById("btn").addEventListener("click", (e) => {
         setSource();
       });

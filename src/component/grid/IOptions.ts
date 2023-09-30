@@ -6,6 +6,8 @@ export type HtmlDirection = "ltr" | "rtl";
 
 export type ProcessType = "server" | "client" | "mix";
 
+export type ProcessActionType = "server" | "client";
+
 export type SelectType = "none" | "single" | "multi";
 
 export type ITemplate = "template1" | "template2";
@@ -28,6 +30,11 @@ export type IGridOptions = {
   rowMaker?: IRowMakerCallback;
   direction: HtmlDirection;
   process: ProcessType;
+  ProcessActionType?: {
+    search: ProcessActionType;
+    paging: ProcessActionType;
+    sort: ProcessActionType;
+  };
   noData?: string | INoDataCallback | boolean;
   firstAndLastBtn?: boolean;
   information?: boolean;

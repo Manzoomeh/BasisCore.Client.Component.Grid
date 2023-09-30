@@ -53,6 +53,11 @@ export default class Grid implements IGrid {
       Grid._defaults = {
         filter: "simple",
         process: "client",
+        ProcessActionType: {
+          search: "server",
+          paging: "client",
+          sort: "server"
+        },
         paging: [10, 30, 50],
         defaultPagingIndex: 0,
         pageCount: 10,

@@ -187,4 +187,51 @@ router.get("/api/mix", function (req, res) {
   };
   res.send(result);
 });
+
+router.get("/api/mix2", function (req, res) {
+  console.log(req.query);
+  const clientData = JSON.parse(req.query.data);
+
+  const filter = clientData?.filter;
+
+  const rootData = filter
+    ? apiDataList.filter(
+        (x) =>
+          x.id.toString().indexOf(filter) != -1 ||
+          x.count.toString().indexOf(filter) != -1 ||
+          x.data.indexOf(filter) != -1
+      )
+    : apiDataList;
+
+  const sortInfo = clientData?.sortInfo;
+  if (sortInfo) {
+  }
+
+  const pageSize = Math.max(clientData?.pageSize ?? 10, 0);
+  const pageNumber = Math.max(clientData?.pageNumber ?? 1, 1);
+  let minId = pageSize * (pageNumber - 1);
+  if (minId >= rootData.length) {
+    minId = 0;
+  }
+  const maxId = minId + pageSize;
+  let data = rootData.filter((_, i) => i > minId && i <= maxId);
+
+  console.log({ pageSize, pageNumber, sortInfo, filter });
+  const result = {
+    sources: [
+      {
+        options: {
+          tableName: "api.demo",
+          mergeType: MergeType.replace,
+          extra: {
+            total: rootData.length,
+            from: minId,
+          },
+        },
+        data: data,
+      },
+    ],
+  };
+  res.send(result);
+});
 module.exports = router;

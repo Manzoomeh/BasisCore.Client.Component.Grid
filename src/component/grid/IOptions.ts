@@ -48,6 +48,7 @@ export type IGridOptions = {
   widthCard?: IWidthCArd;
   modeButtons?: boolean;
   cardCount?: number;
+  pagingAction?: IPagingActionCallback;
 };
 
 export type IOffsetOptions = {
@@ -88,3 +89,5 @@ export type INoDataCallback = (td: HTMLTableCellElement) => void;
 export type ILoaderMaker = () => RawHtml;
 
 export type RawHtml = string;
+
+export type IPagingActionCallback = (element: HTMLElement, pageNumber: Number) => any;

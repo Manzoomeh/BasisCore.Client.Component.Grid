@@ -84,6 +84,10 @@ export default abstract class PaginateProcessManager extends ProcessManager {
         this.pageNo.value = "";
         this.pageNumber = i;
         this.displayCurrentPage();
+
+        if (this.owner.options.pagingAction) {
+          this.owner.options.pagingAction(page, i + 1);
+        }
       });
       this.pageButtonsContainer.append(page);
     }

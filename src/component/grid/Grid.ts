@@ -170,7 +170,7 @@ export default class Grid implements IGrid {
     } else {
       this.timerId = setTimeout(() => {
         this.performAction(input);
-      }, 2000);
+      }, 1000);
     }
   }
   private handleRowInput(
@@ -205,7 +205,7 @@ export default class Grid implements IGrid {
 
         this.timerId = setTimeout(() => {
           this.processManager.applyUserAction();
-        }, 2000);
+        }, 1000);
       }
     }
   }

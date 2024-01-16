@@ -6,6 +6,8 @@ export type HtmlDirection = "ltr" | "rtl";
 
 export type ProcessType = "server" | "client" | "mix";
 
+export type ProcessActionType = "server" | "client";
+
 export type SelectType = "none" | "single" | "multi";
 
 export type ITemplate = "template1" | "template2";
@@ -29,6 +31,11 @@ export type IGridOptions = {
   rowMaker?: IRowMakerCallback;
   direction: HtmlDirection;
   process: ProcessType;
+  ProcessActionType?: {
+    search: ProcessActionType;
+    paging: ProcessActionType;
+    sort: ProcessActionType;
+  };
   noData?: string | INoDataCallback | boolean;
   firstAndLastBtn?: boolean;
   information?: boolean;
@@ -42,6 +49,7 @@ export type IGridOptions = {
   widthCard?: IWidthCArd;
   modeButtons?: boolean;
   cardCount?: number;
+  pagingAction?: IPagingActionCallback;
 };
 
 export type IOffsetOptions = {
@@ -93,3 +101,5 @@ export type INoDataCallback = (td: HTMLTableCellElement) => void;
 export type ILoaderMaker = () => RawHtml;
 
 export type RawHtml = string;
+
+export type IPagingActionCallback = (element: HTMLElement, pageNumber: Number) => any;

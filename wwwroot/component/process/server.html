@@ -1,73 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.basiscore.net/basispanel.ir/_js/basiscore-2.27.0.js"></script>
+    <title>Grid Command -Use DbSource</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="http://localhost:3000/basiscore.min.js"></script>
-  <title>Grid Command -Use DbSource</title>
+  <body>
+    <Basis
+      core="api"
+      url="/server/api/server?data=[##api.refresh_demo.urlencoded|(null)##]"
+      method="get"
+      run="atclient"
+      triggers="api.refresh_demo"
+    >
+    </Basis>
+    <Basis
+      core="component.grid.grid"
+      run="atclient"
+      dataMemberName="api.demo"
+      options="options"
+    >
+    </Basis>
+    <basis core="callback" run="atclient" triggers="api.refresh_demo"></basis>
 
-</head>
-
-<body>
-
-  <Basis core="api" url="/server/api/server?data=[##api.refresh_demo.urlencoded|(null)##]" method="get" run="atclient"
-    triggers="api.refresh_demo"> </Basis>
-  <Basis core="component.grid.grid" run="atclient" dataMemberName="api.demo" options="options">
-  </Basis>
-  <basis core="callback" run="atclient" triggers="api.refresh_demo"></basis>
-
-  <script>
-    const host = {
-      sources: {
-        "grid.paging": {
-          data: [{
-            pageSize: 10,
-            pageNumber: 3
-          }]
-        }
-
-      },
-      repositories: {
-        "grid.grid": "/basiscore.grid.component.js",
-      },
-    };
-    const options = {
-      process: "server",
-      filter: "simple",
-      columns: {
-        id: {
-          title: "Data-Id",
-          filter: false
+    <script>
+      const host = {
+        sources: {
+          "grid.paging": {
+            data: [
+              {
+                pageSize: 10,
+                pageNumber: 3,
+              },
+            ],
+          },
         },
-
-        data: {
-          title: "Data",
-          filter: true
+        repositories: {
+          "grid.grid": "/basiscore.grid.component.js",
         },
+      };
+      const options = {
+        process: "server",
+        filter: "row",
+        columns: {
+          id: {
+            title: "Data-Id",
+            filter: false,
+          },
 
-        count: "Count",
-      },
-      rowNumber: "#",
-      defaultSort: { name: "id" },
-      paging: [10, 30, 60],
-      culture: {
-        labels: {
-          "search": "Type for Search :",
-          "pageSize": "Page Size :",
-          "next": "to next",
-          "previous": "to previous",
-          "first": "to first",
-          "last": "to last"
-        }
-      },
-      pageNumber: 2,
-      refreshSourceId: "api.refresh_demo"
-      //rowMaker: (data, tr) => console.log(data, tr)
-    };
-  </script>
+          data: {
+            title: "Data",
+            filter: true,
+          },
 
-</body>
-
+          count: "Count",
+        },
+        rowNumber: "#",
+        defaultSort: { name: "id" },
+        paging: [10, 30, 60],
+        culture: {
+          labels: {
+            search: "Type for Search :",
+            pageSize: "Page Size :",
+            next: "to next",
+            previous: "to previous",
+            first: "to first",
+            last: "to last",
+          },
+        },
+        pageNumber: 2,
+        refreshSourceId: "api.refresh_demo",
+        //rowMaker: (data, tr) => console.log(data, tr)
+      };
+    </script>
+  </body>
 </html>

@@ -33,6 +33,7 @@ export default class Grid implements IGrid {
   private _tableContainer: HTMLElement;
   private _loaderContainer: HTMLElement;
   private _informationContainer: HTMLElement;
+  private timerId: NodeJS.Timeout;
   private readonly _onSignalSourceCallback: SignalSourceCallback;
   private readonly _selectionChangeCallback: SignalSourceCallback;
   static _defaults: Partial<IGridOptions>;
@@ -54,6 +55,11 @@ export default class Grid implements IGrid {
       Grid._defaults = {
         filter: "simple",
         process: "client",
+        ProcessActionType: {
+          search: "server",
+          paging: "client",
+          sort: "server",
+        },
         paging: [10, 30, 50],
         defaultPagingIndex: 0,
         pageCount: 10,
@@ -158,7 +164,61 @@ export default class Grid implements IGrid {
       this._container.setAttribute("data-bc-widthcard-mode", "");
     }
   }
+  private handleInput(input: HTMLInputElement, event: KeyboardEvent) {
+    clearTimeout(this.timerId);
+    if (event.key === "Enter" || event.keyCode === 13) {
+      this.performAction(input);
+    } else {
+      this.timerId = setTimeout(() => {
+        this.performAction(input);
+      }, 1000);
+    }
+  }
+  private handleRowInput(
+    input: HTMLInputElement,
+    columnInfo: IGridColumnInfo,
+    event: KeyboardEvent
+  ) {
+    const newFilter = input.value.toLowerCase();
+    clearTimeout(this.timerId);
+    if (event.key === "Enter" || event.keyCode === 13) {
+      this.processManager.applyUserAction();
+    } else {
+      let mustUpdate = false;
+      if (newFilter.length > 0) {
+        if (!this.processManager.filter) {
+          this.processManager.filter = {};
+        }
+        if (newFilter != this.processManager.filter[columnInfo.name]) {
+          this.processManager.filter[columnInfo.name] = newFilter;
+          mustUpdate = true;
+        }
+      } else {
+        if (
+          typeof this.processManager.filter[columnInfo.name] !== "undefined"
+        ) {
+          delete this.processManager.filter[columnInfo.name];
+          mustUpdate = true;
+        }
+      }
+      if (mustUpdate) {
+        this.processManager.pageNumber = 0;
 
+        this.timerId = setTimeout(() => {
+          this.processManager.applyUserAction();
+        }, 1000);
+      }
+    }
+  }
+
+  private performAction(input: HTMLInputElement) {
+    const newFilter = input.value.toLowerCase();
+    if (this.processManager.filter != newFilter) {
+      this.processManager.filter = newFilter;
+      this.processManager.pageNumber = 0;
+      this.processManager.applyUserAction();
+    }
+  }
   private createTemplateUI(): void {
     this.columns = [];
     this._table = document.createElement("div");
@@ -211,14 +271,10 @@ export default class Grid implements IGrid {
         );
       }
       label.appendChild(input);
-      input.addEventListener("keyup", (_) => {
-        const newFilter = input.value.toLowerCase();
-        if (this.processManager.filter != newFilter) {
-          this.processManager.filter = newFilter;
-          this.processManager.pageNumber = 0;
-          this.processManager.applyUserAction();
-        }
-      });
+
+      input.addEventListener("keyup", (event) =>
+        this.handleInput(input, event)
+      );
       filter.appendChild(label);
     } else if (this.options.filter == "row") {
       const copyShowFilterLayout = showFilterLayout;
@@ -389,30 +445,8 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
-          input.addEventListener("keyup", (_) => {
-            const newFilter = input.value.toLowerCase();
-            let mustUpdate = false;
-            if (newFilter.length > 0) {
-              if (!this.processManager.filter) {
-                this.processManager.filter = {};
-              }
-              if (newFilter != this.processManager.filter[columnInfo.name]) {
-                this.processManager.filter[columnInfo.name] = newFilter;
-                mustUpdate = true;
-              }
-            } else {
-              if (
-                typeof this.processManager.filter[columnInfo.name] !==
-                "undefined"
-              ) {
-                delete this.processManager.filter[columnInfo.name];
-                mustUpdate = true;
-              }
-            }
-            if (mustUpdate) {
-              this.processManager.pageNumber = 0;
-              this.processManager.applyUserAction();
-            }
+          input.addEventListener("keyup", (event) => {
+            this.handleRowInput(input, columnInfo, event);
           });
           li.appendChild(input);
           // this._head.appendChild(tr);
@@ -506,14 +540,9 @@ export default class Grid implements IGrid {
         );
       }
       label.appendChild(input);
-      input.addEventListener("keyup", (_) => {
-        const newFilter = input.value.toLowerCase();
-        if (this.processManager.filter != newFilter) {
-          this.processManager.filter = newFilter;
-          this.processManager.pageNumber = 0;
-          this.processManager.applyUserAction();
-        }
-      });
+      input.addEventListener("keyup", (event) =>
+        this.handleInput(input, event)
+      );
       filter.appendChild(label);
     }
     this._container.appendChild(gridHeaderContainer);
@@ -629,30 +658,8 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
-          input.addEventListener("keyup", (_) => {
-            const newFilter = input.value.toLowerCase();
-            let mustUpdate = false;
-            if (newFilter.length > 0) {
-              if (!this.processManager.filter) {
-                this.processManager.filter = {};
-              }
-              if (newFilter != this.processManager.filter[columnInfo.name]) {
-                this.processManager.filter[columnInfo.name] = newFilter;
-                mustUpdate = true;
-              }
-            } else {
-              if (
-                typeof this.processManager.filter[columnInfo.name] !==
-                "undefined"
-              ) {
-                delete this.processManager.filter[columnInfo.name];
-                mustUpdate = true;
-              }
-            }
-            if (mustUpdate) {
-              this.processManager.pageNumber = 0;
-              this.processManager.applyUserAction();
-            }
+          input.addEventListener("keyup", (event) => {
+            this.handleRowInput(input, columnInfo, event);
           });
           td.appendChild(input);
           tr.appendChild(td);
@@ -825,14 +832,9 @@ export default class Grid implements IGrid {
         );
       }
       label.appendChild(input);
-      input.addEventListener("keyup", (_) => {
-        const newFilter = input.value.toLowerCase();
-        if (this.processManager.filter != newFilter) {
-          this.processManager.filter = newFilter;
-          this.processManager.pageNumber = 0;
-          this.processManager.applyUserAction();
-        }
-      });
+      input.addEventListener("keyup", (event) =>
+        this.handleInput(input, event)
+      );
       filter.appendChild(label);
     }
     this._container.appendChild(gridHeaderContainer);
@@ -989,30 +991,8 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
-          input.addEventListener("keyup", (_) => {
-            const newFilter = input.value.toLowerCase();
-            let mustUpdate = false;
-            if (newFilter.length > 0) {
-              if (!this.processManager.filter) {
-                this.processManager.filter = {};
-              }
-              if (newFilter != this.processManager.filter[columnInfo.name]) {
-                this.processManager.filter[columnInfo.name] = newFilter;
-                mustUpdate = true;
-              }
-            } else {
-              if (
-                typeof this.processManager.filter[columnInfo.name] !==
-                "undefined"
-              ) {
-                delete this.processManager.filter[columnInfo.name];
-                mustUpdate = true;
-              }
-            }
-            if (mustUpdate) {
-              this.processManager.pageNumber = 0;
-              this.processManager.applyUserAction();
-            }
+          input.addEventListener("keyup", (event) => {
+            this.handleRowInput(input, columnInfo, event);
           });
           td.appendChild(input);
           tr.appendChild(td);
@@ -1432,13 +1412,19 @@ export default class Grid implements IGrid {
   public tryLoadData() {
     const data = {
       pageNumber: this.processManager.pageNumber + 1,
-      pageSize: this.processManager.pageSize,
       filter: this.processManager.filter,
+      pageSize: this.processManager.pageSize,
       sortInfo: {
         col: this.processManager.sortInfo?.column.name,
         type: this.processManager.sortInfo?.sort,
       },
     };
+    if (
+      typeof this.processManager.filter != "string" &&
+      Object.keys(this.processManager.filter).length == 0
+    ) {
+      delete data.filter;
+    }
     this.showUIProgress();
     this._onSignalSourceCallback({
       ...data,
@@ -1455,7 +1441,7 @@ export default class Grid implements IGrid {
 
   public resetSelectAll() {
     const selectAllInput = this._container
-      .querySelector("[data-bc-table-container]")
+      .querySelector("[data-bc-table-container] thead")
       .querySelector('[data-bc-select-all] input[type="checkbox"]');
     if (selectAllInput) {
       selectAllInput.removeAttribute("checked");

@@ -166,12 +166,15 @@ export default class Grid implements IGrid {
   }
   private handleInput(input: HTMLInputElement, event: KeyboardEvent) {
     clearTimeout(this.timerId);
-    if (event.key === "Enter" || event.keyCode === 13) {
-      this.performAction(input);
-    } else {
+    if (
+      this.options.process === "server" &&
+      !(event.key === "Enter" || event.keyCode === 13)
+    ) {
       this.timerId = setTimeout(() => {
         this.performAction(input);
       }, 1000);
+    } else {
+      this.performAction(input);
     }
   }
   private handleRowInput(
@@ -181,9 +184,10 @@ export default class Grid implements IGrid {
   ) {
     const newFilter = input.value.toLowerCase();
     clearTimeout(this.timerId);
-    if (event.key === "Enter" || event.keyCode === 13) {
-      this.processManager.applyUserAction();
-    } else {
+    if (
+      this.options.process === "server" &&
+      !(event.key === "Enter" || event.keyCode === 13)
+    ) {
       let mustUpdate = false;
       if (newFilter.length > 0) {
         if (!this.processManager.filter) {
@@ -202,12 +206,14 @@ export default class Grid implements IGrid {
         }
       }
       if (mustUpdate) {
-        this.processManager.pageNumber = 0;
-
         this.timerId = setTimeout(() => {
+          this.processManager.pageNumber = 0;
           this.processManager.applyUserAction();
         }, 1000);
       }
+    } else {
+      this.processManager.pageNumber = 0;
+      this.processManager.applyUserAction();
     }
   }
 

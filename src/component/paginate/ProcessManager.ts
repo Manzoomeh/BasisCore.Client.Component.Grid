@@ -1,6 +1,6 @@
+import { IGridOptions, IOffsetOptions } from "./../grid/IOptions";
 import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
-import { IOffsetOptions } from "../grid/IOptions";
 import { ISortInfo } from "../../type-alias";
 import IGridProcessManager from "./IGridProcessManager";
 
@@ -44,7 +44,12 @@ export default abstract class ProcessManager implements IGridProcessManager {
   public applyUserAction(): void {
     const rows = this.applyFilterAndSort();
     const total = rows?.length ?? 0;
-    const from = rows?.length > 0 ? rows[0].order : 0;
+    const from =
+      this.options && this.options.from
+        ? this.options.from
+        : rows?.length > 0
+        ? rows[0].order
+        : 0;
     const to = from + total;
     this.displayRows(rows, from, to, total);
   }

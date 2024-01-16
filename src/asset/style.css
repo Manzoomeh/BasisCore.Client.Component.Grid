@@ -8,6 +8,16 @@
   margin: 0;
   box-sizing: border-box;
   font-size: 14px;
-  color: #25213B;
+  color: #25213b;
   border-collapse: collapse;
+}
+[data-bc-grid-input] {
+  border: 3px solid rgb(39, 103, 243);
+  border-radius: 5px;
+  text-align: end;
+}
+
+[data-bc-grid-input-error] {
+  border: 3px solid rgb(238, 82, 82);
+  border-radius: 5px;
 }

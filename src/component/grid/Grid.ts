@@ -41,6 +41,7 @@ export default class Grid implements IGrid {
   private processManager: IGridProcessManager;
   public columns: IGridColumnInfo[] = new Array<IGridColumnInfo>();
   public cards: IGridCardInfo[] = new Array<IGridCardInfo>();
+  public newRow: boolean;
   private readonly _informationFormatter: (
     from: number,
     to: number,
@@ -328,7 +329,6 @@ export default class Grid implements IGrid {
       gridFooterContainer.appendChild(pagingContainer);
 
       this._container.appendChild(gridFooterContainer);
-
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(
@@ -808,6 +808,7 @@ export default class Grid implements IGrid {
       this._body.innerHTML = "";
       // this._container.removeAttribute("data-bc-widthcard-mode")
       this.createUI();
+
       this.setSource(this._rows);
     });
     if (this.options.filter == "simple") {
@@ -1106,7 +1107,6 @@ export default class Grid implements IGrid {
           sort: sortType,
         };
         td.setAttribute("data-bc-sorting", sortType);
-        this.processManager.applyUserAction();
       });
       if (this.options.defaultSort) {
         let sortType: ISortType = null;
@@ -1177,6 +1177,144 @@ export default class Grid implements IGrid {
     this._body.innerHTML = "";
     if (rows?.length > 0) {
       rows?.forEach((row) => this._body.appendChild(row.uiElement));
+      if (this.options.editMode) {
+        if (this.deviceId == 1) {
+          const newRowElement = document.createElement("tr");
+          let addedColumns = 0;
+          this.columns.map((col) => {
+            const td = document.createElement("td");
+
+            const found = this.options.editMode.columns.find(
+              (i) => i.key === col.title
+            );
+            if (found) {
+              const input = document.createElement("input");
+              input.setAttribute(
+                "required",
+                found.type === "1" ? "true" : "false"
+              );
+              input.setAttribute("key", found.key);
+              input.setAttribute("data-bc-grid-input", "");
+              input.addEventListener("input", (e) => {
+                if ((e.target as HTMLInputElement).value) {
+                  input.removeAttribute("data-bc-grid-input-error");
+                }
+              });
+              addedColumns++;
+              if (addedColumns == this.options.editMode.columns.length) {
+                input.addEventListener("keydown", (e) => {
+                  let isValid = true;
+                  if (e.keyCode == 9) {
+                    e.preventDefault();
+                    const elements = document.querySelectorAll(
+                      "[data-bc-grid-input]"
+                    );
+
+                    const d = {};
+                    elements?.forEach((el: HTMLInputElement) => {
+                      const attrs = el.attributes;
+                      const required = attrs.getNamedItem("required").value;
+                      const key = attrs.getNamedItem("key").value;
+                      if (required == "true" && !el.value) {
+                        isValid = false;
+                        el.setAttribute("data-bc-grid-input-error", "");
+                      }
+
+                      d[key] = el.value;
+                    });
+                    if (isValid) {
+                      this.columns.map((c) => {
+                        if (!Object.keys(d).includes(c.title)) {
+                          d[c.title] = "";
+                        }
+                      });
+                      //@ts-ignore
+                      $bc.setSource(this.options.editMode.newRowsSourceId, {
+                        run: true,
+                        body: JSON.stringify(d),
+                      });
+                      this.source.splice(rows[rows.length - 1].order - 1, 0, d);
+                      const temp = this.source;
+                      this.setSource(temp, { from: from, total: total + 1 });
+                    }
+                  }
+                });
+              }
+              td.appendChild(input);
+            }
+            newRowElement.appendChild(td);
+          });
+          this._body.appendChild(newRowElement);
+        }
+        if (this.deviceId == 2) {
+          const container = document.createElement("div");
+          container.setAttribute("data-bc-inputs-container", "");
+          let addedColumns = 0;
+
+          this.options.editMode.columns.map((i) => {
+            addedColumns++;
+
+            const inputRow = document.createElement("div");
+            inputRow.setAttribute("data-bc-input-row", "");
+            const title = document.createElement("div");
+            title.setAttribute("data-bc-input-title", "");
+
+            title.innerText = i.key;
+            const input = document.createElement("input");
+            input.setAttribute("required", i.type === "1" ? "true" : "false");
+            input.setAttribute("key", i.key);
+            input.setAttribute("data-bc-grid-input", "");
+            input.addEventListener("input", (e) => {
+              if ((e.target as HTMLInputElement).value) {
+                input.removeAttribute("data-bc-grid-input-error");
+              }
+            });
+            if (this.options.editMode.columns.length === addedColumns) {
+              input.addEventListener("keydown", (e) => {
+                let isValid = true;
+                if (e.keyCode == 9) {
+                  e.preventDefault();
+                  const elements = document.querySelectorAll(
+                    "[data-bc-grid-input]"
+                  );
+
+                  const d = {};
+                  elements?.forEach((el: HTMLInputElement) => {
+                    const attrs = el.attributes;
+                    const required = attrs.getNamedItem("required").value;
+                    const key = attrs.getNamedItem("key").value;
+                    if (required == "true" && !el.value) {
+                      isValid = false;
+                      el.setAttribute("data-bc-grid-input-error", "");
+                    }
+
+                    d[key] = el.value;
+                  });
+                  if (isValid) {
+                    this.columns.map((c) => {
+                      if (!Object.keys(d).includes(c.name)) {
+                        d[c.name] = "";
+                      }
+                    });
+                    //@ts-ignore
+                    $bc.setSource(this.options.editMode.newRowsSourceId, {
+                      run: true,
+                      body: JSON.stringify(d),
+                    });
+                    this.source.splice(rows[rows.length - 1].order - 1, 0, d);
+                    const temp = this.source;
+                    this.setSource(temp, { from: from, total: total + 1 });
+                  }
+                }
+              });
+            }
+            inputRow.appendChild(input);
+            inputRow.appendChild(title);
+            container.appendChild(inputRow);
+          });
+          this._body.appendChild(container);
+        }
+      }
       if (this.deviceId == 2) {
         const clr = document.createElement("div");
         clr.setAttribute("class", "clr");

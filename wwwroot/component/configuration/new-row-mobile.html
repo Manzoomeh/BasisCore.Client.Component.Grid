@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
-    <title>Grid Command - With Config</title>
+    <title>Grid Command - Dynamic Data</title>
     <script>
       const host = {
         repositories: {
@@ -16,41 +16,38 @@
   </head>
 
   <body>
-    <basis
+    <button id="btn">Reload</button>
+    <Basis
       core="component.grid.grid"
       run="atclient"
       dataMemberName="sample.data"
       options="options"
+    >
+    </Basis>
+    <basis
+      core="api"
+      url="http://localhost:8080/server/dbsource/save"
+      body="[##db.save.body##]"
+      triggers="db.save"
+      method="post"
+      if="[##db.save.run|(false)##]"
+      run="atclient"
     ></basis>
-
+    <basis core="callback" run="atclient" triggers="sample.data"></basis>
     <script>
-      function setSource() {
-        const MIN_ID = 1000;
-        const MAX_ID = 1200;
-        const MIN_COUNT = 10;
-
-        const dataList = [];
-        for (let index = MIN_ID; index < MAX_ID; index++) {
-          const data = {
-            id: index,
-            image: null,
-            title: `test${index}`,
-            createdate: `1401/4/27 ${index}`,
-            updatedate: `1401/4/28 ${index}`,
-            count: Math.floor(Math.random() * 80) + MIN_COUNT,
-            data: Math.random().toString(36).substring(7),
-          };
-          dataList.push(data);
-        }
-
-        $bc.setSource("sample.data", dataList);
-      }
-      setSource();
-
       const options = {
-        // process: "server",
-        filter: "simple",
-
+        culture: {
+          deviceId: 2,
+          template: "template1",
+          labels: {
+            search: "",
+            pageSize: "Page Size :",
+            next: "to next",
+            previous: "to previous",
+            first: "to first",
+            last: "to last",
+          },
+        },
         columns: {
           id: {
             title: "ID",
@@ -103,28 +100,52 @@
             sort: false,
           },
         },
-        defaultSort: {
-          name: "id",
-          sort: "desc",
+        editMode: {
+          newRowsSourceId: "db.save",
+          columns: [
+            {
+              key: "id",
+              type: "1",
+            },
+            {
+              key: "data",
+              type: "0",
+            },
+            {
+              key: "title",
+              type: "1",
+            },
+            {
+              key: "count",
+              type: "1",
+            },
+          ],
         },
-        direction: "rtl",
-        paging: 10,
-        culture: {
-          deviceId: 2,
-          template: "template1",
-          labels: {
-            search: "",
-            pageSize: "Page Size :",
-            next: "to next",
-            previous: "to previous",
-            first: "to first",
-            last: "to last",
-          },
-        },
-        // information: false,
-        firstAndLastBtn: false,
-        pageCount: 3,
       };
+      function setSource() {
+        const MIN_ID = 1000;
+        const MAX_ID = 1200;
+        const MIN_COUNT = 10;
+
+        const dataList = [];
+        for (let index = MIN_ID; index < MAX_ID; index++) {
+          const data = {
+            id: index,
+            image: null,
+            title: `test${index}`,
+            createdate: `1401/4/27 ${index}`,
+            updatedate: `1401/4/28 ${index}`,
+            count: Math.floor(Math.random() * 80) + MIN_COUNT,
+            data: Math.random().toString(36).substring(7),
+          };
+          dataList.push(data);
+        }
+        $bc.setSource("sample.data", dataList);
+      }
+
+      document.getElementById("btn").addEventListener("click", (e) => {
+        setSource();
+      });
     </script>
   </body>
 </html>

@@ -15,6 +15,7 @@ export type ITemplate = "template1" | "template2";
 export type IGridOptions = {
   columns: IDictionary<IColumn>;
   filter?: FilterType;
+  editMode?: IEditModeInfo;
   paging?: number[] | number;
   defaultPagingIndex?: number;
   rowNumber?: string;
@@ -61,7 +62,14 @@ export type ISortInfo = {
   name: string;
   sort?: ISortType;
 };
-
+export type IEditModeInfo = {
+  newRowsSourceId: string;
+  columns: IEditModeColumnInfo[];
+};
+export type IEditModeColumnInfo = {
+  key: string;
+  type: string;
+};
 export type IColumnInfo = {
   source?: string | IFieldMakerCallback;
   title?: string;
@@ -75,10 +83,14 @@ export type IColumnInfo = {
 export type IWidthCArd = {
   title: string;
   image?: string;
-  action?: object
+  action?: object;
 };
 
-export type ICellMakerCallback = (row: any, data: any, element: HTMLElement) => RawHtml;
+export type ICellMakerCallback = (
+  row: any,
+  data: any,
+  element: HTMLElement
+) => RawHtml;
 
 export type IRowMakerCallback = (row: any, element: HTMLElement) => void;
 

@@ -35,7 +35,11 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     this.filteredData = rows;
     this.totalRows = rows.length;
     this.pageNumber =
-      this.pageNumber == -1 ? this.owner.options.pageNumber - 1 : 0;
+      this.pageNumber == -1
+        ? this.owner.options.pageNumber - 1
+        : this.pageNumber
+        ? this.pageNumber
+        : 0;
     this.updatePaging();
     this.displayCurrentPage();
   }
@@ -43,6 +47,7 @@ export default abstract class PaginateProcessManager extends ProcessManager {
   protected displayCurrentPage(): void {
     const fromId = this.pageNumber * this.pageSize;
     const toId = fromId + this.pageSize;
+
     this.updateState();
     const rows = this.filteredData.filter(
       (row) => row.order > fromId && row.order <= toId

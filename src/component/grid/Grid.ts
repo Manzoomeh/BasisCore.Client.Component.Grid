@@ -188,6 +188,7 @@ export default class Grid implements IGrid {
       this.options.process === "server" &&
       !(event.key === "Enter" || event.keyCode === 13)
     ) {
+     
       let mustUpdate = false;
       if (newFilter.length > 0) {
         if (!this.processManager.filter) {
@@ -212,8 +213,33 @@ export default class Grid implements IGrid {
         }, 1000);
       }
     } else {
-      this.processManager.pageNumber = 0;
-      this.processManager.applyUserAction();
+  
+      input.addEventListener("keyup", (_) => {
+        const newFilter = input.value.toLowerCase();
+        
+        let mustUpdate = false;
+        if (newFilter.length > 0) {
+          if (!this.processManager.filter) {
+            this.processManager.filter = {};
+          }
+          if (newFilter != this.processManager.filter[columnInfo.name]) {
+            this.processManager.filter[columnInfo.name] = newFilter;
+            mustUpdate = true;
+          }
+        } else {
+          if (
+            typeof this.processManager.filter[columnInfo.name] !==
+            "undefined"
+          ) {
+            delete this.processManager.filter[columnInfo.name];
+            mustUpdate = true;
+          }
+        }
+        if (mustUpdate) {
+          this.processManager.pageNumber = 0;
+          this.processManager.applyUserAction();
+        }
+      });
     }
   }
 
@@ -283,6 +309,7 @@ export default class Grid implements IGrid {
       );
       filter.appendChild(label);
     } else if (this.options.filter == "row") {
+      
       const copyShowFilterLayout = showFilterLayout;
       const showFilter = $bc.util.toHTMLElement(
         copyShowFilterLayout
@@ -435,6 +462,7 @@ export default class Grid implements IGrid {
 
   private addTemplateRowFilterPart() {
     if (this.options.filter === "row") {
+   
       const filterItemsWrapper = this._container
         .querySelector("[data-bc-grid-header-container]")
         .querySelector("[data-bc-filter-items]");
@@ -650,6 +678,7 @@ export default class Grid implements IGrid {
   }
   private addTableRowFilterPart() {
     if (this.options.filter === "row") {
+      
       const tr = document.createElement("tr");
       tr.setAttribute("data-bc-no-selection", "");
       tr.setAttribute("data-bc-filter", "");

@@ -364,6 +364,8 @@ export default class Grid implements IGrid {
       this._container.appendChild(gridFooterContainer);
       switch (this.options.process) {
         case "server": {
+
+        
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
@@ -622,6 +624,7 @@ export default class Grid implements IGrid {
 
       switch (this.options.process) {
         case "server": {
+          console.log("11111",pageSizeContainer, pagingContainer)
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
@@ -1218,9 +1221,8 @@ export default class Grid implements IGrid {
           let addedColumns = 0;
           this.columns.map((col) => {
             const td = document.createElement("td");
-
             const found = this.options.editMode.columns.find(
-              (i) => i.key === col.title
+              (i) => i.key === col.source
             );
             if (found) {
               const input = document.createElement("input");

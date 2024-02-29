@@ -56,20 +56,24 @@ export type IOffsetOptions = {
   total: number;
   from: number;
 };
+
 export type IColumn = string | IColumnInfo;
 
 export type ISortInfo = {
   name: string;
   sort?: ISortType;
 };
+
 export type IEditModeInfo = {
   newRowsSourceId: string;
   columns: IEditModeColumnInfo[];
 };
+
 export type IEditModeColumnInfo = {
   key: string;
   type: string;
 };
+
 export type IColumnInfo = {
   source?: string | IFieldMakerCallback;
   title?: string;

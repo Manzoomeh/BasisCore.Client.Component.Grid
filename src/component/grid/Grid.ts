@@ -364,8 +364,6 @@ export default class Grid implements IGrid {
       this._container.appendChild(gridFooterContainer);
       switch (this.options.process) {
         case "server": {
-
-        
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
@@ -624,7 +622,6 @@ export default class Grid implements IGrid {
 
       switch (this.options.process) {
         case "server": {
-          console.log("11111",pageSizeContainer, pagingContainer)
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
@@ -1479,7 +1476,7 @@ export default class Grid implements IGrid {
   public resetSelectAll() {
     const selectAllInput = this._container
       .querySelector("[data-bc-table-container] thead")
-      .querySelector('[data-bc-select-all] input[type="checkbox"]');
+      ?.querySelector('[data-bc-select-all] input[type="checkbox"]');
     if (selectAllInput) {
       selectAllInput.removeAttribute("checked");
       (selectAllInput as HTMLInputElement).checked = false;

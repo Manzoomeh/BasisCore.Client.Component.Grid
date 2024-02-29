@@ -14,11 +14,13 @@ for (let index = 1; index < 1000; index++) {
   };
   apiDataList.push(data);
 }
+
 router.post("/dbsource/save", function (req, res) {
   res.send({
     status: "success",
   });
 });
+
 router.post("/dbsource", function (req, res) {
   const MIN_ID = 1;
   const dataList = [];

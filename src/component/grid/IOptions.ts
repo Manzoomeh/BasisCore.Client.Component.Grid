@@ -1,3 +1,4 @@
+import { HttpMethod } from "basiscore";
 import { IDictionary, IGridType, ISortType } from "../../type-alias";
 
 export type FilterType = "none" | "simple" | "row";
@@ -11,6 +12,8 @@ export type ProcessActionType = "server" | "client";
 export type SelectType = "none" | "single" | "multi";
 
 export type ITemplate = "template1" | "template2";
+
+export type ExportType = "excel";
 
 export type IGridOptions = {
   columns: IDictionary<IColumn>;
@@ -50,6 +53,7 @@ export type IGridOptions = {
   modeButtons?: boolean;
   cardCount?: number;
   pagingAction?: IPagingActionCallback;
+  export?: Array<IExportInfo>;
 };
 
 export type IOffsetOptions = {
@@ -107,3 +111,13 @@ export type ILoaderMaker = () => RawHtml;
 export type RawHtml = string;
 
 export type IPagingActionCallback = (element: HTMLElement, pageNumber: Number) => any;
+
+export type IExportInfo = {
+  type: ExportType;
+  tooltip: string;
+  fileName?: string;
+  url: string;
+  method: HttpMethod;
+  contentType?: string;
+  data?: string;
+};

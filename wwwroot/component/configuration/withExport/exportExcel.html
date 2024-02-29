@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.basiscore.net/basispanel.ir/_js/basiscore-2.27.0.js"></script>
+    <title>Grid Command -Use DbSource</title>
+</head>
+
+<body>
+    <Basis core="component.grid.grid" run="atclient" triggers="sample.data" dataMemberName="sample.data" options="options">
+    </Basis>
+
+    <script>
+        const host = {
+            repositories: {
+                "grid.grid": "/basiscore.grid.component.js",
+            },
+        };
+
+        function setSource() {
+            const MIN_ID = 1000;
+            const MAX_ID = 1200;
+            const MIN_COUNT = 10;
+
+            const dataList = [];
+            for (let index = MIN_ID; index < MAX_ID; index++) {
+                const data = {
+                    id: index,
+                    count: Math.floor(Math.random() * 80) + MIN_COUNT,
+                    data: Math.random().toString(36).substring(7),
+                };
+                dataList.push(data);
+            }
+            $bc.setSource("sample.data", dataList);
+        }
+        setSource();
+
+        const options = {
+            process: "client",
+            filter: "row",
+            columns: {
+                id: {
+                    title: "Data-Id",
+                    filter: false,
+                },
+                data: {
+                    title: "Data",
+                    filter: true,
+                },
+                count: "Count",
+            },
+            rowNumber: "#",
+            defaultSort: {
+                name: "id"
+            },
+            paging: [10, 30, 60],
+            // paging: 10,
+            culture: {
+                labels: {
+                    search: "Type for Search :",
+                    pageSize: "Page Size :",
+                    next: "to next",
+                    previous: "to previous",
+                    first: "to first",
+                    last: "to last",
+                },
+            },
+            pageNumber: 2,
+            //rowMaker: (data, tr) => console.log(data, tr)
+            export: [
+                {
+                    type: "excel",
+                    tooltip: "download excel",
+                    fileName: "sample",
+                    url: "/server/export",
+                    method: "get",
+                    contentType: "application/x-www-form-urlencoded; charset=utf-8",
+                    // data: ""
+                }
+            ]
+        };
+    </script>
+</body>
+
+</html>

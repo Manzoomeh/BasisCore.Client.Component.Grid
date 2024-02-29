@@ -17,7 +17,8 @@
   "author": "Manzoomeh",
   "license": "ISC",
   "dependencies": {
-    "basiscore": "^2.15.2"
+    "basiscore": "^2.15.2",
+    "node-xlsx": "^0.23.0"
   },
   "devDependencies": {
     "circular-dependency-plugin": "^5.2.2",

@@ -1,4 +1,4 @@
-/* search box & pagesize */
+/* search box & pagesize & export */
 [data-bc-grid="d1"] [data-bc-grid-header-container] {
     padding: 20px 30px;
     border: 1px solid #E9E9EA;
@@ -8,7 +8,8 @@
 }
 
 [data-bc-grid="d1"] [data-bc-filter-container],
-[data-bc-grid="d1"] [data-bc-pagesize-container] {
+[data-bc-grid="d1"] [data-bc-pagesize-container],
+[data-bc-grid="d1"] [data-bc-export-container] {
     display: inline-block;
     /* margin-left: 20px; */
     /* margin-bottom: 20px; */
@@ -31,6 +32,7 @@
 
 [data-bc-grid="d1"] [data-bc-pagesize-container] {
     float: left;
+    margin-right: 20px;
 }
 
 [data-bc-grid="d1"] [data-bc-pagesize-container] * {
@@ -60,6 +62,21 @@
     font-size: 12px !important;
     font-weight: normal !important;
 }
+
+[data-bc-grid="d1"] [data-bc-export-container] {
+    float: left;
+}
+
+[data-bc-grid="d1"] [data-bc-export-container] [data-bc-export-item] {
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}
+
+[data-bc-grid="d1"] [data-bc-export-container] [data-bc-export-item] svg {
+    width: 26px;
+    height: 26px;
+} 
 
 /* filter in row */
 [data-bc-grid="d1"] [data-bc-filter] input[type="text"],

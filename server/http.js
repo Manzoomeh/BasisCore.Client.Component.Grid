@@ -1,3 +1,5 @@
+var fs = require("fs");
+var xlsx = require('node-xlsx');
 var express = require("express");
 var router = express.Router();
 const MergeType = {
@@ -240,4 +242,13 @@ router.get("/api/mix2", function (req, res) {
   };
   res.send(result);
 });
+
+router.get("/export", function (req, res) {
+  let excel = xlsx.parse(fs.readFileSync(__dirname + '/sample.xlsx'));
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename=sample.xlsx');
+
+  res.send(excel);
+});
+
 module.exports = router;

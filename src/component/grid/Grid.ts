@@ -1,4 +1,4 @@
-import { IGridOptions, IOffsetOptions } from "./IOptions";
+import { IExportInfo, IGridOptions, IOffsetOptions } from "./IOptions";
 import {
   IGridColumnInfo,
   ISortType,
@@ -352,6 +352,34 @@ export default class Grid implements IGrid {
       pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
       gridHeaderContainer.appendChild(pageSizeContainer);
 
+      if (this.options.export?.length > 0) {
+        const exportContainer = document.createElement("div");
+        exportContainer.setAttribute("data-bc-export-container", "");
+        gridHeaderContainer.appendChild(exportContainer);
+
+        this.options.export.forEach(exp => {
+          const exportItemContainer = document.createElement("div");
+          exportItemContainer.setAttribute("data-bc-export-item", "");
+          
+          if (exp.type == "excel") {
+            exportItemContainer.setAttribute("data-bc-export-item-excel", "");
+            if (exp.tooltip) {
+              exportItemContainer.setAttribute("data-sys-tooltip", "");
+              exportItemContainer.setAttribute("data-bc-export-tooltip",exp.tooltip);
+            }
+            exportItemContainer.innerHTML = `<svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="34" height="34" rx="4.5" stroke="#0D783C"/><g style="mix-blend-mode:multiply" opacity="0.2"><g style="mix-blend-mode:multiply" opacity="0.2"><path d="M27.2026 7.99805H13.1519C12.6678 7.99805 12.2754 8.39049 12.2754 8.87459V25.8536C12.2754 26.3377 12.6678 26.7301 13.1519 26.7301H27.2026C27.6867 26.7301 28.0792 26.3377 28.0792 25.8536V8.87459C28.0792 8.39049 27.6867 7.99805 27.2026 7.99805Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.12"><g style="mix-blend-mode:multiply" opacity="0.12"><path d="M27.2007 7.99707H13.15C12.6659 7.99707 12.2734 8.38951 12.2734 8.87361V25.8526C12.2734 26.3367 12.6659 26.7291 13.15 26.7291H27.2007C27.6848 26.7291 28.0772 26.3367 28.0772 25.8526V8.87361C28.0772 8.38951 27.6848 7.99707 27.2007 7.99707Z" fill="white"/></g></g><path d="M20.4649 7.99805H13.1474C13.0326 7.99805 12.9189 8.02076 12.813 8.06489C12.707 8.10902 12.6108 8.17369 12.5299 8.25517C12.449 8.33665 12.3851 8.43333 12.3417 8.53964C12.2984 8.64596 12.2765 8.75979 12.2774 8.87459V12.6794H20.4649V7.99805Z" fill="#21A366"/><path d="M27.2129 7.99805H20.4668V12.6794H28.07V8.87459C28.0717 8.64495 27.9826 8.42394 27.8221 8.25974C27.6615 8.09554 27.4426 8.00147 27.2129 7.99805Z" fill="#33C481"/><path d="M28.0765 17.3604H20.4668V22.0417H28.0765V17.3604Z" fill="#107C41"/><path d="M20.4649 22.0417V17.3604H12.2774V25.8466C12.2765 25.962 12.2986 26.0763 12.3423 26.1831C12.3861 26.2898 12.4506 26.3868 12.5322 26.4683C12.6137 26.5499 12.7107 26.6144 12.8174 26.6582C12.9242 26.7019 13.0386 26.724 13.1539 26.7231H27.2111C27.3264 26.724 27.4408 26.7019 27.5476 26.6582C27.6543 26.6144 27.7513 26.5499 27.8328 26.4683C27.9144 26.3868 27.9789 26.2898 28.0227 26.1831C28.0664 26.0763 28.0885 25.962 28.0876 25.8466V22.0417H20.4649Z" fill="#185C37"/><path d="M20.4656 12.6787H12.2715V17.3602H20.4656V12.6787Z" fill="#107C41"/><path d="M28.0765 12.6787H20.4668V17.3602H28.0765V12.6787Z" fill="#21A366"/><g style="mix-blend-mode:multiply" opacity="0.48"><g style="mix-blend-mode:multiply" opacity="0.48"><path d="M17.2455 12.0938H8.46053C7.97643 12.0938 7.58398 12.4862 7.58398 12.9703V21.7553C7.58398 22.2394 7.97643 22.6318 8.46053 22.6318H17.2455C17.7296 22.6318 18.122 22.2394 18.122 21.7553V12.9703C18.122 12.4862 17.7296 12.0938 17.2455 12.0938Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.24"><g style="mix-blend-mode:multiply" opacity="0.24"><path d="M17.2474 12.0938H8.46248C7.97838 12.0938 7.58594 12.4862 7.58594 12.9703V21.7553C7.58594 22.2394 7.97838 22.6318 8.46248 22.6318H17.2474C17.7315 22.6318 18.124 22.2394 18.124 21.7553V12.9703C18.124 12.4862 17.7315 12.0938 17.2474 12.0938Z" fill="white"/></g></g><path d="M17.2455 12.0947H8.46053C7.97643 12.0947 7.58398 12.4872 7.58398 12.9713V21.7562C7.58398 22.2403 7.97643 22.6327 8.46053 22.6327H17.2455C17.7296 22.6327 18.122 22.2403 18.122 21.7562V12.9713C18.122 12.4872 17.7296 12.0947 17.2455 12.0947Z" fill="#107C41"/><path d="M10.3301 20.2106L12.1546 17.3602L10.4599 14.5098H11.8234L12.7454 16.3278C12.8298 16.4966 12.8883 16.6265 12.9207 16.7109C12.9792 16.5745 13.0441 16.4382 13.109 16.3083L14.096 14.5098H15.3491L13.622 17.3602L15.401 20.2365H14.1025L13.0311 18.2432C12.9824 18.1582 12.9412 18.0691 12.9078 17.977C12.8767 18.068 12.8353 18.1551 12.7844 18.2367L11.6287 20.2106H10.3301Z" fill="white"/><g style="mix-blend-mode:soft-light" opacity="0.5"><path style="mix-blend-mode:soft-light" opacity="0.5" d="M17.2474 12.0947H8.46248C7.97838 12.0947 7.58594 12.4872 7.58594 12.9713V21.7562C7.58594 22.2403 7.97838 22.6327 8.46248 22.6327H17.2474C17.7315 22.6327 18.124 22.2403 18.124 21.7562V12.9713C18.124 12.4872 17.7315 12.0947 17.2474 12.0947Z" fill="url(#paint0_linear_10847_113542)"/></g><defs><linearGradient id="paint0_linear_10847_113542" x1="9.41694" y1="11.4065" x2="16.2929" y2="23.3145" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.5"/><stop offset="1" stop-opacity="0.7"/></linearGradient></defs></svg>`;
+
+            exportItemContainer.addEventListener("click", (e) => {
+              this.downloadFile(exp);
+            });
+
+            exportContainer.appendChild(exportItemContainer);
+          } else {
+            throw Error("Export type '".concat(exp.type, "' not support in grid"));
+          }
+        });
+      }
+
       const gridFooterContainer = document.createElement("div");
       gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
       gridFooterContainer.setAttribute("data-sys-paging-container", "");
@@ -608,6 +636,34 @@ export default class Grid implements IGrid {
       const pageSizeContainer = document.createElement("div");
       pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
       gridHeaderContainer.appendChild(pageSizeContainer);
+
+      if (this.options.export?.length > 0) {
+        const exportContainer = document.createElement("div");
+        exportContainer.setAttribute("data-bc-export-container", "");
+        gridHeaderContainer.appendChild(exportContainer);
+
+        this.options.export.forEach(exp => {
+          const exportItemContainer = document.createElement("div");
+          exportItemContainer.setAttribute("data-bc-export-item", "");
+          
+          if (exp.type == "excel") {
+            exportItemContainer.setAttribute("data-bc-export-item-excel", "");
+            if (exp.tooltip) {
+              exportItemContainer.setAttribute("data-sys-tooltip", "");
+              exportItemContainer.setAttribute("data-bc-export-tooltip",exp.tooltip);
+            }
+            exportItemContainer.innerHTML = `<svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="34" height="34" rx="4.5" stroke="#0D783C"/><g style="mix-blend-mode:multiply" opacity="0.2"><g style="mix-blend-mode:multiply" opacity="0.2"><path d="M27.2026 7.99805H13.1519C12.6678 7.99805 12.2754 8.39049 12.2754 8.87459V25.8536C12.2754 26.3377 12.6678 26.7301 13.1519 26.7301H27.2026C27.6867 26.7301 28.0792 26.3377 28.0792 25.8536V8.87459C28.0792 8.39049 27.6867 7.99805 27.2026 7.99805Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.12"><g style="mix-blend-mode:multiply" opacity="0.12"><path d="M27.2007 7.99707H13.15C12.6659 7.99707 12.2734 8.38951 12.2734 8.87361V25.8526C12.2734 26.3367 12.6659 26.7291 13.15 26.7291H27.2007C27.6848 26.7291 28.0772 26.3367 28.0772 25.8526V8.87361C28.0772 8.38951 27.6848 7.99707 27.2007 7.99707Z" fill="white"/></g></g><path d="M20.4649 7.99805H13.1474C13.0326 7.99805 12.9189 8.02076 12.813 8.06489C12.707 8.10902 12.6108 8.17369 12.5299 8.25517C12.449 8.33665 12.3851 8.43333 12.3417 8.53964C12.2984 8.64596 12.2765 8.75979 12.2774 8.87459V12.6794H20.4649V7.99805Z" fill="#21A366"/><path d="M27.2129 7.99805H20.4668V12.6794H28.07V8.87459C28.0717 8.64495 27.9826 8.42394 27.8221 8.25974C27.6615 8.09554 27.4426 8.00147 27.2129 7.99805Z" fill="#33C481"/><path d="M28.0765 17.3604H20.4668V22.0417H28.0765V17.3604Z" fill="#107C41"/><path d="M20.4649 22.0417V17.3604H12.2774V25.8466C12.2765 25.962 12.2986 26.0763 12.3423 26.1831C12.3861 26.2898 12.4506 26.3868 12.5322 26.4683C12.6137 26.5499 12.7107 26.6144 12.8174 26.6582C12.9242 26.7019 13.0386 26.724 13.1539 26.7231H27.2111C27.3264 26.724 27.4408 26.7019 27.5476 26.6582C27.6543 26.6144 27.7513 26.5499 27.8328 26.4683C27.9144 26.3868 27.9789 26.2898 28.0227 26.1831C28.0664 26.0763 28.0885 25.962 28.0876 25.8466V22.0417H20.4649Z" fill="#185C37"/><path d="M20.4656 12.6787H12.2715V17.3602H20.4656V12.6787Z" fill="#107C41"/><path d="M28.0765 12.6787H20.4668V17.3602H28.0765V12.6787Z" fill="#21A366"/><g style="mix-blend-mode:multiply" opacity="0.48"><g style="mix-blend-mode:multiply" opacity="0.48"><path d="M17.2455 12.0938H8.46053C7.97643 12.0938 7.58398 12.4862 7.58398 12.9703V21.7553C7.58398 22.2394 7.97643 22.6318 8.46053 22.6318H17.2455C17.7296 22.6318 18.122 22.2394 18.122 21.7553V12.9703C18.122 12.4862 17.7296 12.0938 17.2455 12.0938Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.24"><g style="mix-blend-mode:multiply" opacity="0.24"><path d="M17.2474 12.0938H8.46248C7.97838 12.0938 7.58594 12.4862 7.58594 12.9703V21.7553C7.58594 22.2394 7.97838 22.6318 8.46248 22.6318H17.2474C17.7315 22.6318 18.124 22.2394 18.124 21.7553V12.9703C18.124 12.4862 17.7315 12.0938 17.2474 12.0938Z" fill="white"/></g></g><path d="M17.2455 12.0947H8.46053C7.97643 12.0947 7.58398 12.4872 7.58398 12.9713V21.7562C7.58398 22.2403 7.97643 22.6327 8.46053 22.6327H17.2455C17.7296 22.6327 18.122 22.2403 18.122 21.7562V12.9713C18.122 12.4872 17.7296 12.0947 17.2455 12.0947Z" fill="#107C41"/><path d="M10.3301 20.2106L12.1546 17.3602L10.4599 14.5098H11.8234L12.7454 16.3278C12.8298 16.4966 12.8883 16.6265 12.9207 16.7109C12.9792 16.5745 13.0441 16.4382 13.109 16.3083L14.096 14.5098H15.3491L13.622 17.3602L15.401 20.2365H14.1025L13.0311 18.2432C12.9824 18.1582 12.9412 18.0691 12.9078 17.977C12.8767 18.068 12.8353 18.1551 12.7844 18.2367L11.6287 20.2106H10.3301Z" fill="white"/><g style="mix-blend-mode:soft-light" opacity="0.5"><path style="mix-blend-mode:soft-light" opacity="0.5" d="M17.2474 12.0947H8.46248C7.97838 12.0947 7.58594 12.4872 7.58594 12.9713V21.7562C7.58594 22.2403 7.97838 22.6327 8.46248 22.6327H17.2474C17.7315 22.6327 18.124 22.2403 18.124 21.7562V12.9713C18.124 12.4872 17.7315 12.0947 17.2474 12.0947Z" fill="url(#paint0_linear_10847_113542)"/></g><defs><linearGradient id="paint0_linear_10847_113542" x1="9.41694" y1="11.4065" x2="16.2929" y2="23.3145" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.5"/><stop offset="1" stop-opacity="0.7"/></linearGradient></defs></svg>`;
+
+            exportItemContainer.addEventListener("click", (e) => {
+              this.downloadFile(exp);
+            });
+
+            exportContainer.appendChild(exportItemContainer);
+          } else {
+            throw Error("Export type '".concat(exp.type, "' not support in grid"));
+          }
+        });
+      }
 
       const gridFooterContainer = document.createElement("div");
       gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
@@ -900,6 +956,35 @@ export default class Grid implements IGrid {
       const pageSizeContainer = document.createElement("div");
       pageSizeContainer.setAttribute("data-bc-pagesize-container", "");
       gridHeaderContainer.appendChild(pageSizeContainer);
+
+      if (this.options.export?.length > 0) {
+        const exportContainer = document.createElement("div");
+        exportContainer.setAttribute("data-bc-export-container", "");
+        gridHeaderContainer.appendChild(exportContainer);
+
+        this.options.export.forEach(exp => {
+          const exportItemContainer = document.createElement("div");
+          exportItemContainer.setAttribute("data-bc-export-item", "");
+          
+          if (exp.type == "excel") {
+            exportItemContainer.setAttribute("data-bc-export-item-excel", "");
+            if (exp.tooltip) {
+              exportItemContainer.setAttribute("data-sys-tooltip", "");
+              exportItemContainer.setAttribute("data-bc-export-tooltip",exp.tooltip);
+            }
+            exportItemContainer.innerHTML = `<svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="34" height="34" rx="4.5" stroke="#0D783C"/><g style="mix-blend-mode:multiply" opacity="0.2"><g style="mix-blend-mode:multiply" opacity="0.2"><path d="M27.2026 7.99805H13.1519C12.6678 7.99805 12.2754 8.39049 12.2754 8.87459V25.8536C12.2754 26.3377 12.6678 26.7301 13.1519 26.7301H27.2026C27.6867 26.7301 28.0792 26.3377 28.0792 25.8536V8.87459C28.0792 8.39049 27.6867 7.99805 27.2026 7.99805Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.12"><g style="mix-blend-mode:multiply" opacity="0.12"><path d="M27.2007 7.99707H13.15C12.6659 7.99707 12.2734 8.38951 12.2734 8.87361V25.8526C12.2734 26.3367 12.6659 26.7291 13.15 26.7291H27.2007C27.6848 26.7291 28.0772 26.3367 28.0772 25.8526V8.87361C28.0772 8.38951 27.6848 7.99707 27.2007 7.99707Z" fill="white"/></g></g><path d="M20.4649 7.99805H13.1474C13.0326 7.99805 12.9189 8.02076 12.813 8.06489C12.707 8.10902 12.6108 8.17369 12.5299 8.25517C12.449 8.33665 12.3851 8.43333 12.3417 8.53964C12.2984 8.64596 12.2765 8.75979 12.2774 8.87459V12.6794H20.4649V7.99805Z" fill="#21A366"/><path d="M27.2129 7.99805H20.4668V12.6794H28.07V8.87459C28.0717 8.64495 27.9826 8.42394 27.8221 8.25974C27.6615 8.09554 27.4426 8.00147 27.2129 7.99805Z" fill="#33C481"/><path d="M28.0765 17.3604H20.4668V22.0417H28.0765V17.3604Z" fill="#107C41"/><path d="M20.4649 22.0417V17.3604H12.2774V25.8466C12.2765 25.962 12.2986 26.0763 12.3423 26.1831C12.3861 26.2898 12.4506 26.3868 12.5322 26.4683C12.6137 26.5499 12.7107 26.6144 12.8174 26.6582C12.9242 26.7019 13.0386 26.724 13.1539 26.7231H27.2111C27.3264 26.724 27.4408 26.7019 27.5476 26.6582C27.6543 26.6144 27.7513 26.5499 27.8328 26.4683C27.9144 26.3868 27.9789 26.2898 28.0227 26.1831C28.0664 26.0763 28.0885 25.962 28.0876 25.8466V22.0417H20.4649Z" fill="#185C37"/><path d="M20.4656 12.6787H12.2715V17.3602H20.4656V12.6787Z" fill="#107C41"/><path d="M28.0765 12.6787H20.4668V17.3602H28.0765V12.6787Z" fill="#21A366"/><g style="mix-blend-mode:multiply" opacity="0.48"><g style="mix-blend-mode:multiply" opacity="0.48"><path d="M17.2455 12.0938H8.46053C7.97643 12.0938 7.58398 12.4862 7.58398 12.9703V21.7553C7.58398 22.2394 7.97643 22.6318 8.46053 22.6318H17.2455C17.7296 22.6318 18.122 22.2394 18.122 21.7553V12.9703C18.122 12.4862 17.7296 12.0938 17.2455 12.0938Z" fill="white"/></g></g><g style="mix-blend-mode:multiply" opacity="0.24"><g style="mix-blend-mode:multiply" opacity="0.24"><path d="M17.2474 12.0938H8.46248C7.97838 12.0938 7.58594 12.4862 7.58594 12.9703V21.7553C7.58594 22.2394 7.97838 22.6318 8.46248 22.6318H17.2474C17.7315 22.6318 18.124 22.2394 18.124 21.7553V12.9703C18.124 12.4862 17.7315 12.0938 17.2474 12.0938Z" fill="white"/></g></g><path d="M17.2455 12.0947H8.46053C7.97643 12.0947 7.58398 12.4872 7.58398 12.9713V21.7562C7.58398 22.2403 7.97643 22.6327 8.46053 22.6327H17.2455C17.7296 22.6327 18.122 22.2403 18.122 21.7562V12.9713C18.122 12.4872 17.7296 12.0947 17.2455 12.0947Z" fill="#107C41"/><path d="M10.3301 20.2106L12.1546 17.3602L10.4599 14.5098H11.8234L12.7454 16.3278C12.8298 16.4966 12.8883 16.6265 12.9207 16.7109C12.9792 16.5745 13.0441 16.4382 13.109 16.3083L14.096 14.5098H15.3491L13.622 17.3602L15.401 20.2365H14.1025L13.0311 18.2432C12.9824 18.1582 12.9412 18.0691 12.9078 17.977C12.8767 18.068 12.8353 18.1551 12.7844 18.2367L11.6287 20.2106H10.3301Z" fill="white"/><g style="mix-blend-mode:soft-light" opacity="0.5"><path style="mix-blend-mode:soft-light" opacity="0.5" d="M17.2474 12.0947H8.46248C7.97838 12.0947 7.58594 12.4872 7.58594 12.9713V21.7562C7.58594 22.2403 7.97838 22.6327 8.46248 22.6327H17.2474C17.7315 22.6327 18.124 22.2403 18.124 21.7562V12.9713C18.124 12.4872 17.7315 12.0947 17.2474 12.0947Z" fill="url(#paint0_linear_10847_113542)"/></g><defs><linearGradient id="paint0_linear_10847_113542" x1="9.41694" y1="11.4065" x2="16.2929" y2="23.3145" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.5"/><stop offset="1" stop-opacity="0.7"/></linearGradient></defs></svg>`;
+
+            exportItemContainer.addEventListener("click", (e) => {
+              this.downloadFile(exp);
+            });
+
+            exportContainer.appendChild(exportItemContainer);
+          } else {
+            throw Error("Export type '".concat(exp.type, "' not support in grid"));
+          }
+        });
+      }
+      
       const gridFooterContainer = document.createElement("div");
       gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
       gridFooterContainer.setAttribute("data-sys-paging-container", "");
@@ -1481,5 +1566,39 @@ export default class Grid implements IGrid {
       selectAllInput.removeAttribute("checked");
       (selectAllInput as HTMLInputElement).checked = false;
     }
+  }
+
+  private async downloadFile(exp: IExportInfo): Promise<void> {
+    const init: RequestInit = {
+      method: exp.method ?? "GET",
+      // body: exp.data ?? "",
+    };
+
+    if (exp.method == "POST") {
+      init.body = exp.data ?? "";
+    }
+
+    const contentType = exp.contentType ?? "application/json; charset=utf-8";
+    if (contentType && contentType.length > 0) {
+      init.headers = new Headers();
+      init.headers.append("Content-Type", contentType);
+      // init.headers.append("Content-disposition", "attachment; filename=tessst.xml");
+    }
+    const request = new Request(exp.url, init);
+    
+    await fetch(request)
+      .then(response => response.blob())
+      .then(response => {
+        const blob = new Blob([response], {type: response.type});
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = exp.fileName ?? "file.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          a.remove();
+        }, 2000);
+      })
   }
 }

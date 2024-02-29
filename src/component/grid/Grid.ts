@@ -1574,7 +1574,7 @@ export default class Grid implements IGrid {
       // body: exp.data ?? "",
     };
 
-    if (exp.method == "POST") {
+    if (exp.method.toUpperCase() == "POST") {
       init.body = exp.data ?? "";
     }
 

@@ -12,7 +12,7 @@ export default class Card extends Item {
 
       const cardCount = this._owner.options.cardCount;
       const space = cardCount * 20;
-      this._uiElement.setAttribute("style", `width: calc((100% - ${space}px) / ${cardCount})`);
+      this._uiElement.setAttribute("style", `width: calc((100% - ${(space + 20)}px) / ${cardCount})`);
       
       const div = document.createElement("div");
       div.setAttribute("data-bc-card-data", "");

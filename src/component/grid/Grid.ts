@@ -173,40 +173,42 @@ export default class Grid implements IGrid {
       }, 1000);
     }
   }
+
   private handleRowInput(
     input: HTMLInputElement,
     columnInfo: IGridColumnInfo,
-    event: KeyboardEvent
+    event?: KeyboardEvent
   ) {
-    const newFilter = input.value.toLowerCase();
+    let newFilter = input.value.toLowerCase();
     clearTimeout(this.timerId);
-    if (event.key === "Enter" || event.keyCode === 13) {
+    if (event?.key === "Enter" || event?.keyCode === 13) {
       this.processManager.applyUserAction();
     } else {
-      let mustUpdate = false;
-      if (newFilter.length > 0) {
-        if (!this.processManager.filter) {
-          this.processManager.filter = {};
+      this.timerId = setTimeout(() => {
+        newFilter = input.value.toLowerCase();
+        let mustUpdate = false;
+        if (newFilter.length > 0) {
+          if (!this.processManager.filter) {
+            this.processManager.filter = {};
+          }
+          if (newFilter != this.processManager.filter[columnInfo.name]) {
+            this.processManager.filter[columnInfo.name] = newFilter;
+            mustUpdate = true;
+          }
+        } else {
+          if (
+            typeof this.processManager.filter[columnInfo.name] !== "undefined"
+          ) {
+            delete this.processManager.filter[columnInfo.name];
+            mustUpdate = true;
+          }
         }
-        if (newFilter != this.processManager.filter[columnInfo.name]) {
-          this.processManager.filter[columnInfo.name] = newFilter;
-          mustUpdate = true;
-        }
-      } else {
-        if (
-          typeof this.processManager.filter[columnInfo.name] !== "undefined"
-        ) {
-          delete this.processManager.filter[columnInfo.name];
-          mustUpdate = true;
-        }
-      }
-      if (mustUpdate) {
-        this.processManager.pageNumber = 0;
+        if (mustUpdate) {
+          this.processManager.pageNumber = 0;
 
-        this.timerId = setTimeout(() => {
           this.processManager.applyUserAction();
-        }, 1000);
-      }
+        }
+      }, 1000);
     }
   }
 
@@ -445,6 +447,9 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
+          input.addEventListener("paste", (event) => {
+            this.handleRowInput(input, columnInfo);
+          });
           input.addEventListener("keyup", (event) => {
             this.handleRowInput(input, columnInfo, event);
           });
@@ -658,6 +663,9 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
+          input.addEventListener("paste", (event) => {
+            this.handleRowInput(input, columnInfo);
+          });
           input.addEventListener("keyup", (event) => {
             this.handleRowInput(input, columnInfo, event);
           });
@@ -990,6 +998,9 @@ export default class Grid implements IGrid {
           input.setAttribute("type", "text");
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
+          input.addEventListener("paste", (event) => {
+            this.handleRowInput(input, columnInfo);
+          });
           input.addEventListener("keyup", (event) => {
             this.handleRowInput(input, columnInfo, event);
           });

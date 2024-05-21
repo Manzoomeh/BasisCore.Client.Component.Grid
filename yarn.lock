@@ -1897,6 +1897,13 @@ node-releases@^2.0.13:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.13.tgz#d5ed1627c23e3461e819b02e57b75e4899b1c81d"
   integrity sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ==
 
+node-xlsx@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/node-xlsx/-/node-xlsx-0.23.0.tgz#0c4b642f9457712d68f30e1e30351d640cc37e90"
+  integrity sha512-r3KaSZSsSrK92rbPXnX/vDdxURmPPik0rjJ3A+Pybzpjyrk4G6WyGfj8JIz5dMMEpCmWVpmO4qoVPBxnpLv/8Q==
+  dependencies:
+    xlsx "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
+
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
@@ -3076,6 +3083,10 @@ xlsx@^0.18.5:
     ssf "~0.11.2"
     wmf "~1.0.1"
     word "~0.3.0"
+
+"xlsx@https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz":
+  version "0.19.3"
+  resolved "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz#f804c1850e2da5260165db0a059dc2a6099d55f3"
 
 xtend@~4.0.1:
   version "4.0.2"

@@ -177,18 +177,20 @@ export default class Grid implements IGrid {
       this.performAction(input);
     }
   }
+
   private handleRowInput(
     input: HTMLInputElement,
     columnInfo: IGridColumnInfo,
     event?: KeyboardEvent
   ) {
-    const newFilter = input.value.toLowerCase();
     clearTimeout(this.timerId);
     if (
       this.options.process === "server" &&
       !(event?.key === "Enter" || event?.keyCode === 13)
     ) {
       this.timerId = setTimeout(() => {
+        let newFilter = input.value.toLowerCase();
+
         let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
@@ -212,9 +214,8 @@ export default class Grid implements IGrid {
         }
       }, 1000);
     } else {
-      input.addEventListener("keyup", (_) => {
+      this.timerId = setTimeout(() => {
         const newFilter = input.value.toLowerCase();
-
         let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
@@ -236,7 +237,7 @@ export default class Grid implements IGrid {
           this.processManager.pageNumber = 0;
           this.processManager.applyUserAction();
         }
-      });
+      }, 5);
     }
   }
 

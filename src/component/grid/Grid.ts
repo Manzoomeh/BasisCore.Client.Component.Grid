@@ -143,6 +143,7 @@ export default class Grid implements IGrid {
     this._container.setAttribute("data-bc-grid", `d${this.deviceId}`);
     if (this.options.direction) {
       this._container.style["direction"] = this.options.direction;
+      this._container.setAttribute("data-bc-grid-direction", this.options.direction);
     }
     this._informationFormatter = Function(
       "from",

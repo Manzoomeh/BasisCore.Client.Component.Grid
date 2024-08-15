@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+  <title>Grid Command - With Config</title>
+  <script>
+    const host = {
+      repositories: {
+        "grid.grid": "/basiscore.grid.component.js",
+      },
+    };
+  </script>
+</head>
+
+<body>
+  <input type="text" name="db.text" value="true" bc-triggers="click" /> 
+  [##db.text.value##]
+  <button id="btn">Reload</button>
+  <Basis core="component.grid.grid" run="atclient" triggers="sample.data" dataMemberName="sample.data" options="options">
+  </Basis>
+  <basis core="callback" run="atclient" triggers="sample.data"></basis>
+  <script>
+    function setSource() {
+      const MIN_ID = 1000;
+      const MAX_ID = 1200;
+      const MIN_COUNT = 10;
+
+      const dataList = [];
+      for (let index = MIN_ID; index < MAX_ID; index++) {
+        const data = {
+          id: index,
+          count: Math.floor(Math.random() * 80) + MIN_COUNT,
+          data: Math.random().toString(36).substring(7),
+        };
+        dataList.push(data);
+      }
+      $bc.setSource("sample.data", dataList);
+    }
+    document.getElementById("btn").addEventListener("click", (e) => {
+      setSource();
+    });
+    setSource();
+
+    const options = {
+      filter: "simple",
+      columns: {
+        id: {
+          title: "Data-Id",
+          filter: false
+        },
+        custom0: {
+          title: "custom0",
+          source: () => "statis"
+        },
+        custom1: {
+          title: "custom1",
+          source: row => `${row.id}-${row.data}`,
+          "cellMaker": (row, data, td) => `${row.id}-${row.data}`
+        },
+        custom2: {
+          title: "custom2",
+          source: "data",
+          "cellMaker": (row, data, td) => `<button data-id="${row.id}" onclick="alert(this);">${data}</button>`
+        },
+        custom3: {
+          source: "id",
+          title: "custom3",
+          cellMaker: (row, data, td) => {
+            td.style["color"] = row.data?.indexOf("a") == -1 ? "red" : "blue";
+            return data;
+          }
+        },
+        data: {
+          title: "Data",
+          filter: true
+        },
+        p: {
+          title: "hi",
+          source: row => `p-${row.id}`,
+          cellMaker: (row, data, td) => {
+            td.style["color"] = row.id.toString().indexOf("8") == -1 ? "red" : "blue";
+            return data;
+          }
+        },
+        count: "Count",
+      },
+      rowNumber: "#",
+      defaultSort: { name: "count" },
+      direction: "ltr",
+      paging: [10, 30, 60],
+      culture: {
+        labels: {
+          "search": "Type for Search :",
+          // "searchPlaceholder": "Type for Search",
+          "pageSize": "Page Size :",
+          "next": "to next",
+          "previous": "to previous",
+          "first": "to first",
+          "last": "to last"
+        }
+      },
+      pageNumber: 2,
+      //rowMaker: (data, tr) => console.log(data, tr)
+      pagingAction: (element, pageNumber) => console.log("this pagingAction: ", element, pageNumber)
+    };
+  </script>
+</body>
+
+</html>

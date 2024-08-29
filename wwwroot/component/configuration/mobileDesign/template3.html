@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+    <title>Grid Command - With Config</title>
+    <script>
+        const host = {
+            repositories: {
+                "grid.grid": "/basiscore.grid.component.js",
+            },
+        };
+    </script>
+</head>
+
+<body>
+    <basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options"></basis>
+
+    <script>
+        function setSource() {
+            const MIN_ID = 1000;
+            const MAX_ID = 1200;
+            const MIN_COUNT = 10;
+
+            const dataList = [
+                {
+                    "id" : "6693cc0ead2b5ad3481f9159",
+                    "route" : {
+                        "start" : {
+                            "country" : "ایران",
+                            "countryid" : 1002236.0,
+                            "city" : "تهران",
+                            "cityid" : 1203548.0,
+                            "airport" : "Imam Khomeini International Airport/IKA",
+                            "airportid" : 1198711.0
+                        },
+                        "end" : {
+                            "country" : "گرجستان",
+                            "countryid" : 1002228.0,
+                            "city" : "تفلیس",
+                            "cityid" : 1189731.0,
+                            "airport" : "Tbilisi International Airport/TBS",
+                            "airportid" : 1198744.0
+                        }
+                    },
+                    "airline" : "Georgian Airways",
+                    "airlineid" : 1215326.0,
+                    "airlineimage" : "ref623512100001256317810001",
+                    "airplane" : "Airbus A320",
+                    "routecode" : "GE123",
+                    "timing" : "240",
+                    "time" : {
+                        "availabel" : {
+                            "times" : {
+                                "exitid" : 64800.0,
+                                "exit_time" : "18:00",
+                                "arrivalid" : 79200.0,
+                                "arrival_time" : "22:00",
+                                "arrival" : {
+                                    "defaultday" : "0",
+                                    "userday" : "1"
+                                }
+                            }
+                        },
+                        "seat" : {
+                            "economy_seat" : 50.0,
+                            "businessclass_seat" : 0.0,
+                            "firstclass_seat" : 0.0
+                        },
+                        "availabelday" : {
+                            "days" : [ 
+                                {
+                                    "day" : "7"
+                                }, 
+                                {
+                                    "day" : "1"
+                                }, 
+                                {
+                                    "day" : "2"
+                                }
+                            ]
+                        }
+                    },
+                    "rule" : {
+                        "infant_rules" : "24",
+                        "child_rules" : "12"
+                    },
+                    "userid" : 1054123.0,
+                    "ownerid" : 7937.0,
+                    "createdate" : "1403-04-24",
+                    "createdateid" : 12535.0,
+                    "updated" : "1",
+                    "updatedate" : "1403-04-28",
+                    "updatedateid" : 12539.0,
+                    "enable" : "1",
+                    "delete" : "0",
+                    "dmnid" : 2475.0
+                },
+                {
+                    "id" : "6693bed2ad2b5ad3481f9124",
+                    "route" : {
+                        "start" : {
+                            "country" : "ارمنستان",
+                            "countryid" : 1002226.0,
+                            "city" : "ایروان",
+                            "cityid" : 1192689.0,
+                            "airport" : "Zvartnots International Airport/EVN",
+                            "airportid" : 1198784.0
+                        },
+                        "end" : {
+                            "country" : "ایران",
+                            "countryid" : 1002236.0,
+                            "city" : "تهران",
+                            "cityid" : 1203548.0,
+                            "airport" : "Imam Khomeini International Airport/IKA",
+                            "airportid" : 1198711.0
+                        }
+                    },
+                    "airline" : "Qeshm Airlines",
+                    "airlineid" : 1207278.0,
+                    "airlineimage" : "ref872702100001355656220001",
+                    "airplane" : " Airbus A380",
+                    "routecode" : "Qesh123",
+                    "timing" : "180",
+                    "time" : {
+                        "availabel" : {
+                            "times" : {
+                                "exitid" : 73800.0,
+                                "exit_time" : "20:30",
+                                "arrivalid" : 84240.0,
+                                "arrival_time" : "23:24",
+                                "arrival" : {
+                                    "defaultday" : "0",
+                                    "userday" : "1"
+                                }
+                            }
+                        },
+                        "seat" : {
+                            "economy_seat" : 50.0,
+                            "businessclass_seat" : 0.0,
+                            "firstclass_seat" : 0.0
+                        },
+                        "availabelday" : {
+                            "days" : [ 
+                                {
+                                    "day" : "4"
+                                }, 
+                                {
+                                    "day" : "5"
+                                }, 
+                                {
+                                    "day" : "6"
+                                }
+                            ]
+                        }
+                    },
+                    "rule" : {
+                        "infant_rules" : "24",
+                        "child_rules" : "12"
+                    },
+                    "userid" : 1017505.0,
+                    "ownerid" : 7937.0,
+                    "createdate" : "1403-04-24",
+                    "createdateid" : 12535.0,
+                    "updated" : "1",
+                    "updatedate" : "1403-04-24",
+                    "updatedateid" : 12535.0,
+                    "enable" : "1",
+                    "delete" : "0",
+                    "dmnid" : 2475.0
+                },
+                {
+                    "id" : "6693bd14ad2b5ad3481f9123",
+                    "route" : {
+                        "start" : {
+                            "country" : "ایران",
+                            "countryid" : 1002236.0,
+                            "city" : "تهران",
+                            "cityid" : 1203548.0,
+                            "airport" : "Imam Khomeini International Airport/IKA",
+                            "airportid" : 1198711.0
+                        },
+                        "end" : {
+                            "country" : "گرجستان",
+                            "countryid" : 1002228.0,
+                            "city" : "تفلیس",
+                            "cityid" : 1189731.0,
+                            "airport" : "Tbilisi International Airport/TBS",
+                            "airportid" : 1198744.0
+                        }
+                    },
+                    "airline" : "Iran Aseman Airlines",
+                    "airlineid" : 1207277.0,
+                    "airlineimage" : "ref772702100001255656220001",
+                    "airplane" : "Boeing 747",
+                    "routecode" : "As 117",
+                    "timing" : "180",
+                    "time" : {
+                        "availabel" : {
+                            "times" : {
+                                "exitid" : 19800.0,
+                                "exit_time" : "05:30",
+                                "arrivalid" : 30600.0,
+                                "arrival_time" : "08:30",
+                                "arrival" : {
+                                    "defaultday" : "0",
+                                    "userday" : "1"
+                                }
+                            }
+                        },
+                        "seat" : {
+                            "economy_seat" : 50.0,
+                            "businessclass_seat" : 0.0,
+                            "firstclass_seat" : 0.0
+                        },
+                        "availabelday" : {
+                            "days" : [ 
+                                {
+                                    "day" : "7"
+                                }, 
+                                {
+                                    "day" : "1"
+                                }, 
+                                {
+                                    "day" : "2"
+                                }
+                            ]
+                        }
+                    },
+                    "rule" : {
+                        "infant_rules" : "24",
+                        "child_rules" : "12"
+                    },
+                    "userid" : 1018932.0,
+                    "ownerid" : 7937.0,
+                    "createdate" : "1403-04-24",
+                    "createdateid" : 12535.0,
+                    "updated" : "1",
+                    "updatedate" : "1403-04-24",
+                    "updatedateid" : 12535.0,
+                    "enable" : "1",
+                    "delete" : "0",
+                    "dmnid" : 2475.0
+                }
+            ]
+            console.log("111111111111qqqqqqqqq")
+            $bc.setSource("sample.data", dataList);
+        }
+
+        setSource();
+
+        const options = {
+        columns: {
+            info: {
+                title: "مسیر",
+                filter: true,
+                sort: true,
+                source: row => `${row.route.start.city}-${row.route.end.city}`,
+                cellMaker: (row, data, td) =>
+                    `<span class="city1 city-start">${row.route.start.city} </span> <i class="lni lni-chevron-left"></i> <span class="city1 city-end"> ${row.route.end.city} </span>`
+
+            },
+
+            airline: {
+                title: "ایرلاین",
+                sort: true,
+                filter: true,
+                source: row => `${row.airline}`,
+                cellMaker: (row, data, td) => {
+                    var img = `<img src="https://basispanel.ir/panel/[##cms.cms.rkey##]/${row.airlineimage}" width="60" height="30" />`;
+                    if (row.airlineimage.includes('pic')){
+                        var img = `<img src="https://basisfly.com/${row.airlineimage}" width="60" height="30">`;
+                    }
+                    return `${img}<br/><span class="en-numbers">${row.airline}</span>`;
+                }                    
+            },
+            airplane: {
+                title: "نوع هواپیما",
+                filter: true,
+                sort: true,
+                source: row => `${row.airplane}`,
+                cellMaker: (row, data, td) =>
+                    `<span class="en-numbers">${row.airplane} </span>`
+
+            },
+            routecode: {
+                title: "کد مسیر",
+                filter: true,
+                sort: false,
+                source: row => `${row.routecode}`,
+                cellMaker: (row, data, td) =>
+                    `<span class="en-numbers">${row.routecode} </span>`
+
+            },
+
+            timing: {
+                title: "مدت سفر(دقیقه)",
+                filter: true,
+                sort: true,
+                source: row => {
+                    if (!isNaN(`${row.timing}`)){
+                        return parseInt(row.timing);
+                    }
+                    return '0';
+                },
+                cellMaker: (row, data, td) =>
+                    `<span class="en-numbers">${row.timing} </span>`
+            },
+            createdate: {
+                title: "تاریخ ایجاد",
+                filter: true,
+                sort: true,
+                source: row => `${row.createdate}`,
+                cellMaker: (row, data, td) =>
+                    `<span class="en-numbers">${row.createdate} </span>`
+            },
+            updatedate: {
+                title: "تاریخ تغییر",
+                filter: true,
+                sort: true,
+                source: row => `${row.updatedate}`,
+                cellMaker: (row, data, td) =>
+                    `<span class="en-numbers">${row.updatedate} </span>`
+            },
+
+            operation: {
+                title: `
+                <div class="iconContainer iconsOperations" id="iconContainer">
+<div class="icon" onclick="onClickShowMoreActions(this)"><svg width="6"
+        height="20" viewBox="0 0 6 20" fill="none"
+        xmlns="http://www.w3.org/2000/svg"><path d="M3.00717 7.80503C1.81669
+            7.80503 0.86431 8.78064 0.86431 10.0002C0.86431 11.2197 1.81669
+            12.1953 3.00717 12.1953C4.19764 12.1953 5.15002 11.2197 5.15002
+            10.0002C5.15002 8.78064 4.19764 7.80503 3.00717 7.80503ZM5.15002
+            2.19527C5.15002 3.41479 4.19764 4.3904 3.00717 4.3904C1.81669
+            4.3904 0.86431 3.41479 0.86431 2.19527C0.86431 0.975762 1.81669
+            0.000152588 3.00717 0.000152588C4.19764 0.000152588 5.15002
+            0.975762 5.15002 2.19527ZM5.15002 17.805C5.15002 19.0245 4.19764
+            20.0002 3.00717 20.0002C1.81669 20.0002 0.86431 19.0245 0.86431
+            17.805C0.86431 16.5855 1.81669 15.6099 3.00717 15.6099C4.19764
+            15.6099 5.15002 16.5855 5.15002 17.805Z" fill="#767676"></path></svg></div>
+<div class="iconsDetail" id="iconsDetail">
+    <a class="iconItem edit" onclick="showModal('removeTextPage')">
+        <span class="title" data-sys-text-delete="">حذف گروهی</span><svg class="si-trash-bin fill-red-fs" viewBox="0 0 25.02 25.02"><path></path></svg>
+    </a>
+
+
+</div>
+</div>`,
+                filter: false,
+                sort: false,
+                cellMaker: (row, data, td) => {
+                    let result = "";
+                    result = `
+                <div class="iconContainer iconsOperations" id="iconContainer">
+<div class="icon" onclick="onClickShowMoreActions(this)"><svg width="6"
+        height="20" viewBox="0 0 6 20" fill="none"
+        xmlns="http://www.w3.org/2000/svg"><path d="M3.00717 7.80503C1.81669
+            7.80503 0.86431 8.78064 0.86431 10.0002C0.86431 11.2197 1.81669
+            12.1953 3.00717 12.1953C4.19764 12.1953 5.15002 11.2197 5.15002
+            10.0002C5.15002 8.78064 4.19764 7.80503 3.00717 7.80503ZM5.15002
+            2.19527C5.15002 3.41479 4.19764 4.3904 3.00717 4.3904C1.81669
+            4.3904 0.86431 3.41479 0.86431 2.19527C0.86431 0.975762 1.81669
+            0.000152588 3.00717 0.000152588C4.19764 0.000152588 5.15002
+            0.975762 5.15002 2.19527ZM5.15002 17.805C5.15002 19.0245 4.19764
+            20.0002 3.00717 20.0002C1.81669 20.0002 0.86431 19.0245 0.86431
+            17.805C0.86431 16.5855 1.81669 15.6099 3.00717 15.6099C4.19764
+            15.6099 5.15002 16.5855 5.15002 17.805Z" fill="#767676"></path></svg></div>
+<div class="iconsDetail" id="iconsDetail">
+    <a class="iconItem edit" onclick="editObject(this, event,'${row.id}',43)">
+        <span class="title">ویرایش</span><svg class="si-pen"  viewBox="0 0 25 25"><path></path></svg>
+    </a>
+<a class="iconItem remove" onclick="desableObject(this,event,'${row.id}', '${row.enable}')">
+<span class="title" data-sys-text-delete="">غیرفعال</span><svg class="si-disable fill-red" viewBox="0 0 25.02 25.02"><path></path></svg>
+</a>
+    <a class="iconItem remove" onclick="removeObject(this,event,'${row.id}')">
+<span class="title" data-sys-text-delete="">حذف</span><svg class="si-trash-bin fill-red" viewBox="0 0 25.02 25.02"><path></path></svg>
+</a>
+
+
+</div>
+</div>`;
+
+                    return result;
+
+
+                },
+
+            }
+        },
+        filter: 'row',
+        rowNumber: 'ردیف',
+        defaultSort: false,
+        direction: "rtl",
+        paging: 50,
+        information: true,
+        firstAndLastBtn: true,
+        selectable: "multi",
+        selectAll: true,
+        refresh: true,
+        selectedSourceId: "route.selected",
+        culture: {
+            deviceId: 2,
+            template: "template3",
+            labels: {
+                "refresh": "",
+                "next": "بعدی",
+                "previous": "قبلی",
+                "first": "اولین صفحه",
+                "last": "آخرین صفحه",
+                "information": "نمایش ${from} تا ${to} از مجموع ${total}",
+                "refresh": ""
+            }
+        },
+        refreshSourceId: "list.refresh",
+        noData: (td) => {
+            td.innerHTML = `<div class="noData">
+<div class="icon">
+    <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M45 70C45 67.2386 47.2386 65 50 65C52.7614 65 55 67.2386 55 70C55 72.7614 52.7614 75 50 75C47.2386 75 45 72.7614 45 70ZM45 30C45 27.2386 47.2386 25 50 25C52.7614 25 55 27.2386 55 30V50C55 52.7614 52.7614 55 50 55C47.2386 55 45 52.7614 45 50V30ZM49.95 0C22.35 0 0 22.4 0 50C0 77.6 22.35 100 49.95 100C77.6 100 100 77.6 100 50C100 22.4 77.6 0 49.95 0ZM50 90C27.9 90 10 72.1 10 50C10 27.9 27.9 10 50 10C72.1 10 90 27.9 90 50C90 72.1 72.1 90 50 90Z"
+            fill="#D0D0D0">
+        </path>
+    </svg>
+</div>
+<div class="text">
+    هیچ موردی یافت نشد. </div></div>`
+        },
+        mode: "grid",
+        // information: false,
+        //firstAndLastBtn: false,
+        // loader: "http://user.efeh.com/images/loadinglist.gif",
+        pageCount: 5
+    };
+
+
+        // const options = {
+        //     // process: "server",
+        //     filter: "row",
+        //     columns: {
+        //         "id": {
+        //             title: "ردیف",
+                 
+        //             width: '5%',
+        //             sort: false
+        //         },
+             
+        //         title: {
+        //             title: "نام",
+                 
+                   
+                
+        //         },
+        //         count: {
+        //             title: "تعداد",
+           
+                    
+        //         },
+        //         data: {
+        //             title: "دیتا",
+                
+        //             filter: false,
+        //             sort: false
+        //         }
+        //     },
+        //     defaultSort: {
+        //         name: "id",
+        //         sort: "desc"
+        //     },
+        //     direction: "rtl",
+        //     paging: 10,
+        //     culture: {
+        //         deviceId: 2,
+        //         template: "template3",
+        //         labels: {
+        //             "search": "",
+        //             "pageSize": "Page Size :",
+        //             "next": "to next",
+        //             "previous": "to previous",
+        //             "first": "to first",
+        //             "last": "to last"
+        //         }
+        //     },
+        //     // information: false,
+        //     firstAndLastBtn: false,
+        //     pageCount: 3,
+        // };
+    </script>
+</body>
+
+</html>

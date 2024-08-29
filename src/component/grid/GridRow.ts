@@ -4,6 +4,7 @@ import Grid from "./Grid";
 import Item from "./Item";
 import template1Layout from "./../../asset/layout-template1.html";
 import template2Layout from "./../../asset/layout-template2.html";
+import template3Layout from "./../../asset/layout-template3.html";
 import { IBCUtil } from "basiscore";
 
 declare const $bc:IBCUtil;
@@ -74,8 +75,10 @@ export default class GridRow extends Item {
         if (this._owner.options.rowMaker) {
           this._owner.options.rowMaker(this.data, this._uiElement);
         }
-      } else if (this._owner.deviceId == 2) {
+      } 
+      else if (this._owner.deviceId == 2) {
         let copyTemplateLayout;
+  
         switch (this._owner.options.culture?.template) {
           case "template1": {
             copyTemplateLayout = template1Layout;
@@ -85,65 +88,171 @@ export default class GridRow extends Item {
             copyTemplateLayout = template2Layout;
             break;
           }
+          case "template3": {
+            copyTemplateLayout = template3Layout;
+            break;
+          }
           default:
             break;
         }
         const itemContainer = $bc.util.toHTMLElement(copyTemplateLayout) as HTMLDivElement;
-        
+       
         this._owner.columns.forEach((column) => {
-          const position = column.position;
-          if (position) {
-            const container = (itemContainer.querySelector(`[data-position="${column.position}"]`) as HTMLElement);
-            if (container) {
-              container.innerHTML = "";
-  
-              if (column.cssClass) {
-                Array.isArray(column.cssClass)
-                  ? container.classList.add(...column.cssClass)
-                  : container.classList.add(column.cssClass);
-              }
-  
-              switch (column.type) {
-                case ColumnType.data: {
-                  container.setAttribute("data-bc-data", "");
-                  const tmpValue = Reflect.get(this._dataProxy, column.name);
-                  if (column.cellMaker) {
-                    container.innerHTML = column.cellMaker(this.data, tmpValue, container) ?? tmpValue;
-                  } else {
-                    container.appendChild(document.createTextNode(tmpValue?.toString()));
+         
+          var position =""
+          if(this._owner.options.culture?.template == "template3"){
+            position="#1"
+            if (position) {
+             
+              const container = document.createElement('div');
+              container.setAttribute('data-position', position);
+              itemContainer.appendChild(container);
+            
+              if (container) {
+                if (column.cssClass) {
+                  Array.isArray(column.cssClass)
+                    ? container.classList.add(...column.cssClass)
+                    : container.classList.add(column.cssClass);
+                }
+                
+              
+                switch (column.type) {
+                 
+                  case ColumnType.data: {
+                  
+                    container.setAttribute("data-bc-data", "");
+                    var tmpValue = ""
+                    const container_question = document.createElement('div');
+                    container_question.setAttribute("data-bc-grid-temp3-section","#1")
+                    container_question.setAttribute("data-position","#1")
+                    container_question.innerHTML = column.title;
+                  
+                    container.appendChild(container_question);
+                    tmpValue = Reflect.get(this._dataProxy, column.name);
+                  
+                    var container_answer = document.createElement('div');
+                    container_answer.setAttribute("data-bc-grid-temp3-section","#1")
+                    container_answer.setAttribute("data-position","#1")
+                   
+                    
+                    
+                    
+                    if (column.cellMaker) {
+                  
+                  
+                      container_answer.innerHTML=column.cellMaker(this.data, tmpValue, container) ?? tmpValue;
+                    
+                      
+                    } else {
+                      container_answer.appendChild(document.createTextNode(tmpValue?.toString()));
+                    }
+                    container.appendChild(container_answer);
+                  
+
+                    const divElementclr = document.createElement('div');
+                    divElementclr.className = 'clr'; 
+
+                    container.appendChild(divElementclr);
+                    break;
                   }
-                  break;
+                  
+                
+                  case ColumnType.sort: {
+                    container.setAttribute("data-bc-order", "");
+                    container.appendChild(document.createTextNode(this.order.toString()));
+                    this._orderChanged = false;
+                    break;
+                  }
+                  case ColumnType.select: {
+                    
+                    container.setAttribute("data-bc-select", "");
+      
+                    this._checkBox = document.createElement("input");
+                    this._checkBox.type =
+                      this._owner.options.selectable === "single" ? "radio" : "checkbox";
+                    this._checkBox.name = this._owner.id;
+                    this._checkBox.addEventListener("change", (e) => {
+                      e.preventDefault();
+                      this._owner.onSelectionChange();
+                    });
+                    container.appendChild(this._checkBox);
+                    this._orderChanged = false;
+                    break;
+                  }
+                  default:
+                    break;
                 }
-                case ColumnType.sort: {
-                  container.setAttribute("data-bc-order", "");
-                  container.appendChild(document.createTextNode(this.order.toString()));
-                  this._orderChanged = false;
-                  break;
-                }
-                case ColumnType.select: {
-                  container.setAttribute("data-bc-select", "");
-    
-                  this._checkBox = document.createElement("input");
-                  this._checkBox.type =
-                    this._owner.options.selectable === "single" ? "radio" : "checkbox";
-                  this._checkBox.name = this._owner.id;
-                  this._checkBox.addEventListener("change", (e) => {
-                    e.preventDefault();
-                    this._owner.onSelectionChange();
-                  });
-                  container.appendChild(this._checkBox);
-                  this._orderChanged = false;
-                  break;
-                }
-                default:
-                  break;
               }
             }
           }
+          else{
+            position = column.position;
+            if (position) {
+              const container = (itemContainer.querySelector(`[data-position="${column.position}"]`) as HTMLElement);
+            
+              if (container) {
+                container.innerHTML = "";
+                
+                if (column.cssClass) {
+                  Array.isArray(column.cssClass)
+                    ? container.classList.add(...column.cssClass)
+                    : container.classList.add(column.cssClass);
+                }
+                
+              
+                switch (column.type) {
+                 
+                  case ColumnType.data: {
+                    container.setAttribute("data-bc-data", "");
+                 
+                    const tmpValue = Reflect.get(this._dataProxy, column.name);
+                      
+                    
+                    if (column.cellMaker) {
+                    
+                      container.innerHTML = column.cellMaker(this.data, tmpValue, container) ?? tmpValue;
+                    
+                      
+                    } else {
+                      container.appendChild(document.createTextNode(tmpValue?.toString()));
+                    }
+                    break;
+                  }
+                  case ColumnType.sort: {
+                    container.setAttribute("data-bc-order", "");
+                    container.appendChild(document.createTextNode(this.order.toString()));
+                    this._orderChanged = false;
+                    break;
+                  }
+                  case ColumnType.select: {
+                    container.setAttribute("data-bc-select", "");
+      
+                    this._checkBox = document.createElement("input");
+                    this._checkBox.type =
+                      this._owner.options.selectable === "single" ? "radio" : "checkbox";
+                    this._checkBox.name = this._owner.id;
+                    this._checkBox.addEventListener("change", (e) => {
+                      e.preventDefault();
+                      this._owner.onSelectionChange();
+                    });
+                    container.appendChild(this._checkBox);
+                    this._orderChanged = false;
+                    break;
+                  }
+                  default:
+                    break;
+                }
+              }
+            }
+          }
+          
+   
+          
+          
         });
-
+      
         this._uiElement = itemContainer;
-
+    
         if (this._owner.options.rowMaker) {
           this._owner.options.rowMaker(this.data, this._uiElement);
         }
@@ -151,7 +260,8 @@ export default class GridRow extends Item {
 
 
       
-    } else if (this._orderChanged) {
+    } 
+    else if (this._orderChanged) {
       const cel = this._uiElement.querySelector("[data-bc-order]");
       if (cel) {
         cel.textContent = this.order.toString();

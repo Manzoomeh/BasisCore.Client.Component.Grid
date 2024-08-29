@@ -11,7 +11,7 @@ export type ProcessActionType = "server" | "client";
 
 export type SelectType = "none" | "single" | "multi";
 
-export type ITemplate = "template1" | "template2";
+export type ITemplate = "template1" | "template2" | "template3";
 
 export type ExportType = "excel";
 

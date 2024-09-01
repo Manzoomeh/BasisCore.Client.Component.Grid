@@ -96,100 +96,74 @@ export default class GridRow extends Item {
             break;
         }
         const itemContainer = $bc.util.toHTMLElement(copyTemplateLayout) as HTMLDivElement;
-       
+        const main_itemContainer = document.createElement('div')
+        main_itemContainer.setAttribute("data-bc-grid-temp3-items","items")
         this._owner.columns.forEach((column) => {
-         
-          var position =""
-          if(this._owner.options.culture?.template == "template3"){
-            position="#1"
-            if (position) {
-             
-              const container = document.createElement('div');
-              container.setAttribute('data-position', position);
-              itemContainer.appendChild(container);
-            
-              if (container) {
+          const position: string = (this._owner?.options?.culture?.template === "template3") ? "#2" : column.position;
+          if (position) {
+            if (this._owner.options.culture?.template === "template3") {
+           
+              const section1 = itemContainer.querySelector('[data-position="#1"]').cloneNode(true) as HTMLDivElement;
+              const section2 = itemContainer.querySelector('[data-position="#2"]').cloneNode(true) as HTMLDivElement;
+              if (section1) {
                 if (column.cssClass) {
                   Array.isArray(column.cssClass)
-                    ? container.classList.add(...column.cssClass)
-                    : container.classList.add(column.cssClass);
+                      ? main_itemContainer.classList.add(...column.cssClass)
+                      : main_itemContainer.classList.add(column.cssClass);
                 }
-                
-              
+
                 switch (column.type) {
-                 
                   case ColumnType.data: {
-                  
-                    container.setAttribute("data-bc-data", "");
-                    var tmpValue = ""
-                    const container_question = document.createElement('div');
-                    container_question.setAttribute("data-bc-grid-temp3-section","#1")
-                    container_question.setAttribute("data-position","#1")
-                    container_question.innerHTML = column.title;
-                  
-                    container.appendChild(container_question);
-                    tmpValue = Reflect.get(this._dataProxy, column.name);
-                  
-                    var container_answer = document.createElement('div');
-                    container_answer.setAttribute("data-bc-grid-temp3-section","#1")
-                    container_answer.setAttribute("data-position","#1")
+                      if (section1 && section2) {
+                         
+                          
+                          section1.innerHTML = column.title;
+                          
+                          const tmpValue = Reflect.get(this._dataProxy, column.name);
+                          
+                        
+
+                          if (column.cellMaker) {
+                            section2.innerHTML = column.cellMaker(this.data, tmpValue, section2) ?? tmpValue;
+                          } else {
+                            section2.appendChild(document.createTextNode(tmpValue?.toString()));
+                          }
+
                    
-                    
-                    
-                    
-                    if (column.cellMaker) {
-                  
-                  
-                      container_answer.innerHTML=column.cellMaker(this.data, tmpValue, container) ?? tmpValue;
-                    
-                      
-                    } else {
-                      container_answer.appendChild(document.createTextNode(tmpValue?.toString()));
-                    }
-                    container.appendChild(container_answer);
-                  
-
-                    const divElementclr = document.createElement('div');
-                    divElementclr.className = 'clr'; 
-
-                    container.appendChild(divElementclr);
-                    break;
+                      }
+                      break;
                   }
-                  
-                
                   case ColumnType.sort: {
-                    container.setAttribute("data-bc-order", "");
-                    container.appendChild(document.createTextNode(this.order.toString()));
-                    this._orderChanged = false;
-                    break;
+                    main_itemContainer.setAttribute("data-bc-order", "");
+                    main_itemContainer.appendChild(document.createTextNode(this.order.toString()));
+                      this._orderChanged = false;
+                      break;
                   }
                   case ColumnType.select: {
+                    main_itemContainer.setAttribute("data-bc-select", "");
                     
-                    container.setAttribute("data-bc-select", "");
-      
-                    this._checkBox = document.createElement("input");
-                    this._checkBox.type =
-                      this._owner.options.selectable === "single" ? "radio" : "checkbox";
-                    this._checkBox.name = this._owner.id;
-                    this._checkBox.addEventListener("change", (e) => {
-                      e.preventDefault();
-                      this._owner.onSelectionChange();
-                    });
-                    container.appendChild(this._checkBox);
-                    this._orderChanged = false;
-                    break;
+                      this._checkBox = document.createElement("input");
+                      this._checkBox.type = this._owner.options.selectable === "single" ? "radio" : "checkbox";
+                      this._checkBox.name = this._owner.id;
+                      this._checkBox.addEventListener("change", (e) => {
+                          e.preventDefault();
+                          this._owner.onSelectionChange();
+                      });
+                      main_itemContainer.appendChild(this._checkBox);
+                      this._orderChanged = false;
+                      break;
                   }
                   default:
-                    break;
-                }
+                      break;
+              }
+              main_itemContainer.appendChild(section1)
+              main_itemContainer.appendChild(section2)
+              
               }
             }
-          }
-          else{
-            position = column.position;
-            if (position) {
+            else {
               const container = (itemContainer.querySelector(`[data-position="${column.position}"]`) as HTMLElement);
-            
+              
               if (container) {
                 container.innerHTML = "";
                 
@@ -201,10 +175,10 @@ export default class GridRow extends Item {
                 
               
                 switch (column.type) {
-                 
+                  
                   case ColumnType.data: {
                     container.setAttribute("data-bc-data", "");
-                 
+                  
                     const tmpValue = Reflect.get(this._dataProxy, column.name);
                       
                     
@@ -243,23 +217,33 @@ export default class GridRow extends Item {
                     break;
                 }
               }
-            }
           }
+            
+          }
+          // }
           
    
           
           
         });
+       
+        if (this._owner.options.culture?.template === "template3") {
+          const divElementclr = document.createElement('div');
+          divElementclr.className = 'clr'; 
+          main_itemContainer.appendChild(divElementclr);
+          this._uiElement = main_itemContainer;
+        }
+        else{
+          this._uiElement = itemContainer;
+        }
       
-        this._uiElement = itemContainer;
+        
     
         if (this._owner.options.rowMaker) {
           this._owner.options.rowMaker(this.data, this._uiElement);
         }
       }
 
-
-      
     } 
     else if (this._orderChanged) {
       const cel = this._uiElement.querySelector("[data-bc-order]");

@@ -246,7 +246,7 @@
                     "dmnid" : 2475.0
                 }
             ]
-            console.log("111111111111qqqqqqqqq")
+           
             $bc.setSource("sample.data", dataList);
         }
 
@@ -254,8 +254,10 @@
 
         const options = {
         columns: {
+          
             info: {
                 title: "مسیر",
+                position: "#1",
                 filter: true,
                 sort: true,
                 source: row => `${row.route.start.city}-${row.route.end.city}`,
@@ -266,19 +268,18 @@
 
             airline: {
                 title: "ایرلاین",
+                position: "#1",
                 sort: true,
                 filter: true,
                 source: row => `${row.airline}`,
                 cellMaker: (row, data, td) => {
-                    var img = `<img src="https://basispanel.ir/panel/[##cms.cms.rkey##]/${row.airlineimage}" width="60" height="30" />`;
-                    if (row.airlineimage.includes('pic')){
-                        var img = `<img src="https://basisfly.com/${row.airlineimage}" width="60" height="30">`;
-                    }
-                    return `${img}<br/><span class="en-numbers">${row.airline}</span>`;
+                   
+                    return `<span class="en-numbers">${row.airline}</span>`;
                 }                    
             },
             airplane: {
                 title: "نوع هواپیما",
+                position: "#1",
                 filter: true,
                 sort: true,
                 source: row => `${row.airplane}`,
@@ -288,6 +289,7 @@
             },
             routecode: {
                 title: "کد مسیر",
+                position: "#1",
                 filter: true,
                 sort: false,
                 source: row => `${row.routecode}`,
@@ -298,6 +300,7 @@
 
             timing: {
                 title: "مدت سفر(دقیقه)",
+                position: "#1",
                 filter: true,
                 sort: true,
                 source: row => {
@@ -311,6 +314,7 @@
             },
             createdate: {
                 title: "تاریخ ایجاد",
+                position: "#1",
                 filter: true,
                 sort: true,
                 source: row => `${row.createdate}`,
@@ -319,6 +323,7 @@
             },
             updatedate: {
                 title: "تاریخ تغییر",
+                position: "#1",
                 filter: true,
                 sort: true,
                 source: row => `${row.updatedate}`,
@@ -327,6 +332,7 @@
             },
 
             operation: {
+                position: "#1",
                 title: `
                 <div class="iconContainer iconsOperations" id="iconContainer">
 <div class="icon" onclick="onClickShowMoreActions(this)"><svg width="6"
@@ -436,58 +442,6 @@
         pageCount: 5
     };
 
-
-        // const options = {
-        //     // process: "server",
-        //     filter: "row",
-        //     columns: {
-        //         "id": {
-        //             title: "ردیف",
-                 
-        //             width: '5%',
-        //             sort: false
-        //         },
-             
-        //         title: {
-        //             title: "نام",
-                 
-                   
-                
-        //         },
-        //         count: {
-        //             title: "تعداد",
-           
-                    
-        //         },
-        //         data: {
-        //             title: "دیتا",
-                
-        //             filter: false,
-        //             sort: false
-        //         }
-        //     },
-        //     defaultSort: {
-        //         name: "id",
-        //         sort: "desc"
-        //     },
-        //     direction: "rtl",
-        //     paging: 10,
-        //     culture: {
-        //         deviceId: 2,
-        //         template: "template3",
-        //         labels: {
-        //             "search": "",
-        //             "pageSize": "Page Size :",
-        //             "next": "to next",
-        //             "previous": "to previous",
-        //             "first": "to first",
-        //             "last": "to last"
-        //         }
-        //     },
-        //     // information: false,
-        //     firstAndLastBtn: false,
-        //     pageCount: 3,
-        // };
     </script>
 </body>
 

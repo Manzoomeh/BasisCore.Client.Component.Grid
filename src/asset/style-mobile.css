@@ -450,6 +450,30 @@
   /* background-color: lightgreen; */
 }
 
+[data-bc-grid="d2"]
+  div[data-bc-grid-temp3-items]
+  [data-bc-grid-temp3-section="#1"] {
+  width: 50%;
+  float: right;
+  /* background-color: lightgreen; */
+}
+
+[data-bc-grid="d2"] div[data-bc-grid-temp3-items] {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 0 5px 10px 5px;
+  float: right;
+  text-align: center;
+  height: 180px;
+  border-radius: 5px; 
+  border-bottom: 1px solid #e9e9ea; 
+ } 
+
+
+
+
+
+
 /* footer container */
 [data-bc-grid="d2"] [data-bc-grid-footer-container] {
   /* background-color: #DBE8F1; */

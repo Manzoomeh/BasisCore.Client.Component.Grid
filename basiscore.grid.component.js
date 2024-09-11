@@ -318,8 +318,9 @@ function addElementStyle(obj, options) {
 
   return updater;
 }
-
+console.log(options)
 module.exports = function (list, options) {
+    console.log(options)
   options = options || {};
   list = list || [];
   var lastIdentifiers = modulesToDom(list, options);
@@ -1730,6 +1731,7 @@ var ServerProcess = /** @class */ (function (_super) {
         this.displayRows(rows);
     };
     ServerProcess.prototype.displayRows = function (rows) {
+        console.log(this)
         this.filteredData = rows;
         this.totalRows = this.options.total;
         this.pageNumber = Math.floor(this.options.from / this.pageSize);

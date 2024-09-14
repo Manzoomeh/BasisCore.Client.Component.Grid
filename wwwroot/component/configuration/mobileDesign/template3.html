@@ -19,7 +19,7 @@
 <body>
     
     <basis core="component.grid.grid" run="atclient" dataMemberName="sample.data" options="options"></basis>
-    <basis core="callback" run="atclient" triggers="route.selected" />
+ 
     <script>
         function setSource() {
             const MIN_ID = 1000;
@@ -405,7 +405,7 @@
         paging: 50,
         information: true,
         firstAndLastBtn: true,
-        selectable: "single",
+        selectable: "multi",
         selectAll: true,
         refresh: true,
         selectedSourceId: "route.selected",

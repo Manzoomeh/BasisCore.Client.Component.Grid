@@ -98,13 +98,30 @@ export default class GridRow extends Item {
         const itemContainer = $bc.util.toHTMLElement(copyTemplateLayout) as HTMLDivElement;
         const main_itemContainer = document.createElement('div')
         main_itemContainer.setAttribute("data-bc-grid-temp3-items","items")
+        if (this._owner.options.culture?.template === "template3" && this._owner.options.selectable) {
+          const checkBoxWrapper = document.createElement("div")
+          this._checkBox = document.createElement("input");
+          checkBoxWrapper.appendChild(this._checkBox)
+          checkBoxWrapper.setAttribute("data-bc-grid-selectable","")
+          this._checkBox.type = this._owner.options.selectable === "single" ? "radio" : "checkbox";
+          this._checkBox.name = this._owner.id;
+          this._checkBox.addEventListener("change", (e) => {
+              e.preventDefault();
+              this._owner.onSelectionChange();
+          });
+
+          main_itemContainer.appendChild(checkBoxWrapper)
+        }
+        
         this._owner.columns.forEach((column) => {
+        
           const position: string = (this._owner?.options?.culture?.template === "template3") ? "#2" : column.position;
           if (position) {
             if (this._owner.options.culture?.template === "template3") {
            
               const section1 = itemContainer.querySelector('[data-position="#1"]').cloneNode(true) as HTMLDivElement;
               const section2 = itemContainer.querySelector('[data-position="#2"]').cloneNode(true) as HTMLDivElement;
+
               if (section1) {
                 if (column.cssClass) {
                   Array.isArray(column.cssClass)
@@ -158,6 +175,7 @@ export default class GridRow extends Item {
               }
               main_itemContainer.appendChild(section1)
               main_itemContainer.appendChild(section2)
+  
               
               }
             }
@@ -173,20 +191,14 @@ export default class GridRow extends Item {
                     : container.classList.add(column.cssClass);
                 }
                 
-              
+
                 switch (column.type) {
                   
                   case ColumnType.data: {
-                    container.setAttribute("data-bc-data", "");
-                  
+                    container.setAttribute("data-bc-data", "");                  
                     const tmpValue = Reflect.get(this._dataProxy, column.name);
-                      
-                    
                     if (column.cellMaker) {
-                    
                       container.innerHTML = column.cellMaker(this.data, tmpValue, container) ?? tmpValue;
-                    
-                      
                     } else {
                       container.appendChild(document.createTextNode(tmpValue?.toString()));
                     }
@@ -200,7 +212,6 @@ export default class GridRow extends Item {
                   }
                   case ColumnType.select: {
                     container.setAttribute("data-bc-select", "");
-      
                     this._checkBox = document.createElement("input");
                     this._checkBox.type =
                       this._owner.options.selectable === "single" ? "radio" : "checkbox";
@@ -228,6 +239,7 @@ export default class GridRow extends Item {
         });
        
         if (this._owner.options.culture?.template === "template3") {
+        
           const divElementclr = document.createElement('div');
           divElementclr.className = 'clr'; 
           main_itemContainer.appendChild(divElementclr);

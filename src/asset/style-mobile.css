@@ -454,7 +454,7 @@
   div[data-bc-grid-temp3-items]
   [data-bc-grid-temp3-section="#1"] {
   width: 50%;
-  float: right;
+  
   /* background-color: lightgreen; */
 }
 
@@ -464,13 +464,19 @@
   padding: 0 5px 10px 5px;
   float: right;
   text-align: center;
-  height: 180px;
+  height: auto;
   border-radius: 5px; 
   border-bottom: 1px solid #e9e9ea; 
  } 
 
-
-
+ [data-bc-grid="d2"] div[data-bc-grid-temp3-items] [data-bc-grid-temp3-section="#2"] {
+  
+  width: 50%;
+}
+[data-bc-grid="d2"] div[data-bc-grid-temp3-items] [data-bc-grid-temp3-section="#3"] {
+  
+  display: flex;
+}
 
 
 
@@ -677,3 +683,13 @@
 [data-bc-grid-selectable]{
   float: right;
 }
+
+
+
+
+
+
+
+
+
+

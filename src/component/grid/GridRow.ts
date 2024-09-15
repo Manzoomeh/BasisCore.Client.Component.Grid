@@ -118,9 +118,11 @@ export default class GridRow extends Item {
           const position: string = (this._owner?.options?.culture?.template === "template3") ? "#2" : column.position;
           if (position) {
             if (this._owner.options.culture?.template === "template3") {
-           
-              const section1 = itemContainer.querySelector('[data-position="#1"]').cloneNode(true) as HTMLDivElement;
-              const section2 = itemContainer.querySelector('[data-position="#2"]').cloneNode(true) as HTMLDivElement;
+              
+              const section3 = itemContainer.querySelector('[data-position="#3"]').cloneNode(true) as HTMLDivElement;
+             
+              const section1 = section3.querySelector('[data-position="#1"]') as HTMLDivElement;
+              const section2 = section3.querySelector('[data-position="#2"]') as HTMLDivElement;
 
               if (section1) {
                 if (column.cssClass) {
@@ -173,8 +175,9 @@ export default class GridRow extends Item {
                   default:
                       break;
               }
-              main_itemContainer.appendChild(section1)
-              main_itemContainer.appendChild(section2)
+           
+              main_itemContainer.appendChild(section3)
+              // main_itemContainer.appendChild(section2)
   
               
               }

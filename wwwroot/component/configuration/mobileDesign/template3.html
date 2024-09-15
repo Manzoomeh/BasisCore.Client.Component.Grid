@@ -334,29 +334,7 @@
 
             operation: {
                 position: "#1",
-                title: `
-                <div class="iconContainer iconsOperations" id="iconContainer">
-<div class="icon" onclick="onClickShowMoreActions(this)"><svg width="6"
-        height="20" viewBox="0 0 6 20" fill="none"
-        xmlns="http://www.w3.org/2000/svg"><path d="M3.00717 7.80503C1.81669
-            7.80503 0.86431 8.78064 0.86431 10.0002C0.86431 11.2197 1.81669
-            12.1953 3.00717 12.1953C4.19764 12.1953 5.15002 11.2197 5.15002
-            10.0002C5.15002 8.78064 4.19764 7.80503 3.00717 7.80503ZM5.15002
-            2.19527C5.15002 3.41479 4.19764 4.3904 3.00717 4.3904C1.81669
-            4.3904 0.86431 3.41479 0.86431 2.19527C0.86431 0.975762 1.81669
-            0.000152588 3.00717 0.000152588C4.19764 0.000152588 5.15002
-            0.975762 5.15002 2.19527ZM5.15002 17.805C5.15002 19.0245 4.19764
-            20.0002 3.00717 20.0002C1.81669 20.0002 0.86431 19.0245 0.86431
-            17.805C0.86431 16.5855 1.81669 15.6099 3.00717 15.6099C4.19764
-            15.6099 5.15002 16.5855 5.15002 17.805Z" fill="#767676"></path></svg></div>
-<div class="iconsDetail" id="iconsDetail">
-    <a class="iconItem edit" onclick="showModal('removeTextPage')">
-        <span class="title" data-sys-text-delete="">حذف گروهی</span><svg class="si-trash-bin fill-red-fs" viewBox="0 0 25.02 25.02"><path></path></svg>
-    </a>
-
-
-</div>
-</div>`,
+                title: "عملیات",
                 filter: false,
                 sort: false,
                 cellMaker: (row, data, td) => {
@@ -377,15 +355,7 @@
             17.805C0.86431 16.5855 1.81669 15.6099 3.00717 15.6099C4.19764
             15.6099 5.15002 16.5855 5.15002 17.805Z" fill="#767676"></path></svg></div>
 <div class="iconsDetail" id="iconsDetail">
-    <a class="iconItem edit" onclick="editObject(this, event,'${row.id}',43)">
-        <span class="title">ویرایش</span><svg class="si-pen"  viewBox="0 0 25 25"><path></path></svg>
-    </a>
-<a class="iconItem remove" onclick="desableObject(this,event,'${row.id}', '${row.enable}')">
-<span class="title" data-sys-text-delete="">غیرفعال</span><svg class="si-disable fill-red" viewBox="0 0 25.02 25.02"><path></path></svg>
-</a>
-    <a class="iconItem remove" onclick="removeObject(this,event,'${row.id}')">
-<span class="title" data-sys-text-delete="">حذف</span><svg class="si-trash-bin fill-red" viewBox="0 0 25.02 25.02"><path></path></svg>
-</a>
+   
 
 
 </div>

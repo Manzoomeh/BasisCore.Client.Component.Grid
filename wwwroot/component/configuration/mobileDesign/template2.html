@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+    <script src="/basiscore.js"></script>
     <title>Grid Command - With Config</title>
     <script>
         const host = {
@@ -65,13 +65,26 @@
                     title: "title",
                     position: "#4",
                     width: '15%',
-                    cssClass: "textRight"
+                    cssClass: "textRight",
+                    filterData: {
+                        type: "autocomplete",
+                        link: "/server/api/autocomplete?term=${term}"
+                    }
                 },
                 count: {
                     title: "count",
                     position: "#7",
                     width: '15%',
-                    cssClass: ["textRight", "dirRight"]
+                    cssClass: ["textRight", "dirRight"],
+                    filterData: {
+                        type: "select",
+                        fixValues: [
+                            {id: 1, value: "item 1"},
+                            {id: 2, value: "item 2"},
+                            {id: 3, value: "item 3"},
+                            {id: 4, value: "item 4"},
+                        ]
+                    }
                 },
                 data: {
                     title: "data",

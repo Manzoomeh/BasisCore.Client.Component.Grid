@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://github.com/Manzoomeh/BasisCore.Client-v2/releases/download/v2.2.1/basiscore.min.js"></script>
+  <script src="/basiscore.js"></script>
   <title>Grid Command - With Config</title>
   <script>
     const host = {
@@ -54,17 +54,34 @@
         },
         custom0: {
           title: "custom0",
-          source: () => "statis"
+          source: () => "statis",
+          filterData: {
+            type: "select",
+            fixValues: [
+              {id: 1, value: "item 1"},
+              {id: 2, value: "item 2"},
+              {id: 3, value: "item 3"},
+              {id: 4, value: "item 4"},
+            ]
+          }
         },
         custom1: {
           title: "custom1",
           source: row => `${row.id}-${row.data}`,
-          "cellMaker": (row, data, td) => `${row.id}-${row.data}`
+          "cellMaker": (row, data, td) => `${row.id}-${row.data}`,
+          filterData: {
+            type: "select",
+            link: "/server/api/fixValues"
+          }
         },
         custom2: {
           title: "custom2",
           source: "data",
-          "cellMaker": (row, data, td) => `<button data-id="${row.id}" onclick="alert(this);">${data}</button>`
+          "cellMaker": (row, data, td) => `<button data-id="${row.id}" onclick="alert(this);">${data}</button>`,
+          filterData: {
+            type: "autocomplete",
+            link: "/server/api/autocomplete?term=${term}"
+          }
         },
         custom3: {
           source: "id",
@@ -99,7 +116,8 @@
           "next": "to next",
           "previous": "to previous",
           "first": "to first",
-          "last": "to last"
+          "last": "to last",
+          "chooseItem": "Choose an item"
         }
       },
       pageNumber: 2,

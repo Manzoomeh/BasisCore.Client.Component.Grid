@@ -1,4 +1,4 @@
-import { IGridOptions, IOffsetOptions } from "./../grid/IOptions";
+import { FilterDataType, IGridOptions, IOffsetOptions } from "./../grid/IOptions";
 import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
 import { ISortInfo } from "../../type-alias";
@@ -23,7 +23,7 @@ export default abstract class ProcessManager implements IGridProcessManager {
     this.applyUserAction();
   }
 
-  protected applyFilterAndSort(): Array<GridRow> {
+  protected applyFilterAndSort(type?: FilterDataType): Array<GridRow> {
     var rows = this.originalData;
     if (this.owner.options.filter === "simple" && this.filter?.length > 0) {
       rows = rows.filter((x) => x.acceptableBySimpleFilter(this.filter));
@@ -32,7 +32,7 @@ export default abstract class ProcessManager implements IGridProcessManager {
       this.filter &&
       Reflect.ownKeys(this.filter).length > 0
     ) {
-      rows = rows.filter((x) => x.acceptableByRowFilter(this.filter));
+      rows = rows.filter((x) => x.acceptableByRowFilter(this.filter, type));
     }
     if (this.sortInfo) {
       rows = rows.sort((a, b) => GridRow.compare(a, b, this.sortInfo));
@@ -41,8 +41,8 @@ export default abstract class ProcessManager implements IGridProcessManager {
     return rows;
   }
 
-  public applyUserAction(): void {
-    const rows = this.applyFilterAndSort();
+  public applyUserAction(type?: FilterDataType): void {
+    const rows = this.applyFilterAndSort(type);
     const total = rows?.length ?? 0;
     const from =
       this.options && this.options.from

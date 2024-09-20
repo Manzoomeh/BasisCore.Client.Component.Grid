@@ -6,6 +6,7 @@ import template1Layout from "./../../asset/layout-template1.html";
 import template2Layout from "./../../asset/layout-template2.html";
 import template3Layout from "./../../asset/layout-template3.html";
 import { IBCUtil } from "basiscore";
+import { FilterDataType } from "./IOptions";
 
 declare const $bc:IBCUtil;
 
@@ -280,12 +281,16 @@ export default class GridRow extends Item {
     this._orderChanged = true;
   }
 
-  public acceptableByRowFilter(filter: object): boolean {
+  public acceptableByRowFilter(filter: object, type?: FilterDataType): boolean {
     let retVal = true;
     for (const key of Reflect.ownKeys(filter)) {
       const element = Reflect.get(filter, key);
       const value = Reflect.get(this._dataProxy, key)?.toString().toLowerCase();
-      retVal = retVal && value.indexOf(element) >= 0;
+      if (type && (type == "select" || type == "autocomplete")) {
+        retVal = retVal && value == element;
+      } else {
+        retVal = retVal && value.indexOf(element) >= 0;
+      }
       if (!retVal) {
         break;
       }

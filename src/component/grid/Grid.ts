@@ -1,4 +1,4 @@
-import { IExportInfo, IGridOptions, IOffsetOptions } from "./IOptions";
+import { FilterDataType, IExportInfo, IGridOptions, IOffsetOptions } from "./IOptions";
 import {
   IGridColumnInfo,
   ISortType,
@@ -20,7 +20,7 @@ import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 import Item from "./Item";
 import Card from "./Card";
-import { IBCUtil } from "basiscore";
+import { IBCUtil, IDictionary } from "basiscore";
 
 declare const $bc: IBCUtil;
 export default class Grid implements IGrid {
@@ -91,11 +91,21 @@ export default class Grid implements IGrid {
             noData: "No Data Find",
             information: "Showing ${from} to ${to} from Total ${total}",
             refresh: "Refresh",
+            chooseItem: "Choose",
           },
         },
       };
     }
     return Grid._defaults;
+  }
+
+  static formatString(
+    pattern: string,
+    params: IDictionary<string> | any
+  ): string {
+    const paraNameList = [...Object.getOwnPropertyNames(params)];
+    const formatter = new Function(...paraNameList, `return \`${pattern}\``);
+    return formatter(...paraNameList.map((x) => Reflect.get(params, x)));
   }
 
   constructor(
@@ -180,17 +190,18 @@ export default class Grid implements IGrid {
   }
 
   private handleRowInput(
-    input: HTMLInputElement,
+    el: HTMLInputElement | HTMLSelectElement,
+    type: FilterDataType,
     columnInfo: IGridColumnInfo,
     event?: KeyboardEvent
   ) {
     clearTimeout(this.timerId);
     if (
-      this.options.process === "server" &&
+      (this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&
       !(event?.key === "Enter" || event?.keyCode === 13)
     ) {
       this.timerId = setTimeout(() => {
-        let newFilter = input.value.toLowerCase();
+        const newFilter = el.value.toLowerCase();
 
         let mustUpdate = false;
         if (newFilter.length > 0) {
@@ -198,7 +209,19 @@ export default class Grid implements IGrid {
             this.processManager.filter = {};
           }
           if (newFilter != this.processManager.filter[columnInfo.name]) {
-            this.processManager.filter[columnInfo.name] = newFilter;
+            if (type == "select") {
+              this.processManager.filter[columnInfo.name] = {
+                id: parseInt(newFilter),
+                value: (el as HTMLSelectElement).selectedOptions[0].text
+              }
+            } else if (type == "autocomplete") {
+              this.processManager.filter[columnInfo.name] = {
+                id: parseInt(el.getAttribute("data-bc-value")),
+                value: newFilter
+              }
+            } else {
+              this.processManager.filter[columnInfo.name] = newFilter;
+            }
             mustUpdate = true;
           }
         } else {
@@ -216,7 +239,7 @@ export default class Grid implements IGrid {
       }, 1000);
     } else {
       this.timerId = setTimeout(() => {
-        const newFilter = input.value.toLowerCase();
+        const newFilter = el.value.toLowerCase();
         let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
@@ -236,7 +259,7 @@ export default class Grid implements IGrid {
         }
         if (mustUpdate) {
           this.processManager.pageNumber = 0;
-          this.processManager.applyUserAction();
+          this.processManager.applyUserAction(type);
         }
       }, 5);
     }
@@ -504,18 +527,7 @@ export default class Grid implements IGrid {
           li.setAttribute("data-bc-filter-item", "");
           li.setAttribute("data-sys-tr", "");
           li.innerHTML = "";
-
-          const input = document.createElement("input");
-          input.setAttribute("type", "text");
-          input.setAttribute("data-sys-input-text", "");
-          input.setAttribute("placeholder", columnInfo.title);
-          input.addEventListener("paste", () => {
-            this.handleRowInput(input, columnInfo);
-          });
-          input.addEventListener("keyup", (event) => {
-            this.handleRowInput(input, columnInfo, event);
-          });
-          li.appendChild(input);
+          this.fillTemplateRowFilterElement(li, columnInfo);
           // this._head.appendChild(tr);
           filterItemsWrapper.appendChild(li);
         }
@@ -530,6 +542,11 @@ export default class Grid implements IGrid {
         gridHeaderContainer.remove();
       }
     }
+  }
+
+  private async fillTemplateRowFilterElement(li: HTMLLIElement, columnInfo: IGridColumnInfo): Promise<void> {
+    const el = await this.createRowFilterElement(columnInfo);
+    li.appendChild(el);
   }
 
   private createUI(): void {
@@ -754,17 +771,7 @@ export default class Grid implements IGrid {
         if (columnInfo.filter) {
           const td = document.createElement("td");
           td.setAttribute("data-sys-th", "");
-          const input = document.createElement("input");
-          input.setAttribute("type", "text");
-          input.setAttribute("data-sys-input-text", "");
-          input.setAttribute("placeholder", columnInfo.title);
-          input.addEventListener("paste", () => {
-            this.handleRowInput(input, columnInfo);
-          });
-          input.addEventListener("keyup", (event) => {
-            this.handleRowInput(input, columnInfo, event);
-          });
-          td.appendChild(input);
+          this.fillTableRowFilterElement(td, columnInfo);
           tr.appendChild(td);
         } else {
           const td = document.createElement("td");
@@ -774,6 +781,126 @@ export default class Grid implements IGrid {
       });
     }
   }
+
+  private async fillTableRowFilterElement(td: HTMLTableCellElement, columnInfo: IGridColumnInfo): Promise<void> {
+    const el = await this.createRowFilterElement(columnInfo);
+    td.appendChild(el);
+  }
+
+  private async createRowFilterElement(columnInfo: IGridColumnInfo): Promise<HTMLElement> {
+    const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
+    let el;
+    if (filterType == "select") {
+      const select = document.createElement("select");
+      select.setAttribute("data-sys-select-option", "");
+
+      const option = document.createElement("option");
+      option.setAttribute("value", "");
+      option.textContent = this.options.culture.labels.chooseItem;
+
+      select.appendChild(option);
+      if (columnInfo.filterData?.fixValues) {
+        const fixValues = columnInfo.filterData?.fixValues;
+        fixValues.forEach(fix => {
+          const option = document.createElement("option");
+          option.setAttribute("value", `${fix.id}`);
+          option.textContent = fix.value;
+          select.appendChild(option);
+        });
+      } else if (columnInfo.filterData?.link) {
+        const fixValues = await this.requestJsonAsync(`${columnInfo.filterData?.link}`);
+        fixValues.forEach(fix => {
+          const option = document.createElement("option");
+          option.setAttribute("value", `${fix.id}`);
+          option.textContent = fix.value;
+          select.appendChild(option);
+        });
+      }
+
+      select.addEventListener("change", () => {
+        this.handleRowInput(select, filterType, columnInfo);
+      });
+
+      el = select;
+    } else if (filterType == "autocomplete") {
+      const div = document.createElement("div");
+      div.setAttribute("data-bc-select-value", "");
+
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
+      input.setAttribute("placeholder", columnInfo.title);
+
+      const ul = document.createElement("ul");
+      ul.setAttribute("data-bc-result", "");
+      ul.setAttribute("data-sys-search-result", "");
+      
+      input.addEventListener("keyup", (e) => {
+        this.onKeyUpAsync(<KeyboardEvent>e, ul, columnInfo.filterData?.link, columnInfo);
+      });
+      input.addEventListener("focus", (e) => {
+        ul.style.display = "block";
+        window.addEventListener("click", clickListener);
+      });
+      const clickListener = (e) => {
+        if (!(ul.contains(e.target) || ul == e.target || e.target == input)) {
+          ul.style.display = "none";
+  
+          window.removeEventListener("click", clickListener);
+        }
+      };
+
+      div.appendChild(input);
+      div.appendChild(ul);
+      el = div;
+    } else {
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
+      input.setAttribute("placeholder", columnInfo.title);
+      input.addEventListener("paste", () => {
+        this.handleRowInput(input, filterType, columnInfo);
+      });
+      input.addEventListener("keyup", (event) => {
+        this.handleRowInput(input, filterType, columnInfo, event);
+      });
+
+      el = input;
+    }
+    return el;
+  }
+
+  private async onKeyUpAsync(e: KeyboardEvent, ul: HTMLUListElement, link: string, columnInfo: IGridColumnInfo) {
+    e.preventDefault();
+    const input = ul.closest("[data-bc-select-value]").querySelector<HTMLInputElement>('input[type="text"]');
+    const term = (e.target as HTMLFormElement).value;
+    const url = Grid.formatString(link, {term});
+    ul.innerHTML = "";
+    if (term.length > 0) {
+      const result = await this.requestJsonAsync(url);
+      if (result.length > 0) {
+        result.forEach((item) => {
+          const li = document.createElement("li");
+          li.setAttribute("data-bc-value", item.id);
+          li.setAttribute("data-sys-hover", "");
+          li.setAttribute("data-sys-text", "");
+          li.innerHTML = item.value;
+          li.addEventListener("click", (e) => {
+            e.preventDefault();
+            input.value = li.textContent;
+            input.setAttribute("data-bc-value", li.getAttribute("data-bc-value"));
+            ul.style.display = "none";
+            this.handleRowInput(input, columnInfo.filterData?.type, columnInfo);
+          });
+          ul.appendChild(li);
+        });
+      }
+    } else {
+      input.setAttribute("data-bc-value", "");
+      this.handleRowInput(input, columnInfo.filterData?.type, columnInfo);
+    }
+  }
+
   private createTable(): void {
     const colgroup = document.createElement("colgroup");
     this._table.prepend(colgroup);
@@ -1129,10 +1256,10 @@ export default class Grid implements IGrid {
           input.setAttribute("data-sys-input-text", "");
           input.setAttribute("placeholder", columnInfo.title);
           input.addEventListener("paste", () => {
-            this.handleRowInput(input, columnInfo);
+            this.handleRowInput(input, columnInfo.filterData?.type, columnInfo);
           });
           input.addEventListener("keyup", (event) => {
-            this.handleRowInput(input, columnInfo, event);
+            this.handleRowInput(input, columnInfo.filterData?.type, columnInfo, event);
           });
           td.appendChild(input);
           tr.appendChild(td);
@@ -1620,5 +1747,26 @@ export default class Grid implements IGrid {
           a.remove();
         }, 2000);
       });
+  }
+
+  async requestJsonAsync(
+    url: string,
+    method: "POST" | "GET" = "GET",
+    params?: any
+  ): Promise<any> {
+    const init: any = {
+      method: method,
+    };
+    if (params) {
+      const form = new FormData();
+
+      for (const key in params) {
+        form.append(key, Reflect.get(params, key));
+      }
+      init.body = form;
+    }
+    const response = await fetch(url, init);
+    const result = await response.json();
+    return result;
   }
 }

@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="http://localhost:3000/basiscore.min.js"></script>
+  <script src="/basiscore.js"></script>
   <title>Grid Command -Use DbSource</title>
 </head>
 
@@ -32,7 +32,7 @@
     };
     const options = {
       process: "server",
-      filter: "simple",
+      filter: "row",
       columns: {
         id: {
           title: "Data-Id",
@@ -42,8 +42,24 @@
         data: {
           title: "Data",
           filter: true,
+          filterData: {
+            type: "select",
+            fixValues: [
+              {id: 1, value: "item 1"},
+              {id: 2, value: "item 2"},
+              {id: 3, value: "item 3"},
+              {id: 4, value: "item 4"},
+            ]
+          }
         },
-
+        custom2: {
+          title: "custom2",
+          source: "data",
+          filterData: {
+            type: "autocomplete",
+            link: "/server/api/autocomplete?term=${term}"
+          }
+        },
         count: "Count",
       },
       rowNumber: "#",

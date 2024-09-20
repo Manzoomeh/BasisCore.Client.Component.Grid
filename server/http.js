@@ -251,4 +251,35 @@ router.get("/export", function (req, res) {
   res.send(excel);
 });
 
+router.get("/api/fixValues", function (req, res) {
+  const result = [
+    {id: 11, value: "item 11"},
+    {id: 22, value: "item 22"},
+    {id: 33, value: "item 33"},
+    {id: 44, value: "item 44"},
+  ];
+  res.send(result);
+});
+
+router.get("/api/autocomplete", (req, res) => {
+  const apiDataList = [];
+  for (let index = 1; index < 1000; index++) {
+    const data = {
+      id: index,
+      value: Math.random().toString(36).substring(7),
+    };
+    apiDataList.push(data);
+  }
+  
+  if (req.query.term) {
+    const term = req.query.term;
+    const data = apiDataList.filter((x) => x.value.indexOf(term) > -1);
+    res.json(data.filter((_, i) => i < 10));
+  } else if (req.query.fixid) {
+    const fixId = req.query.fixid;
+    const data = apiDataList.find((x) => x.id == fixId);
+    res.json(data);
+  }
+});
+
 module.exports = router;

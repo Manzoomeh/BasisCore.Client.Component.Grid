@@ -1,6 +1,7 @@
 import { ColumnType } from "../../enum";
 import { ISortInfo } from "../../type-alias";
 import Grid from "./Grid";
+import { FilterDataType } from "./IOptions";
 
 export  default abstract class GridRow {
   public readonly data: any;
@@ -47,12 +48,16 @@ export  default abstract class GridRow {
     this._orderChanged = true;
   }
 
-  public acceptableByRowFilter(filter: object): boolean {
+  public acceptableByRowFilter(filter: object, type?: FilterDataType): boolean {
     let retVal = true;
     for (const key of Reflect.ownKeys(filter)) {
       const element = Reflect.get(filter, key);
       const value = Reflect.get(this._dataProxy, key)?.toString().toLowerCase();
-      retVal = retVal && value.indexOf(element) >= 0;
+      if (type && (type == "select" || type == "autocomplete")) {
+        retVal = retVal && value == element;
+      } else {
+        retVal = retVal && value.indexOf(element) >= 0;
+      }
       if (!retVal) {
         break;
       }

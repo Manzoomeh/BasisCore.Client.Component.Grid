@@ -1,6 +1,6 @@
 import GridRow from "../grid/GridRow";
 import IGrid from "../grid/IGrid";
-import { IOffsetOptions } from "../grid/IOptions";
+import { FilterDataType, IOffsetOptions } from "../grid/IOptions";
 import PaginateProcessManager from "./PaginateProcessManager";
 
 export default class MixedProcess extends PaginateProcessManager {
@@ -43,9 +43,9 @@ export default class MixedProcess extends PaginateProcessManager {
     }
   }
 
-  public applyUserAction(): void {
+  public applyUserAction(type?: FilterDataType): void {
     if (this.owner.options.ProcessActionType.sort == "client" && this.owner.options.ProcessActionType.search == "client") {
-      super.applyUserAction();
+      super.applyUserAction(type);
     } else {
       this.owner.tryLoadData();
     }

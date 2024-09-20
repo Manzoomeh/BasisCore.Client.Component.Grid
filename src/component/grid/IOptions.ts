@@ -1,4 +1,4 @@
-import { HttpMethod } from "basiscore";
+import { HttpMethod, IFixValue } from "basiscore";
 import { IDictionary, IGridType, ISortType } from "../../type-alias";
 
 export type FilterType = "none" | "simple" | "row";
@@ -14,6 +14,8 @@ export type SelectType = "none" | "single" | "multi";
 export type ITemplate = "template1" | "template2" | "template3";
 
 export type ExportType = "excel";
+
+export type FilterDataType = "text" | "select" | "autocomplete";
 
 export type IGridOptions = {
   columns: IDictionary<IColumn>;
@@ -84,6 +86,7 @@ export type IColumnInfo = {
   sort?: boolean;
   width?: string;
   filter?: boolean;
+  filterData?: IFilterData;
   cellMaker?: ICellMakerCallback;
   cssClass?: string | Array<string>;
 };
@@ -120,4 +123,10 @@ export type IExportInfo = {
   method: HttpMethod;
   contentType?: string;
   data?: string;
+};
+
+export type IFilterData = {
+  type: FilterDataType;
+  link?: string;
+  fixValues?: Array<IFixValue>;
 };

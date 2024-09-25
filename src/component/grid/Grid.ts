@@ -20,7 +20,7 @@ import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 import Item from "./Item";
 import Card from "./Card";
-import { IBCUtil, IDictionary } from "basiscore";
+import { IBCUtil, IDictionary, IFixValue } from "basiscore";
 
 declare const $bc: IBCUtil;
 export default class Grid implements IGrid {
@@ -794,28 +794,31 @@ export default class Grid implements IGrid {
       const select = document.createElement("select");
       select.setAttribute("data-sys-select-option", "");
 
+      let fixValues;
+      if (columnInfo.filterData?.fixValues) {
+        fixValues = columnInfo.filterData?.fixValues;
+      } else if (columnInfo.filterData?.link) {
+        fixValues = await this.requestJsonAsync(`${columnInfo.filterData?.link}`);
+      }
+
       const option = document.createElement("option");
       option.setAttribute("value", "");
-      option.textContent = this.options.culture.labels.chooseItem;
-
-      select.appendChild(option);
-      if (columnInfo.filterData?.fixValues) {
-        const fixValues = columnInfo.filterData?.fixValues;
-        fixValues.forEach(fix => {
-          const option = document.createElement("option");
-          option.setAttribute("value", `${fix.id}`);
-          option.textContent = fix.value;
-          select.appendChild(option);
-        });
-      } else if (columnInfo.filterData?.link) {
-        const fixValues = await this.requestJsonAsync(`${columnInfo.filterData?.link}`);
-        fixValues.forEach(fix => {
-          const option = document.createElement("option");
-          option.setAttribute("value", `${fix.id}`);
-          option.textContent = fix.value;
-          select.appendChild(option);
-        });
+      const firstItem = this.findValueById(fixValues, 0);
+      if (firstItem) {
+        option.textContent = firstItem;
+      } else {
+        option.textContent = this.options.culture.labels.chooseItem;
       }
+      select.appendChild(option);
+
+      fixValues.forEach(fix => {
+        if (fix.id != 0) {
+          const option = document.createElement("option");
+          option.setAttribute("value", `${fix.id}`);
+          option.textContent = fix.value;
+          select.appendChild(option);
+        }
+      });
 
       select.addEventListener("change", () => {
         this.handleRowInput(select, filterType, columnInfo);
@@ -868,6 +871,10 @@ export default class Grid implements IGrid {
       el = input;
     }
     return el;
+  }
+
+  private findValueById(list: Array<IFixValue>, id: number) {
+    return list.find((obj) => obj.id === id)?.value;
   }
 
   private async onKeyUpAsync(e: KeyboardEvent, ul: HTMLUListElement, link: string, columnInfo: IGridColumnInfo) {

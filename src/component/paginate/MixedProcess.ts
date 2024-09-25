@@ -7,9 +7,10 @@ export default class MixedProcess extends PaginateProcessManager {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement
+    pagingContainer: HTMLDivElement,
+    pageingInput : HTMLDivElement
   ) {
-    super(owner, pageSizeContainer, pagingContainer);
+    super(owner, pageSizeContainer, pagingContainer,pageingInput);
   }
 
   public setSource(rows: GridRow[], options: IOffsetOptions) {   

@@ -6,7 +6,7 @@ import ProcessManager from "./ProcessManager";
 export default abstract class PaginateProcessManager extends ProcessManager {
   readonly pagingContainer: HTMLDivElement;
   readonly pageSizeContainer: HTMLDivElement;
-
+  readonly pagingInput : HTMLDivElement;
   private pageNo: HTMLInputElement;
   private previousButton: HTMLAnchorElement;
   private firstButton: HTMLAnchorElement;
@@ -23,11 +23,13 @@ export default abstract class PaginateProcessManager extends ProcessManager {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement
+    pagingContainer: HTMLDivElement,
+    pagingInput : HTMLDivElement
   ) {
     super(owner);
     this.pageSizeContainer = pageSizeContainer;
     this.pagingContainer = pagingContainer;
+    this.pagingInput = pagingInput
     this.initializeUI();
   }
 
@@ -133,8 +135,9 @@ export default abstract class PaginateProcessManager extends ProcessManager {
 
     this.pageNo = document.createElement("input");
     this.pageNo.setAttribute("type", "text");
-    this.pageNo.setAttribute("data-sys-input-text", "");
+    // this.pageNo.setAttribute("data-sys-input-text", "");
     this.pageNo.setAttribute("data-bc-page-number", "");
+    this.pageNo.setAttribute("placeHolder","14")
     this.pageNo.addEventListener("keyup", (e) => {
       e.preventDefault();
       if (this.pageNo.value.length > 0) {
@@ -197,7 +200,11 @@ export default abstract class PaginateProcessManager extends ProcessManager {
       this.pagingContainer.appendChild(this.lastButton);
     }
     this.pagingContainer.appendChild(this.pageNo);
-
+ 
+    const lblText = document.createElement("label")
+    lblText.textContent = this.owner.options.culture.labels.goto;
+    this.pagingInput.appendChild(lblText)
+    this.pagingInput.appendChild(this.pageNo);
     this.updateState();
     this.pageNumber = -1;
   }

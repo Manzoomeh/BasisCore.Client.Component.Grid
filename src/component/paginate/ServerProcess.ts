@@ -6,9 +6,10 @@ export default class ServerProcess extends PaginateProcessManager {
   constructor(
     owner: IGrid,
     pageSizeContainer: HTMLDivElement,
-    pagingContainer: HTMLDivElement
+    pagingContainer: HTMLDivElement,
+    pagingInput : HTMLDivElement
   ) {
-    super(owner, pageSizeContainer, pagingContainer);
+    super(owner, pageSizeContainer, pagingContainer,pagingInput);
   }
 
   setSource(rows: GridRow[], options: IOffsetOptions) {

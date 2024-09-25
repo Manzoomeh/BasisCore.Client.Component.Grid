@@ -83,15 +83,15 @@ export default class Grid implements IGrid {
           labels: {
             search: "Search :",
             searchPlaceholder: "",
+            goto:"برو به :",
             pageSize: "Page Size :",
-            next: "Next",
-            previous: "Previous",
-            first: "First",
-            last: "last",
+            next: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#004B85"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>`,
+            previous: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#004B85"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>`,
+            first: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#004B85"><path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/></svg>`,
+            last: `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#004B85"><path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z"/></svg>`,
             noData: "No Data Find",
             information: "Showing ${from} to ${to} from Total ${total}",
             refresh: "Refresh",
-            chooseItem: "Choose",
           },
         },
       };
@@ -151,6 +151,7 @@ export default class Grid implements IGrid {
 
     this._container = container;
     this._container.setAttribute("data-bc-grid", `d${this.deviceId}`);
+    this._container.setAttribute("data-bc-mian-grid", "");
     if (this.options.direction) {
       this._container.style["direction"] = this.options.direction;
       this._container.setAttribute("data-bc-grid-direction", this.options.direction);
@@ -407,21 +408,28 @@ export default class Grid implements IGrid {
       }
 
       const gridFooterContainer = document.createElement("div");
-      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
-      gridFooterContainer.setAttribute("data-sys-paging-container", "");
-
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
+      
+
+      const pageingNumber = document.createElement("div");
+      pageingNumber.setAttribute("data-bc-paging-number", "");
+
+      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
+      
+      this._container.appendChild(gridFooterContainer);
+      gridFooterContainer.appendChild(pageingNumber);
       gridFooterContainer.appendChild(pagingContainer);
 
-      this._container.appendChild(gridFooterContainer);
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -429,7 +437,8 @@ export default class Grid implements IGrid {
           this.processManager = new ClientProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -437,7 +446,8 @@ export default class Grid implements IGrid {
           this.processManager = new MixedProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -693,22 +703,28 @@ export default class Grid implements IGrid {
       }
 
       const gridFooterContainer = document.createElement("div");
-      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
-      gridFooterContainer.setAttribute("data-sys-paging-container", "");
-
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
-      gridFooterContainer.appendChild(pagingContainer);
+      
 
+      const pageingNumber = document.createElement("div");
+      pageingNumber.setAttribute("data-bc-paging-number", "");
+
+      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
+      
       this._container.appendChild(gridFooterContainer);
+      gridFooterContainer.appendChild(pageingNumber);
+      gridFooterContainer.appendChild(pagingContainer);
 
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -716,7 +732,8 @@ export default class Grid implements IGrid {
           this.processManager = new ClientProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -724,7 +741,8 @@ export default class Grid implements IGrid {
           this.processManager = new MixedProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -1137,22 +1155,32 @@ export default class Grid implements IGrid {
       }
 
       const gridFooterContainer = document.createElement("div");
-      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
-      gridFooterContainer.setAttribute("data-sys-paging-container", "");
-
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
-      gridFooterContainer.appendChild(pagingContainer);
+      
 
+      const pageingNumber = document.createElement("div");
+      pageingNumber.setAttribute("data-bc-paging-number", "");
+
+      gridFooterContainer.setAttribute("data-bc-grid-footer-container", "");
+      gridFooterContainer.setAttribute("data-sys-paging-container", "");
+      
       this._container.appendChild(gridFooterContainer);
+      gridFooterContainer.appendChild(pageingNumber);
+      gridFooterContainer.appendChild(pagingContainer);
+     
+      // gridFooterContainer.appendChild(pagingContainer);
+
+
 
       switch (this.options.process) {
         case "server": {
           this.processManager = new ServerProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -1160,7 +1188,8 @@ export default class Grid implements IGrid {
           this.processManager = new ClientProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }
@@ -1168,7 +1197,8 @@ export default class Grid implements IGrid {
           this.processManager = new MixedProcess(
             this,
             pageSizeContainer,
-            pagingContainer
+            pagingContainer,
+            pageingNumber
           );
           break;
         }

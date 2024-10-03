@@ -42,6 +42,10 @@
   margin-left: 5px;
 }
 
+[data-bc-grid="d2"] [data-bc-filter-container] select option {
+  font-size: 12px;
+}
+
 /* [data-bc-grid="d2"] [data-bc-pagesize-container] {
     float: left;
 } */
@@ -250,6 +254,10 @@
   border: 1px solid #c7d6db;
   border-radius: 3px;
   transition: border 0.3s linear 0s;
+}
+
+[data-bc-grid="d2"] [data-bc-filter] select option {
+  font-size: 12px;
 }
 
 [data-bc-grid="d2"] [data-bc-filter] input[type="text"]:focus,

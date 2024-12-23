@@ -904,6 +904,7 @@ export default class Grid implements IGrid {
     if (term.length > 0) {
       const result = await this.requestJsonAsync(url);
       if (result.length > 0) {
+        ul.innerHTML = "";
         result.forEach((item) => {
           const li = document.createElement("li");
           li.setAttribute("data-bc-value", item.id);

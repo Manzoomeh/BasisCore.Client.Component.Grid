@@ -1351,7 +1351,6 @@ export default class Grid implements IGrid {
   private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
-    console.log("colinner", columnInfo.title);
     const tdContainer = document.createElement("div");
         tdContainer.setAttribute("data-sys-th-container", "");
        

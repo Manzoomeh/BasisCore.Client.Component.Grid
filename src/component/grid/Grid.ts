@@ -498,6 +498,7 @@ export default class Grid implements IGrid {
 
   private createTemplate(): void {
     if (this.options.columns) {
+      
       Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
         var value = this.options.columns[property];
         let columnInfo: IGridColumnInfo;
@@ -538,9 +539,7 @@ export default class Grid implements IGrid {
 
   private addTemplateRowFilterPart() {
     if (this.options.filter === "row") {
-      const filterItemsWrapper = this._container
-        .querySelector("[data-bc-grid-header-container]")
-        .querySelector("[data-bc-filter-items]");
+      const filterItemsWrapper = this._container.querySelector("[data-bc-grid-header-container]").querySelector("[data-bc-filter-items]");
       filterItemsWrapper.innerHTML = "";
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
@@ -553,8 +552,7 @@ export default class Grid implements IGrid {
           // this._head.appendChild(tr);
           filterItemsWrapper.appendChild(li);
         }
-      });
-      if (filterItemsWrapper.innerHTML == "") {
+      }); if (filterItemsWrapper.innerHTML == "") {
         filterItemsWrapper.remove();
       }
       const gridHeaderContainer = this._container.querySelector(
@@ -816,21 +814,22 @@ export default class Grid implements IGrid {
 
 
 
-  
+
 
   // }
 
   private addTableRowFilterPart(tdContainer: HTMLElement, columnInfo: IGridColumnInfo): void {
-    if (this.options.filter === "row") {
+
+    if (this.options.filter === "row" && columnInfo.filter) {
       
       const searchIcon = document.createElement("i");
       searchIcon.setAttribute("open-pop-up-search-form", "");
       tdContainer.insertAdjacentElement("afterbegin", searchIcon);
-  
+
       const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
-  
+
       if (tdContainer.querySelector("[pop-up-search-form]")) {
-          return;
+        return;
       }
       const popup = document.createElement("div");
       popup.setAttribute("pop-up-search-form", "");
@@ -838,44 +837,44 @@ export default class Grid implements IGrid {
       input.setAttribute("type", "text");
       input.setAttribute("placeholder", "جستجو...");
       input.style.width = "150px";
-  
+
       const closeButton = document.createElement("span");
       closeButton.textContent = "✖";
       popup.appendChild(input);
       popup.appendChild(closeButton);
       tdContainer.appendChild(popup);
       popup.style.display = "none";
-  
+
       searchIcon.addEventListener("click", (event) => {
-          event.stopPropagation();
-          popup.style.display = "flex";
+        event.stopPropagation();
+        popup.style.display = "flex";
       });
-  
+
       closeButton.addEventListener("click", () => {
+        popup.style.display = "none";
+        input.value = "";
+        this.processManager.filter = null;
+        this.processManager.applyUserAction();
+      });
+
+      input.addEventListener("keyup", async (e) => {
+        this.handleRowInput(input, filterType, columnInfo, e);
+      });
+
+      const closePopupOnClickOutside = (e: MouseEvent) => {
+        if (!popup.contains(e.target as Node)) {
           popup.style.display = "none";
           input.value = "";
           this.processManager.filter = null;
           this.processManager.applyUserAction();
-      });
-  
-      input.addEventListener("keyup", async (e) => {
-          this.handleRowInput(input, filterType, columnInfo, e);
-      });
-  
-      const closePopupOnClickOutside = (e: MouseEvent) => {
-          if (!popup.contains(e.target as Node)) {
-              popup.style.display = "none";
-              input.value = "";
-              this.processManager.filter = null;
-              this.processManager.applyUserAction();
-          }
+        }
       };
-  
+
       popup.addEventListener("click", (e) => {
-          e.stopPropagation();
+        e.stopPropagation();
       });
     }
-}
+  }
 
 
 
@@ -1031,6 +1030,7 @@ export default class Grid implements IGrid {
   }
 
   private createTable(): void {
+    
     const colgroup = document.createElement("colgroup");
     this._table.prepend(colgroup);
     const tr = document.createElement("tr");
@@ -1071,10 +1071,12 @@ export default class Grid implements IGrid {
         name: null,
         type: ColumnType.sort,
       };
+
       tr.appendChild(this.createColumn(columnInfo));
     }
 
     if (this.options.columns) {
+      
       Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
         var value = this.options.columns[property];
         const col = document.createElement("col");
@@ -1105,7 +1107,8 @@ export default class Grid implements IGrid {
           }
         }
         colgroup.appendChild(col);
-        tr.appendChild(this.createColumn(columnInfo,true));
+        
+        tr.appendChild(this.createColumn(columnInfo, true));        
       });
       this.columnsInitialized = true;
       // this.addTableRowFilterPart();
@@ -1413,10 +1416,11 @@ export default class Grid implements IGrid {
     }
   }
 
-  private createColumn(columnInfo: IGridColumnInfo , isRow?:boolean): HTMLTableCellElement {
+  private createColumn(columnInfo: IGridColumnInfo, isRow?: boolean): HTMLTableCellElement {
+
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
-   
+
 
     if (this.options.selectable == "multi" && columnInfo.selectable) {
 
@@ -1424,7 +1428,7 @@ export default class Grid implements IGrid {
       td.setAttribute("data-bc-select-all", "");
       const tdContainer = document.createElement("div");
       tdContainer.setAttribute("data-sys-th-container", "");
-  
+
       const colTitle = document.createElement("span");
       colTitle.setAttribute("data-sys-th-col-title", "");
       colTitle.innerHTML = columnInfo.title;
@@ -1464,45 +1468,45 @@ export default class Grid implements IGrid {
 
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       td.setAttribute("data-bc-sorting", "");
-  
+
       const tdContainer = document.createElement("div");
       tdContainer.setAttribute("data-sys-th-container", "");
-  
+
       const colTitle = document.createElement("span");
       colTitle.setAttribute("data-sys-th-col-title", "");
       colTitle.innerHTML = columnInfo.title;
       tdContainer.appendChild(colTitle);
       td.appendChild(tdContainer);
-  
+      
       if (isRow) {
         
-            this.addTableRowFilterPart(tdContainer, columnInfo);
+        this.addTableRowFilterPart(tdContainer, columnInfo);
       }
 
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
       tdContainer.insertAdjacentElement("afterbegin", sortIcon);
-  
-      sortIcon.addEventListener("click", (_) => {
-          if (this.processManager.sortInfo?.column !== columnInfo) {
-              this._head
-                  .querySelectorAll("[data-sys-th-sort-icon]")
-                  .forEach((element) =>
-                      element.setAttribute("data-sys-th-sort-icon", "")
-                  );
-          }
-          let sortType = sortIcon.getAttribute("data-sys-th-sort-icon") as ISortType;
-          sortType = sortType === "asc" ? "desc" : "asc";
-          this.processManager.sortInfo = {
-              column: columnInfo,
-              sort: sortType,
-          };
-          sortIcon.setAttribute("data-sys-th-sort-icon", sortType);
-          this.processManager.applyUserAction();
-      });
-  }
 
-  
+      sortIcon.addEventListener("click", (_) => {
+        if (this.processManager.sortInfo?.column !== columnInfo) {
+          this._head
+            .querySelectorAll("[data-sys-th-sort-icon]")
+            .forEach((element) =>
+              element.setAttribute("data-sys-th-sort-icon", "")
+            );
+        }
+        let sortType = sortIcon.getAttribute("data-sys-th-sort-icon") as ISortType;
+        sortType = sortType === "asc" ? "desc" : "asc";
+        this.processManager.sortInfo = {
+          column: columnInfo,
+          sort: sortType,
+        };
+        sortIcon.setAttribute("data-sys-th-sort-icon", sortType);
+        this.processManager.applyUserAction();
+      });
+    }
+
+
 
     this.columns.push(columnInfo);
     return td;
@@ -1570,11 +1574,11 @@ export default class Grid implements IGrid {
             filter: true,
           };
 
-          tr.appendChild(this.createColumn(columnInfo,true));
+          tr.appendChild(this.createColumn(columnInfo, true));
         });
       }
       this.columnsInitialized = true;
-      // this.addTableRowFilterPart(tdContainer, columnInfo);
+      // this.addTableRowFilterPart();
     }
     this.hideUIProgress();
     if (this.source) {
@@ -1790,7 +1794,7 @@ export default class Grid implements IGrid {
       );
     }
   }
- private showUIProgress(): void {
+  private showUIProgress(): void {
     if (this.options.loader) {
       switch (typeof this.options.loader) {
         case "function": {

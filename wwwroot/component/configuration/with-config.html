@@ -22,7 +22,7 @@
   <button id="btn">Reload</button>
   <Basis core="component.grid.grid" run="atclient" triggers="sample.data" dataMemberName="sample.data" options="options">
   </Basis>
-  <basis core="callback" run="atclient" triggers="sample.data"></basis>
+  <!-- <basis core="callback" run="atclient" triggers="sample.data"></basis> -->
   <script>
     function setSource() {
       const MIN_ID = 1000;
@@ -94,7 +94,7 @@
         },
         data: {
           title: "Data",
-          filter: true
+          filter: false
         },
         p: {
           title: "hi",

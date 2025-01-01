@@ -792,28 +792,93 @@ export default class Grid implements IGrid {
     }
     this.createTable();
   }
-  private addTableRowFilterPart() {
+  // private addTableRowFilterPart() {
+  //   if (this.options.filter === "row") {
+  //     const tr = document.createElement("tr");
+  //     tr.setAttribute("data-bc-no-selection", "");
+  //     tr.setAttribute("data-bc-filter", "");
+  //     tr.setAttribute("data-sys-tr", "");
+  //     tr.innerHTML = "";
+  //     this._head.appendChild(tr);
+  //     this.columns.forEach((columnInfo) => {
+  //       if (columnInfo.filter) {
+  //         const td = document.createElement("td");
+  //         td.setAttribute("data-sys-th", "");
+  //         this.fillTableRowFilterElement(td, columnInfo);
+  //         tr.appendChild(td);
+  //       } else {
+  //         const td = document.createElement("td");
+  //         td.setAttribute("data-sys-th", "");
+  //         tr.appendChild(td);
+  //       }
+  //     });
+  //   }
+
+
+
+  
+
+  // }
+
+  private addTableRowFilterPart(tdContainer: HTMLElement, columnInfo: IGridColumnInfo): void {
     if (this.options.filter === "row") {
-      const tr = document.createElement("tr");
-      tr.setAttribute("data-bc-no-selection", "");
-      tr.setAttribute("data-bc-filter", "");
-      tr.setAttribute("data-sys-tr", "");
-      tr.innerHTML = "";
-      this._head.appendChild(tr);
-      this.columns.forEach((columnInfo) => {
-        if (columnInfo.filter) {
-          const td = document.createElement("td");
-          td.setAttribute("data-sys-th", "");
-          this.fillTableRowFilterElement(td, columnInfo);
-          tr.appendChild(td);
-        } else {
-          const td = document.createElement("td");
-          td.setAttribute("data-sys-th", "");
-          tr.appendChild(td);
-        }
+      
+      const searchIcon = document.createElement("i");
+      searchIcon.setAttribute("open-pop-up-search-form", "");
+      tdContainer.insertAdjacentElement("afterbegin", searchIcon);
+  
+      const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
+  
+      if (tdContainer.querySelector("[pop-up-search-form]")) {
+          return;
+      }
+      const popup = document.createElement("div");
+      popup.setAttribute("pop-up-search-form", "");
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("placeholder", "جستجو...");
+      input.style.width = "150px";
+  
+      const closeButton = document.createElement("span");
+      closeButton.textContent = "✖";
+      popup.appendChild(input);
+      popup.appendChild(closeButton);
+      tdContainer.appendChild(popup);
+      popup.style.display = "none";
+  
+      searchIcon.addEventListener("click", (event) => {
+          event.stopPropagation();
+          popup.style.display = "flex";
+      });
+  
+      closeButton.addEventListener("click", () => {
+          popup.style.display = "none";
+          input.value = "";
+          this.processManager.filter = null;
+          this.processManager.applyUserAction();
+      });
+  
+      input.addEventListener("keyup", async (e) => {
+          this.handleRowInput(input, filterType, columnInfo, e);
+      });
+  
+      const closePopupOnClickOutside = (e: MouseEvent) => {
+          if (!popup.contains(e.target as Node)) {
+              popup.style.display = "none";
+              input.value = "";
+              this.processManager.filter = null;
+              this.processManager.applyUserAction();
+          }
+      };
+  
+      popup.addEventListener("click", (e) => {
+          e.stopPropagation();
       });
     }
-  }
+}
+
+
+
 
   private async fillTableRowFilterElement(
     td: HTMLTableCellElement,
@@ -1040,7 +1105,7 @@ export default class Grid implements IGrid {
           }
         }
         colgroup.appendChild(col);
-        tr.appendChild(this.createColumn(columnInfo));
+        tr.appendChild(this.createColumn(columnInfo,true));
       });
       this.columnsInitialized = true;
       // this.addTableRowFilterPart();
@@ -1348,22 +1413,23 @@ export default class Grid implements IGrid {
     }
   }
 
-  private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
+  private createColumn(columnInfo: IGridColumnInfo , isRow?:boolean): HTMLTableCellElement {
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
-    const tdContainer = document.createElement("div");
-    tdContainer.setAttribute("data-sys-th-container", "");
-
-    const colTitle = document.createElement("span");
-    colTitle.setAttribute("data-sys-th-col-title", "");
-    colTitle.innerHTML = columnInfo.title;
-    tdContainer.appendChild(colTitle);
-    td.appendChild(tdContainer);
+   
 
     if (this.options.selectable == "multi" && columnInfo.selectable) {
 
 
       td.setAttribute("data-bc-select-all", "");
+      const tdContainer = document.createElement("div");
+      tdContainer.setAttribute("data-sys-th-container", "");
+  
+      const colTitle = document.createElement("span");
+      colTitle.setAttribute("data-sys-th-col-title", "");
+      colTitle.innerHTML = columnInfo.title;
+      tdContainer.appendChild(colTitle);
+      td.appendChild(tdContainer);
       const checkbox = td.querySelector('input[type="checkbox"]');
 
       checkbox.addEventListener("change", (e) => {
@@ -1395,92 +1461,48 @@ export default class Grid implements IGrid {
         this.onSelectionChange();
       });
     }
+
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       td.setAttribute("data-bc-sorting", "");
-
-      if (this.options.filter === "row") {
-
-        const searchIcon = document.createElement("i");
-        searchIcon.setAttribute("open-pop-up-search-form", "");
-        tdContainer.insertAdjacentElement("afterbegin", searchIcon)
-        // tdContainer.appendChild(searchIcon);
-
-
-        const filterType = columnInfo.filterData?.type
-          ? columnInfo.filterData.type
-          : "text";
-
-        if (td.querySelector("[pop-up-search-form]")) {
-          return;
-        }
-
-        const popup = document.createElement("div");
-        popup.setAttribute("pop-up-search-form", "");
-        const input = document.createElement("input");
-        input.setAttribute("type", "text");
-        input.setAttribute("placeholder", "جستجو...");
-        input.style.width = "150px";
-        const closeButton = document.createElement("span");
-        closeButton.textContent = "✖";
-        popup.appendChild(input);
-        popup.appendChild(closeButton);
-        tdContainer.appendChild(popup);
-        popup.style.display = "none";
-        searchIcon.addEventListener("click", (event) => {
-          event.stopPropagation();
-          popup.style.display = "flex";
-        });
-        closeButton.addEventListener("click", (e) => {
-          popup.style.display = "none";
-          input.value = "";
-          this.processManager.filter = null;
-          this.processManager.applyUserAction();
-        });
-        input.addEventListener("keyup", async (e) => {
-          this.handleRowInput(input, filterType, columnInfo, e);
-        });
-        const closePopupOnClickOutside = (e: MouseEvent) => {
-          if (!popup.contains(e.target as Node)) {
-            popup.style.display = "none";
-
-            input.value = "";
-            this.processManager.filter = null;
-            this.processManager.applyUserAction();
-          }
-        };
-
-        popup.addEventListener("click", (e) => {
-          e.stopPropagation();
-        });
-
+  
+      const tdContainer = document.createElement("div");
+      tdContainer.setAttribute("data-sys-th-container", "");
+  
+      const colTitle = document.createElement("span");
+      colTitle.setAttribute("data-sys-th-col-title", "");
+      colTitle.innerHTML = columnInfo.title;
+      tdContainer.appendChild(colTitle);
+      td.appendChild(tdContainer);
+  
+      if (isRow) {
+        
+            this.addTableRowFilterPart(tdContainer, columnInfo);
       }
+
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
-      tdContainer.insertAdjacentElement("afterbegin", sortIcon)
+      tdContainer.insertAdjacentElement("afterbegin", sortIcon);
+  
       sortIcon.addEventListener("click", (_) => {
-        if (this.processManager.sortInfo?.column !== columnInfo) {
-          this._head
-            .querySelectorAll("[data-sys-th-sort-icon]")
-            .forEach((element) =>
-              element.setAttribute("data-sys-th-sort-icon", "")
-            );
-        }
-        let sortType = sortIcon.getAttribute(
-          "data-sys-th-sort-icon"
-        ) as ISortType;
-        if (sortType) {
+          if (this.processManager.sortInfo?.column !== columnInfo) {
+              this._head
+                  .querySelectorAll("[data-sys-th-sort-icon]")
+                  .forEach((element) =>
+                      element.setAttribute("data-sys-th-sort-icon", "")
+                  );
+          }
+          let sortType = sortIcon.getAttribute("data-sys-th-sort-icon") as ISortType;
           sortType = sortType === "asc" ? "desc" : "asc";
-        } else {
-          sortType = "asc";
-        }
-        this.processManager.sortInfo = {
-          column: columnInfo,
-          sort: sortType,
-        };
-        sortIcon.setAttribute("data-sys-th-sort-icon", sortType);
-        this.processManager.applyUserAction();
+          this.processManager.sortInfo = {
+              column: columnInfo,
+              sort: sortType,
+          };
+          sortIcon.setAttribute("data-sys-th-sort-icon", sortType);
+          this.processManager.applyUserAction();
       });
-    }
+  }
+
+  
 
     this.columns.push(columnInfo);
     return td;
@@ -1548,11 +1570,11 @@ export default class Grid implements IGrid {
             filter: true,
           };
 
-          tr.appendChild(this.createColumn(columnInfo));
+          tr.appendChild(this.createColumn(columnInfo,true));
         });
       }
       this.columnsInitialized = true;
-      // this.addTableRowFilterPart();
+      // this.addTableRowFilterPart(tdContainer, columnInfo);
     }
     this.hideUIProgress();
     if (this.source) {
@@ -1768,8 +1790,7 @@ export default class Grid implements IGrid {
       );
     }
   }
-
-  private showUIProgress(): void {
+ private showUIProgress(): void {
     if (this.options.loader) {
       switch (typeof this.options.loader) {
         case "function": {

@@ -330,7 +330,6 @@
     background-repeat: no-repeat;
     /* background-position: right 1% bottom 50%; */
     /* background-image: url("img/sort_both.png"); */
-  
   }
   
   [data-bc-grid="d1"][data-bc-grid-direction="rtl"]
@@ -723,7 +722,7 @@
     position: relative;
   }
   [data-bc-grid="d1"] [data-bc-table-container] [pop-up-search-form] {
-    right: 0;
+    /* right: 0; */
     padding: 5px;
     background-color: #fff;
     z-index: 1000;
@@ -779,6 +778,7 @@
     align-items: center;
     column-gap: 8px;
     position: relative;
+    justify-content: center;
   }
  
   

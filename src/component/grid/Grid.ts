@@ -1452,11 +1452,7 @@ export default class Grid implements IGrid {
         popup.addEventListener("click", (e) => {
           e.stopPropagation();
         });
-        document.removeEventListener("click", closePopupOnClickOutside);
 
-        setTimeout(() => {
-          document.addEventListener("click", closePopupOnClickOutside);
-        }, 0);
       }
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");

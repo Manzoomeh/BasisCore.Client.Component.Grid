@@ -1352,16 +1352,16 @@ export default class Grid implements IGrid {
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
     const tdContainer = document.createElement("div");
-        tdContainer.setAttribute("data-sys-th-container", "");
-       
-        const colTitle = document.createElement("span");
-        colTitle.setAttribute("data-sys-th-col-title", "");
-        colTitle.innerHTML = columnInfo.title;
-        tdContainer.appendChild(colTitle);
-        td.appendChild(tdContainer);
+    tdContainer.setAttribute("data-sys-th-container", "");
+
+    const colTitle = document.createElement("span");
+    colTitle.setAttribute("data-sys-th-col-title", "");
+    colTitle.innerHTML = columnInfo.title;
+    tdContainer.appendChild(colTitle);
+    td.appendChild(tdContainer);
 
     if (this.options.selectable == "multi" && columnInfo.selectable) {
-     
+
 
       td.setAttribute("data-bc-select-all", "");
       const checkbox = td.querySelector('input[type="checkbox"]');
@@ -1399,10 +1399,10 @@ export default class Grid implements IGrid {
       td.setAttribute("data-bc-sorting", "");
 
       if (this.options.filter === "row") {
-    
+
         const searchIcon = document.createElement("i");
         searchIcon.setAttribute("open-pop-up-search-form", "");
-        tdContainer.insertAdjacentElement("afterbegin" , searchIcon)
+        tdContainer.insertAdjacentElement("afterbegin", searchIcon)
         // tdContainer.appendChild(searchIcon);
 
 
@@ -1431,8 +1431,10 @@ export default class Grid implements IGrid {
           popup.style.display = "flex";
         });
         closeButton.addEventListener("click", (e) => {
-          e.stopPropagation();
           popup.style.display = "none";
+          input.value = "";
+          this.processManager.filter = null;
+          this.processManager.applyUserAction();
         });
         input.addEventListener("keyup", async (e) => {
           this.handleRowInput(input, filterType, columnInfo, e);
@@ -1440,8 +1442,16 @@ export default class Grid implements IGrid {
         const closePopupOnClickOutside = (e: MouseEvent) => {
           if (!popup.contains(e.target as Node)) {
             popup.style.display = "none";
+
+            input.value = "";
+            this.processManager.filter = null;
+            this.processManager.applyUserAction();
           }
         };
+
+        popup.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
         document.removeEventListener("click", closePopupOnClickOutside);
 
         setTimeout(() => {
@@ -1450,7 +1460,7 @@ export default class Grid implements IGrid {
       }
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
-      tdContainer.insertAdjacentElement("afterbegin",sortIcon)
+      tdContainer.insertAdjacentElement("afterbegin", sortIcon)
       sortIcon.addEventListener("click", (_) => {
         if (this.processManager.sortInfo?.column !== columnInfo) {
           this._head

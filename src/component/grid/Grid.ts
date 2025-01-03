@@ -1,9 +1,4 @@
-import {
-  FilterDataType,
-  IExportInfo,
-  IGridOptions,
-  IOffsetOptions,
-} from "./IOptions";
+import { FilterDataType, IExportInfo, IGridOptions, IOffsetOptions } from "./IOptions";
 import {
   IGridColumnInfo,
   ISortType,
@@ -159,10 +154,7 @@ export default class Grid implements IGrid {
     this._container.setAttribute("data-bc-mian-grid", "");
     if (this.options.direction) {
       this._container.style["direction"] = this.options.direction;
-      this._container.setAttribute(
-        "data-bc-grid-direction",
-        this.options.direction
-      );
+      this._container.setAttribute("data-bc-grid-direction", this.options.direction);
     }
     this._informationFormatter = Function(
       "from",
@@ -186,7 +178,6 @@ export default class Grid implements IGrid {
   }
   private handleInput(input: HTMLInputElement, event: KeyboardEvent) {
     clearTimeout(this.timerId);
-
     if (
       this.options.process === "server" &&
       !(event.key === "Enter" || event.keyCode === 13)
@@ -207,15 +198,13 @@ export default class Grid implements IGrid {
   ) {
     clearTimeout(this.timerId);
     if (
-      (this.options.process === "server" ||
-        (this.options.process === "mix" &&
-          this.options.ProcessActionType.search == "server")) &&
+      (this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&
       !(event?.key === "Enter" || event?.keyCode === 13)
     ) {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
-        let mustUpdate = false;
 
+        let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
             this.processManager.filter = {};
@@ -224,13 +213,13 @@ export default class Grid implements IGrid {
             if (type == "select") {
               this.processManager.filter[columnInfo.name] = {
                 id: parseInt(newFilter),
-                value: (el as HTMLSelectElement).selectedOptions[0].text,
-              };
+                value: (el as HTMLSelectElement).selectedOptions[0].text
+              }
             } else if (type == "autocomplete") {
               this.processManager.filter[columnInfo.name] = {
                 id: parseInt(el.getAttribute("data-bc-value")),
-                value: newFilter,
-              };
+                value: newFilter
+              }
             } else {
               this.processManager.filter[columnInfo.name] = newFilter;
             }
@@ -252,7 +241,6 @@ export default class Grid implements IGrid {
     } else {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
-
         let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
@@ -280,7 +268,6 @@ export default class Grid implements IGrid {
 
   private performAction(input: HTMLInputElement) {
     const newFilter = input.value.toLowerCase();
-
     if (this.processManager.filter != newFilter) {
       this.processManager.filter = newFilter;
       this.processManager.pageNumber = 0;
@@ -425,6 +412,7 @@ export default class Grid implements IGrid {
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
 
+
       const pageingNumber = document.createElement("div");
       pageingNumber.setAttribute("data-bc-paging-number", "");
 
@@ -497,8 +485,8 @@ export default class Grid implements IGrid {
   }
 
   private createTemplate(): void {
+
     if (this.options.columns) {
-      
       Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
         var value = this.options.columns[property];
         let columnInfo: IGridColumnInfo;
@@ -539,7 +527,9 @@ export default class Grid implements IGrid {
 
   private addTemplateRowFilterPart() {
     if (this.options.filter === "row") {
-      const filterItemsWrapper = this._container.querySelector("[data-bc-grid-header-container]").querySelector("[data-bc-filter-items]");
+      const filterItemsWrapper = this._container
+        .querySelector("[data-bc-grid-header-container]")
+        .querySelector("[data-bc-filter-items]");
       filterItemsWrapper.innerHTML = "";
       this.columns.forEach((columnInfo) => {
         if (columnInfo.filter) {
@@ -551,8 +541,10 @@ export default class Grid implements IGrid {
           this.fillTemplateRowFilterElement(li, columnInfo);
           // this._head.appendChild(tr);
           filterItemsWrapper.appendChild(li);
+
         }
-      }); if (filterItemsWrapper.innerHTML == "") {
+      });
+      if (filterItemsWrapper.innerHTML == "") {
         filterItemsWrapper.remove();
       }
       const gridHeaderContainer = this._container.querySelector(
@@ -564,11 +556,9 @@ export default class Grid implements IGrid {
     }
   }
 
-  private async fillTemplateRowFilterElement(
-    li: HTMLLIElement,
-    columnInfo: IGridColumnInfo
-  ): Promise<void> {
+  private async fillTemplateRowFilterElement(li: HTMLLIElement, columnInfo: IGridColumnInfo): Promise<void> {
     const el = await this.createRowFilterElement(columnInfo);
+
     li.appendChild(el);
   }
 
@@ -627,32 +617,31 @@ export default class Grid implements IGrid {
     if (this.options.modeButtons == true) {
       gridHeaderContainer.appendChild(modes);
     }
-    // search section has been removed
-    // if (this.options.filter == "simple") {
-    //   const filter = document.createElement("div");
-    //   filter.setAttribute("data-bc-filter-container", "");
-    //   gridHeaderContainer.appendChild(filter);
-    //   const label = document.createElement("label");
-    //   label.setAttribute("data-sys-text-colorful", "");
-    //   label.appendChild(
-    //     document.createTextNode(this.options.culture.labels.search)
-    //   );
 
-    //   const input = document.createElement("input");
-    //   input.setAttribute("type", "text");
-    //   input.setAttribute("data-sys-input-text", "");
-    //   if (this.options.culture.labels.searchPlaceholder != "") {
-    //     input.setAttribute(
-    //       "placeholder",
-    //       this.options.culture.labels.searchPlaceholder
-    //     );
-    //   }
-    //   label.appendChild(input);
-    //   input.addEventListener("keyup", (event) =>
-    //     this.handleInput(input, event)
-    //   );
-    //   filter.appendChild(label);
-    // }
+    if (this.options.filter == "simple") {
+      const filter = document.createElement("div");
+      filter.setAttribute("data-bc-filter-container", "");
+      gridHeaderContainer.appendChild(filter);
+      const label = document.createElement("label");
+      label.setAttribute("data-sys-text-colorful", "");
+      label.appendChild(
+        document.createTextNode(this.options.culture.labels.search)
+      );
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute("data-sys-input-text", "");
+      if (this.options.culture.labels.searchPlaceholder != "") {
+        input.setAttribute(
+          "placeholder",
+          this.options.culture.labels.searchPlaceholder
+        );
+      }
+      label.appendChild(input);
+      input.addEventListener("keyup", (event) =>
+        this.handleInput(input, event)
+      );
+      filter.appendChild(label);
+    }
     this._container.appendChild(gridHeaderContainer);
     if (this.options.refresh) {
       const div = document.createElement("div");
@@ -720,6 +709,7 @@ export default class Grid implements IGrid {
       const pagingContainer = document.createElement("div");
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
+
 
       const pageingNumber = document.createElement("div");
       pageingNumber.setAttribute("data-bc-paging-number", "");
@@ -790,109 +780,79 @@ export default class Grid implements IGrid {
     }
     this.createTable();
   }
-  // private addTableRowFilterPart() {
-  //   if (this.options.filter === "row") {
-  //     const tr = document.createElement("tr");
-  //     tr.setAttribute("data-bc-no-selection", "");
-  //     tr.setAttribute("data-bc-filter", "");
-  //     tr.setAttribute("data-sys-tr", "");
-  //     tr.innerHTML = "";
-  //     this._head.appendChild(tr);
-  //     this.columns.forEach((columnInfo) => {
-  //       if (columnInfo.filter) {
-  //         const td = document.createElement("td");
-  //         td.setAttribute("data-sys-th", "");
-  //         this.fillTableRowFilterElement(td, columnInfo);
-  //         tr.appendChild(td);
-  //       } else {
-  //         const td = document.createElement("td");
-  //         td.setAttribute("data-sys-th", "");
-  //         tr.appendChild(td);
-  //       }
-  //     });
-  //   }
+  private addTableRowFilterPart() {
+    if (this.options.filter === "row") {
+      const dataSysThContainer = document.querySelectorAll("[data-sys-th-container]")
+      // const tr = document.createElement("tr");
+      // tr.setAttribute("data-bc-no-selection", "");
+      // tr.setAttribute("data-bc-filter", "");
+      // tr.setAttribute("data-sys-tr", "");
+      // tr.innerHTML = "";
+      // this._head.appendChild(tr);
+      this.columns.forEach((columnInfo, i) => {
+        if (columnInfo.filter) {
+          const tdContainer = dataSysThContainer[i]
+          const searchIcon = document.createElement("i");
+          searchIcon.setAttribute("open-pop-up-search-form", "");
+          tdContainer.insertAdjacentElement("afterbegin", searchIcon);
 
-
-
-
-
-  // }
-
-  private addTableRowFilterPart(tdContainer: HTMLElement, columnInfo: IGridColumnInfo): void {
-
-    if (this.options.filter === "row" && columnInfo.filter) {
-      
-      const searchIcon = document.createElement("i");
-      searchIcon.setAttribute("open-pop-up-search-form", "");
-      tdContainer.insertAdjacentElement("afterbegin", searchIcon);
-
-      const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
-
-      if (tdContainer.querySelector("[pop-up-search-form]")) {
-        return;
-      }
-      const popup = document.createElement("div");
-      popup.setAttribute("pop-up-search-form", "");
-      const input = document.createElement("input");
-      input.setAttribute("type", "text");
-      input.setAttribute("placeholder", "جستجو...");
-      input.style.width = "150px";
-
-      const closeButton = document.createElement("span");
-      closeButton.textContent = "✖";
-      popup.appendChild(input);
-      popup.appendChild(closeButton);
-      tdContainer.appendChild(popup);
-      popup.style.display = "none";
-
-      searchIcon.addEventListener("click", (event) => {
-        event.stopPropagation();
-        popup.style.display = "flex";
-      });
-
-      closeButton.addEventListener("click", () => {
-        popup.style.display = "none";
-        input.value = "";
-        this.processManager.filter = null;
-        this.processManager.applyUserAction();
-      });
-
-      input.addEventListener("keyup", async (e) => {
-        this.handleRowInput(input, filterType, columnInfo, e);
-      });
-
-      const closePopupOnClickOutside = (e: MouseEvent) => {
-        if (!popup.contains(e.target as Node)) {
+          const popup = document.createElement("div");
+          popup.setAttribute("pop-up-search-form", "");
+          const closeButton = document.createElement("span");
+          closeButton.textContent = "✖";
+          popup.appendChild(closeButton);
+          tdContainer.appendChild(popup);
           popup.style.display = "none";
-          input.value = "";
-          this.processManager.filter = null;
-          this.processManager.applyUserAction();
-        }
-      };
+          popup.addEventListener("click", (e) => {
+            e.stopPropagation();
+          });
+          searchIcon.addEventListener("click", (event) => {
+            event.stopPropagation();
+            popup.style.display = "flex";
+          });
 
-      popup.addEventListener("click", (e) => {
-        e.stopPropagation();
+          closeButton.addEventListener("click", () => {
+            const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
+            const inputs = popup.querySelectorAll("input");
+            const selects = popup.querySelectorAll("select");
+            inputs.forEach((input) => {
+              (input as HTMLInputElement).value = ""; // پاک کردن مقدار input
+            });
+
+            selects.forEach((select) => {
+              (select as HTMLSelectElement).selectedIndex = 0; // بازنشانی به گزینه پیش‌فرض
+            });
+
+            // const input = closeButton.parentElement.querySelector('input')
+            // input.value=""
+            // console.log("filterType" , input);
+            // console.log("filterType" , filterType);
+            // console.log("filterType" , columnInfo);
+            // this.handleRowInput(input, filterType, columnInfo);
+
+            popup.style.display = "none";
+            this.processManager.filter = null;
+            this.processManager.applyUserAction();
+          });
+
+          this.fillTableRowFilterElement(popup, columnInfo);
+          // const td = document.createElement("td");
+          // td.setAttribute("data-sys-th", "");
+          // tr.appendChild(td);
+        } else {
+
+        }
       });
     }
   }
 
-
-
-
-  private async fillTableRowFilterElement(
-    td: HTMLTableCellElement,
-    columnInfo: IGridColumnInfo
-  ): Promise<void> {
+  private async fillTableRowFilterElement(td: HTMLElement, columnInfo: IGridColumnInfo): Promise<void> {
     const el = await this.createRowFilterElement(columnInfo);
     td.appendChild(el);
   }
 
-  private async createRowFilterElement(
-    columnInfo: IGridColumnInfo
-  ): Promise<HTMLElement> {
-    const filterType = columnInfo.filterData?.type
-      ? columnInfo.filterData.type
-      : "text";
+  private async createRowFilterElement(columnInfo: IGridColumnInfo): Promise<HTMLElement> {
+    const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
     let el;
     if (filterType == "select") {
       const select = document.createElement("select");
@@ -902,9 +862,7 @@ export default class Grid implements IGrid {
       if (columnInfo.filterData?.fixValues) {
         fixValues = columnInfo.filterData?.fixValues;
       } else if (columnInfo.filterData?.link) {
-        fixValues = await this.requestJsonAsync(
-          `${columnInfo.filterData?.link}`
-        );
+        fixValues = await this.requestJsonAsync(`${columnInfo.filterData?.link}`);
       }
 
       const option = document.createElement("option");
@@ -917,7 +875,7 @@ export default class Grid implements IGrid {
       }
       select.appendChild(option);
 
-      fixValues.forEach((fix) => {
+      fixValues.forEach(fix => {
         if (fix.id != 0) {
           const option = document.createElement("option");
           option.setAttribute("value", `${fix.id}`);
@@ -945,12 +903,7 @@ export default class Grid implements IGrid {
       ul.setAttribute("data-sys-search-result", "");
 
       input.addEventListener("keyup", (e) => {
-        this.onKeyUpAsync(
-          <KeyboardEvent>e,
-          ul,
-          columnInfo.filterData?.link,
-          columnInfo
-        );
+        this.onKeyUpAsync(<KeyboardEvent>e, ul, columnInfo.filterData?.link, columnInfo);
       });
       input.addEventListener("focus", (e) => {
         ul.style.display = "block";
@@ -976,10 +929,15 @@ export default class Grid implements IGrid {
         this.handleRowInput(input, filterType, columnInfo);
       });
       input.addEventListener("keyup", (event) => {
+        console.log("filterType", input);
+        console.log("filterType", filterType);
+        console.log("filterType", columnInfo);
+
         this.handleRowInput(input, filterType, columnInfo, event);
       });
 
       el = input;
+
     }
     return el;
   }
@@ -988,22 +946,16 @@ export default class Grid implements IGrid {
     return list.find((obj) => obj.id === id)?.value;
   }
 
-  private async onKeyUpAsync(
-    e: KeyboardEvent,
-    ul: HTMLUListElement,
-    link: string,
-    columnInfo: IGridColumnInfo
-  ) {
+  private async onKeyUpAsync(e: KeyboardEvent, ul: HTMLUListElement, link: string, columnInfo: IGridColumnInfo) {
     e.preventDefault();
-    const input = ul
-      .closest("[data-bc-select-value]")
-      .querySelector<HTMLInputElement>('input[type="text"]');
+    const input = ul.closest("[data-bc-select-value]").querySelector<HTMLInputElement>('input[type="text"]');
     const term = (e.target as HTMLFormElement).value;
     const url = Grid.formatString(link, { term });
     ul.innerHTML = "";
     if (term.length > 0) {
       const result = await this.requestJsonAsync(url);
       if (result.length > 0) {
+        ul.innerHTML = "";
         result.forEach((item) => {
           const li = document.createElement("li");
           li.setAttribute("data-bc-value", item.id);
@@ -1013,10 +965,7 @@ export default class Grid implements IGrid {
           li.addEventListener("click", (e) => {
             e.preventDefault();
             input.value = li.textContent;
-            input.setAttribute(
-              "data-bc-value",
-              li.getAttribute("data-bc-value")
-            );
+            input.setAttribute("data-bc-value", li.getAttribute("data-bc-value"));
             ul.style.display = "none";
             this.handleRowInput(input, columnInfo.filterData?.type, columnInfo);
           });
@@ -1030,8 +979,8 @@ export default class Grid implements IGrid {
   }
 
   private createTable(): void {
-    
     const colgroup = document.createElement("colgroup");
+
     this._table.prepend(colgroup);
     const tr = document.createElement("tr");
     tr.setAttribute("data-bc-no-selection", "");
@@ -1071,13 +1020,12 @@ export default class Grid implements IGrid {
         name: null,
         type: ColumnType.sort,
       };
-
       tr.appendChild(this.createColumn(columnInfo));
     }
 
     if (this.options.columns) {
-      
-      Object.getOwnPropertyNames(this.options.columns).forEach((property) => {
+      Object.getOwnPropertyNames(this.options.columns).forEach((property, i) => {
+
         var value = this.options.columns[property];
         const col = document.createElement("col");
         let columnInfo: IGridColumnInfo;
@@ -1107,11 +1055,10 @@ export default class Grid implements IGrid {
           }
         }
         colgroup.appendChild(col);
-        
-        tr.appendChild(this.createColumn(columnInfo, true));        
+        tr.appendChild(this.createColumn(columnInfo));
       });
       this.columnsInitialized = true;
-      // this.addTableRowFilterPart();
+      this.addTableRowFilterPart();
     }
   }
   private createUIWidthCard(): void {
@@ -1266,6 +1213,7 @@ export default class Grid implements IGrid {
       pagingContainer.setAttribute("data-bc-paging-container", "");
       pagingContainer.setAttribute("data-bc-no-selection", "");
 
+
       const pageingNumber = document.createElement("div");
       pageingNumber.setAttribute("data-bc-paging-number", "");
 
@@ -1277,6 +1225,8 @@ export default class Grid implements IGrid {
       gridFooterContainer.appendChild(pagingContainer);
 
       // gridFooterContainer.appendChild(pagingContainer);
+
+
 
       switch (this.options.process) {
         case "server": {
@@ -1400,12 +1350,7 @@ export default class Grid implements IGrid {
             this.handleRowInput(input, columnInfo.filterData?.type, columnInfo);
           });
           input.addEventListener("keyup", (event) => {
-            this.handleRowInput(
-              input,
-              columnInfo.filterData?.type,
-              columnInfo,
-              event
-            );
+            this.handleRowInput(input, columnInfo.filterData?.type, columnInfo, event);
           });
           td.appendChild(input);
           tr.appendChild(td);
@@ -1415,25 +1360,23 @@ export default class Grid implements IGrid {
       });
     }
   }
-
-  private createColumn(columnInfo: IGridColumnInfo, isRow?: boolean): HTMLTableCellElement {
+  private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
 
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
+    // td.innerHTML = columnInfo.title;
+    td.setAttribute("data-bc-sorting", "");
 
+    const tdContainer = document.createElement("div");
+    tdContainer.setAttribute("data-sys-th-container", "");
 
+    const colTitle = document.createElement("span");
+    colTitle.setAttribute("data-sys-th-col-title", "");
+    colTitle.innerHTML = columnInfo.title;
+    tdContainer.appendChild(colTitle);
+    td.appendChild(tdContainer);
     if (this.options.selectable == "multi" && columnInfo.selectable) {
-
-
       td.setAttribute("data-bc-select-all", "");
-      const tdContainer = document.createElement("div");
-      tdContainer.setAttribute("data-sys-th-container", "");
-
-      const colTitle = document.createElement("span");
-      colTitle.setAttribute("data-sys-th-col-title", "");
-      colTitle.innerHTML = columnInfo.title;
-      tdContainer.appendChild(colTitle);
-      td.appendChild(tdContainer);
       const checkbox = td.querySelector('input[type="checkbox"]');
 
       checkbox.addEventListener("change", (e) => {
@@ -1465,23 +1408,8 @@ export default class Grid implements IGrid {
         this.onSelectionChange();
       });
     }
-
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
-      td.setAttribute("data-bc-sorting", "");
 
-      const tdContainer = document.createElement("div");
-      tdContainer.setAttribute("data-sys-th-container", "");
-
-      const colTitle = document.createElement("span");
-      colTitle.setAttribute("data-sys-th-col-title", "");
-      colTitle.innerHTML = columnInfo.title;
-      tdContainer.appendChild(colTitle);
-      td.appendChild(tdContainer);
-      
-      if (isRow) {
-        
-        this.addTableRowFilterPart(tdContainer, columnInfo);
-      }
 
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
@@ -1505,13 +1433,9 @@ export default class Grid implements IGrid {
         this.processManager.applyUserAction();
       });
     }
-
-
-
     this.columns.push(columnInfo);
     return td;
   }
-
   private createItems(columnInfo: IGridCardInfo): HTMLElement {
     const td = document.createElement("div");
 
@@ -1574,11 +1498,11 @@ export default class Grid implements IGrid {
             filter: true,
           };
 
-          tr.appendChild(this.createColumn(columnInfo, true));
+          tr.appendChild(this.createColumn(columnInfo));
         });
       }
       this.columnsInitialized = true;
-      // this.addTableRowFilterPart();
+      this.addTableRowFilterPart();
     }
     this.hideUIProgress();
     if (this.source) {
@@ -1720,6 +1644,8 @@ export default class Grid implements IGrid {
                     this.columns.map((c) => {
                       if (!Object.keys(d).includes(c.name)) {
                         d[c.name] = "";
+
+
                       }
                     });
                     //@ts-ignore
@@ -1794,6 +1720,7 @@ export default class Grid implements IGrid {
       );
     }
   }
+
   private showUIProgress(): void {
     if (this.options.loader) {
       switch (typeof this.options.loader) {
@@ -1927,9 +1854,5 @@ export default class Grid implements IGrid {
     const response = await fetch(url, init);
     const result = await response.json();
     return result;
-  }
-
-  public logTest(): void {
-    console.log("test context");
   }
 }

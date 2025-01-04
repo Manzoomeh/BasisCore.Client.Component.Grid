@@ -216,6 +216,7 @@ export default class Grid implements IGrid {
                 value: (el as HTMLSelectElement).selectedOptions[0].text
               }
             } else if (type == "autocomplete") {
+
               this.processManager.filter[columnInfo.name] = {
                 id: parseInt(el.getAttribute("data-bc-value")),
                 value: newFilter
@@ -241,6 +242,7 @@ export default class Grid implements IGrid {
     } else {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
+
         let mustUpdate = false;
         if (newFilter.length > 0) {
           if (!this.processManager.filter) {
@@ -782,14 +784,11 @@ export default class Grid implements IGrid {
   }
   private addTableRowFilterPart() {
     if (this.options.filter === "row") {
+      
       const dataSysThContainer = document.querySelectorAll("[data-sys-th-container]")
-      // const tr = document.createElement("tr");
-      // tr.setAttribute("data-bc-no-selection", "");
-      // tr.setAttribute("data-bc-filter", "");
-      // tr.setAttribute("data-sys-tr", "");
-      // tr.innerHTML = "";
-      // this._head.appendChild(tr);
       this.columns.forEach((columnInfo, i) => {
+
+
         if (columnInfo.filter) {
           const tdContainer = dataSysThContainer[i]
           const searchIcon = document.createElement("i");
@@ -812,33 +811,27 @@ export default class Grid implements IGrid {
           });
 
           closeButton.addEventListener("click", () => {
+            this.options.pageNumber = 1;
             const filterType = columnInfo.filterData?.type ? columnInfo.filterData.type : "text";
             const inputs = popup.querySelectorAll("input");
             const selects = popup.querySelectorAll("select");
-            inputs.forEach((input) => {
-              (input as HTMLInputElement).value = ""; // پاک کردن مقدار input
-            });
 
             selects.forEach((select) => {
+
               (select as HTMLSelectElement).selectedIndex = 0; // بازنشانی به گزینه پیش‌فرض
+
+            });
+            inputs.forEach((input) => {
+              (input as HTMLInputElement).value = ""; // پاک کردن مقدار input
+
             });
 
-            // const input = closeButton.parentElement.querySelector('input')
-            // input.value=""
-            // console.log("filterType" , input);
-            // console.log("filterType" , filterType);
-            // console.log("filterType" , columnInfo);
-            // this.handleRowInput(input, filterType, columnInfo);
-
             popup.style.display = "none";
-            this.processManager.filter = null;
+            this.processManager.filter[columnInfo.name] = "";
             this.processManager.applyUserAction();
           });
 
           this.fillTableRowFilterElement(popup, columnInfo);
-          // const td = document.createElement("td");
-          // td.setAttribute("data-sys-th", "");
-          // tr.appendChild(td);
         } else {
 
         }
@@ -929,10 +922,6 @@ export default class Grid implements IGrid {
         this.handleRowInput(input, filterType, columnInfo);
       });
       input.addEventListener("keyup", (event) => {
-        console.log("filterType", input);
-        console.log("filterType", filterType);
-        console.log("filterType", columnInfo);
-
         this.handleRowInput(input, filterType, columnInfo, event);
       });
 

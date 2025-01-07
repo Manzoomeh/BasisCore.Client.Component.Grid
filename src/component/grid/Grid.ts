@@ -197,17 +197,18 @@ export default class Grid implements IGrid {
     event?: KeyboardEvent
   ) {
     clearTimeout(this.timerId);
-    if (
-      (this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&
-      !(event?.key === "Enter" || event?.keyCode === 13)
-    ) {
+    if ((this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&!(event?.key === "Enter" || event?.keyCode === 13)) {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
+console.log(newFilter);
 
         let mustUpdate = false;
         if (newFilter.length > 0) {
+          // console.log(this.processManager.filter);
+          
           if (!this.processManager.filter) {
             this.processManager.filter = {};
+            
           }
           if (newFilter != this.processManager.filter[columnInfo.name]) {
             if (type == "select") {
@@ -785,22 +786,34 @@ export default class Grid implements IGrid {
   private addTableRowFilterPart() {
     if (this.options.filter === "row") {
       
-      const dataSysThContainer = document.querySelectorAll("[data-sys-th-container]")
+      const dataSysThContainer = document.querySelectorAll("[data-sys-th-sort-icon-container]")
+      const dataSyspopContainer = document.querySelectorAll("[data-sys-th-container]")
+      console.log(dataSysThContainer);
+      
       this.columns.forEach((columnInfo, i) => {
 
 
         if (columnInfo.filter) {
-          const tdContainer = dataSysThContainer[i]
+          const tdContainer = dataSysThContainer[i-1]
+          const tdPopContainer = dataSyspopContainer[i]
+          console.log(tdContainer);
+          
           const searchIcon = document.createElement("i");
           searchIcon.setAttribute("open-pop-up-search-form", "");
-          tdContainer.insertAdjacentElement("afterbegin", searchIcon);
+          if (tdContainer) {
+            
+            tdContainer.insertAdjacentElement("afterbegin", searchIcon);
+          }
 
           const popup = document.createElement("div");
           popup.setAttribute("pop-up-search-form", "");
           const closeButton = document.createElement("span");
           closeButton.textContent = "✖";
           popup.appendChild(closeButton);
-          tdContainer.appendChild(popup);
+          if (tdContainer) {
+            
+            tdPopContainer.appendChild(popup);
+          }
           popup.style.display = "none";
           popup.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -827,7 +840,12 @@ export default class Grid implements IGrid {
             });
 
             popup.style.display = "none";
-            this.processManager.filter[columnInfo.name] = "";
+            
+           
+            if (this.processManager.filter[columnInfo.name]) {
+              
+              this.processManager.filter[columnInfo.name] = "";
+            }
             this.processManager.applyUserAction();
           });
 
@@ -1399,10 +1417,12 @@ export default class Grid implements IGrid {
     }
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
 
-
+      const iconsContainer = document.createElement("div")
+      iconsContainer.setAttribute("data-sys-th-sort-icon-container" , "")
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
-      tdContainer.insertAdjacentElement("afterbegin", sortIcon);
+      iconsContainer.insertAdjacentElement("afterbegin", sortIcon);
+      tdContainer.insertAdjacentElement("afterbegin", iconsContainer);
 
       sortIcon.addEventListener("click", (_) => {
         if (this.processManager.sortInfo?.column !== columnInfo) {

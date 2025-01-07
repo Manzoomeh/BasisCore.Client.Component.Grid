@@ -780,9 +780,13 @@
     position: relative;
     justify-content: center;
   }
- 
   
-  
+  [data-bc-grid="d1"] table[data-bc-table] thead [data-sys-th-container] [data-sys-th-sort-icon-container]{
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  flex-direction: row-reverse;
+  }
   [data-bc-grid="d1"] table[data-bc-table] thead [data-sys-th-sort-icon="asc"] {
     background-image: url("img/sort_asc.png");
   }

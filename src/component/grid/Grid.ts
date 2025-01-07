@@ -175,6 +175,7 @@ export default class Grid implements IGrid {
       this.createUIWidthCard();
       this._container.setAttribute("data-bc-widthcard-mode", "");
     }
+
   }
   private handleInput(input: HTMLInputElement, event: KeyboardEvent) {
     clearTimeout(this.timerId);
@@ -197,16 +198,16 @@ export default class Grid implements IGrid {
     event?: KeyboardEvent
   ) {
     clearTimeout(this.timerId);
-    if ((this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&!(event?.key === "Enter" || event?.keyCode === 13)) {
+    if ((this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) && !(event?.key === "Enter" || event?.keyCode === 13)) {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
 
         let mustUpdate = false;
         if (newFilter.length > 0) {
-          
+
           if (!this.processManager.filter) {
             this.processManager.filter = {};
-            
+
           }
           if (newFilter != this.processManager.filter[columnInfo.name]) {
             if (type == "select") {
@@ -783,21 +784,21 @@ export default class Grid implements IGrid {
   }
   private addTableRowFilterPart() {
     if (this.options.filter === "row") {
-      
+
       const dataSysThContainer = document.querySelectorAll("[data-sys-th-sort-icon-container]")
       const dataSyspopContainer = document.querySelectorAll("[data-sys-th-container]")
-      
+
       this.columns.forEach((columnInfo, i) => {
 
 
         if (columnInfo.filter) {
           const tdContainer = dataSysThContainer[i]
           const tdPopContainer = dataSyspopContainer[i]
-          
+
           const searchIcon = document.createElement("i");
           searchIcon.setAttribute("open-pop-up-search-form", "");
           if (tdContainer) {
-            
+
             tdContainer.insertAdjacentElement("afterbegin", searchIcon);
           }
 
@@ -807,7 +808,7 @@ export default class Grid implements IGrid {
           closeButton.textContent = "✖";
           popup.appendChild(closeButton);
           if (tdContainer) {
-            
+
             tdPopContainer.appendChild(popup);
           }
           popup.style.display = "none";
@@ -836,10 +837,10 @@ export default class Grid implements IGrid {
             });
 
             popup.style.display = "none";
-            
-           
+
+
             if (this.processManager.filter[columnInfo.name]) {
-              
+
               this.processManager.filter[columnInfo.name] = "";
             }
             this.processManager.applyUserAction();
@@ -1364,11 +1365,18 @@ export default class Grid implements IGrid {
     }
   }
   private createColumn(columnInfo: IGridColumnInfo): HTMLTableCellElement {
-
     const td = document.createElement("td");
     td.setAttribute("data-sys-th", "");
-    // td.innerHTML = columnInfo.title;
     td.setAttribute("data-bc-sorting", "");
+
+    // اضافه کردن کلاس CSS از ویژگی headerCssClass
+    if (columnInfo.headerCssClass) {
+      if (Array.isArray(columnInfo.headerCssClass)) {
+        columnInfo.headerCssClass.forEach((cssClass) => td.classList.add(cssClass));
+      } else {
+        td.classList.add(columnInfo.headerCssClass);
+      }
+    }
 
     const tdContainer = document.createElement("div");
     tdContainer.setAttribute("data-sys-th-container", "");
@@ -1378,9 +1386,11 @@ export default class Grid implements IGrid {
     colTitle.innerHTML = columnInfo.title;
     tdContainer.appendChild(colTitle);
     td.appendChild(tdContainer);
-    const iconsContainer = document.createElement("div")
-    iconsContainer.setAttribute("data-sys-th-sort-icon-container" , "")
+
+    const iconsContainer = document.createElement("div");
+    iconsContainer.setAttribute("data-sys-th-sort-icon-container", "");
     tdContainer.insertAdjacentElement("afterbegin", iconsContainer);
+
     if (this.options.selectable == "multi" && columnInfo.selectable) {
       td.setAttribute("data-bc-select-all", "");
       const checkbox = td.querySelector('input[type="checkbox"]');
@@ -1392,31 +1402,21 @@ export default class Grid implements IGrid {
           .querySelectorAll("[data-bc-select]");
         if ((checkbox as HTMLInputElement).checked) {
           tdSelects.forEach((td) => {
-            td.querySelector('input[type="checkbox"]').setAttribute(
-              "checked",
-              ""
-            );
-            (
-              td.querySelector('input[type="checkbox"]') as HTMLInputElement
-            ).checked = true;
+            td.querySelector('input[type="checkbox"]').setAttribute("checked", "");
+            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = true;
           });
         } else {
           tdSelects.forEach((td) => {
-            td.querySelector('input[type="checkbox"]').removeAttribute(
-              "checked"
-            );
-            (
-              td.querySelector('input[type="checkbox"]') as HTMLInputElement
-            ).checked = false;
+            td.querySelector('input[type="checkbox"]').removeAttribute("checked");
+            (td.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = false;
           });
         }
 
         this.onSelectionChange();
       });
     }
-    if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
 
-     
+    if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
       iconsContainer.insertAdjacentElement("afterbegin", sortIcon);
@@ -1425,9 +1425,7 @@ export default class Grid implements IGrid {
         if (this.processManager.sortInfo?.column !== columnInfo) {
           this._head
             .querySelectorAll("[data-sys-th-sort-icon]")
-            .forEach((element) =>
-              element.setAttribute("data-sys-th-sort-icon", "")
-            );
+            .forEach((element) => element.setAttribute("data-sys-th-sort-icon", ""));
         }
         let sortType = sortIcon.getAttribute("data-sys-th-sort-icon") as ISortType;
         sortType = sortType === "asc" ? "desc" : "asc";
@@ -1439,9 +1437,12 @@ export default class Grid implements IGrid {
         this.processManager.applyUserAction();
       });
     }
+
     this.columns.push(columnInfo);
     return td;
   }
+
+
   private createItems(columnInfo: IGridCardInfo): HTMLElement {
     const td = document.createElement("div");
 

@@ -87,6 +87,7 @@
         custom3: {
           source: "id",
           title: "custom3",
+          sort : false, 
           cellMaker: (row, data, td) => {
             td.style["color"] = row.data?.indexOf("a") == -1 ? "red" : "blue";
             return data;

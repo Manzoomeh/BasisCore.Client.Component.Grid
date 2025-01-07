@@ -200,11 +200,9 @@ export default class Grid implements IGrid {
     if ((this.options.process === "server" || (this.options.process === "mix" && this.options.ProcessActionType.search == "server")) &&!(event?.key === "Enter" || event?.keyCode === 13)) {
       this.timerId = setTimeout(() => {
         const newFilter = el.value.toLowerCase();
-console.log(newFilter);
 
         let mustUpdate = false;
         if (newFilter.length > 0) {
-          // console.log(this.processManager.filter);
           
           if (!this.processManager.filter) {
             this.processManager.filter = {};
@@ -788,15 +786,13 @@ console.log(newFilter);
       
       const dataSysThContainer = document.querySelectorAll("[data-sys-th-sort-icon-container]")
       const dataSyspopContainer = document.querySelectorAll("[data-sys-th-container]")
-      console.log(dataSysThContainer);
       
       this.columns.forEach((columnInfo, i) => {
 
 
         if (columnInfo.filter) {
-          const tdContainer = dataSysThContainer[i-1]
+          const tdContainer = dataSysThContainer[i]
           const tdPopContainer = dataSyspopContainer[i]
-          console.log(tdContainer);
           
           const searchIcon = document.createElement("i");
           searchIcon.setAttribute("open-pop-up-search-form", "");
@@ -1382,6 +1378,9 @@ console.log(newFilter);
     colTitle.innerHTML = columnInfo.title;
     tdContainer.appendChild(colTitle);
     td.appendChild(tdContainer);
+    const iconsContainer = document.createElement("div")
+    iconsContainer.setAttribute("data-sys-th-sort-icon-container" , "")
+    tdContainer.insertAdjacentElement("afterbegin", iconsContainer);
     if (this.options.selectable == "multi" && columnInfo.selectable) {
       td.setAttribute("data-bc-select-all", "");
       const checkbox = td.querySelector('input[type="checkbox"]');
@@ -1417,12 +1416,10 @@ console.log(newFilter);
     }
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
 
-      const iconsContainer = document.createElement("div")
-      iconsContainer.setAttribute("data-sys-th-sort-icon-container" , "")
+     
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
       iconsContainer.insertAdjacentElement("afterbegin", sortIcon);
-      tdContainer.insertAdjacentElement("afterbegin", iconsContainer);
 
       sortIcon.addEventListener("click", (_) => {
         if (this.processManager.sortInfo?.column !== columnInfo) {

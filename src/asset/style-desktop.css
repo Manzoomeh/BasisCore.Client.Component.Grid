@@ -780,7 +780,15 @@
     position: relative;
     justify-content: right;
   }
-  
+  .grid-column-align-right [data-sys-th-container]{
+    justify-content: right!important;
+  }
+  .grid-column-align-left [data-sys-th-container]{
+    justify-content: left!important;
+  }
+  .grid-column-align-center [data-sys-th-container]{
+    justify-content: center!important;
+  }
   [data-bc-grid="d1"] table[data-bc-table] thead [data-sys-th-container] [data-sys-th-sort-icon-container]{
   display: flex;
   column-gap: 8px;

@@ -1387,9 +1387,6 @@ export default class Grid implements IGrid {
     tdContainer.appendChild(colTitle);
     td.appendChild(tdContainer);
 
-    const iconsContainer = document.createElement("div");
-    iconsContainer.setAttribute("data-sys-th-sort-icon-container", "");
-    tdContainer.insertAdjacentElement("afterbegin", iconsContainer);
 
     if (this.options.selectable == "multi" && columnInfo.selectable) {
       td.setAttribute("data-bc-select-all", "");
@@ -1417,6 +1414,9 @@ export default class Grid implements IGrid {
     }
 
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
+      const iconsContainer = document.createElement("div");
+      iconsContainer.setAttribute("data-sys-th-sort-icon-container", "");
+      tdContainer.insertAdjacentElement("afterbegin", iconsContainer);  
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
       iconsContainer.insertAdjacentElement("afterbegin", sortIcon);

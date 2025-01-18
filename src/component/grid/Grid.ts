@@ -794,7 +794,7 @@ export default class Grid implements IGrid {
         if (columnInfo.filter) {
           const tdContainer = dataSysThContainer[i]
           const tdPopContainer = dataSyspopContainer[i]
-
+          
           const searchIcon = document.createElement("i");
           searchIcon.setAttribute("open-pop-up-search-form", "");
           if (tdContainer) {
@@ -817,6 +817,7 @@ export default class Grid implements IGrid {
           });
           searchIcon.addEventListener("click", (event) => {
             event.stopPropagation();
+            
             popup.style.display = "flex";
           });
 
@@ -1386,7 +1387,9 @@ export default class Grid implements IGrid {
     colTitle.innerHTML = columnInfo.title;
     tdContainer.appendChild(colTitle);
     td.appendChild(tdContainer);
-
+    const iconsContainer = document.createElement("div");
+    iconsContainer.setAttribute("data-sys-th-sort-icon-container", "");
+    tdContainer.insertAdjacentElement("afterbegin", iconsContainer); 
 
     if (this.options.selectable == "multi" && columnInfo.selectable) {
       td.setAttribute("data-bc-select-all", "");
@@ -1414,9 +1417,7 @@ export default class Grid implements IGrid {
     }
 
     if (columnInfo.type === ColumnType.data && (columnInfo.sort ?? true)) {
-      const iconsContainer = document.createElement("div");
-      iconsContainer.setAttribute("data-sys-th-sort-icon-container", "");
-      tdContainer.insertAdjacentElement("afterbegin", iconsContainer);  
+     
       const sortIcon = document.createElement("i");
       sortIcon.setAttribute("data-sys-th-sort-icon", "");
       iconsContainer.insertAdjacentElement("afterbegin", sortIcon);
@@ -1436,6 +1437,12 @@ export default class Grid implements IGrid {
         sortIcon.setAttribute("data-sys-th-sort-icon", sortType);
         this.processManager.applyUserAction();
       });
+    }else{
+      setTimeout(() => {
+        if (iconsContainer.innerHTML=="") {
+          iconsContainer.style.display="none"
+        }
+      }, 10);
     }
 
     this.columns.push(columnInfo);

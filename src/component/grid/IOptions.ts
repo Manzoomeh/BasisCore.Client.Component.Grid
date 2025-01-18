@@ -89,6 +89,7 @@ export type IColumnInfo = {
   filterData?: IFilterData;
   cellMaker?: ICellMakerCallback;
   cssClass?: string | Array<string>;
+  headerCssClass?: string | Array<string>;
 };
 
 export type IWidthCArd = {

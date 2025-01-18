@@ -22,7 +22,7 @@
   <button id="btn">Reload</button>
   <Basis core="component.grid.grid" run="atclient" triggers="sample.data" dataMemberName="sample.data" options="options">
   </Basis>
-  <basis core="callback" run="atclient" triggers="sample.data"></basis>
+  <!-- <basis core="callback" run="atclient" triggers="sample.data"></basis> -->
   <script>
     function setSource() {
       const MIN_ID = 1000;
@@ -82,11 +82,13 @@
           filterData: {
             type: "autocomplete",
             link: "/server/api/autocomplete?term=${term}"
-          }
+          },
+          headerCssClass : "testClass"
         },
         custom3: {
           source: "id",
           title: "custom3",
+          sort : false, 
           cellMaker: (row, data, td) => {
             td.style["color"] = row.data?.indexOf("a") == -1 ? "red" : "blue";
             return data;
@@ -94,7 +96,7 @@
         },
         data: {
           title: "Data",
-          filter: true
+          filter: false
         },
         p: {
           title: "hi",

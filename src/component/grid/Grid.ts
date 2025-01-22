@@ -847,8 +847,6 @@ export default class Grid implements IGrid {
           });
 
           this.fillTableRowFilterElement(popup, columnInfo);
-        } else {
-
         }
       });
     }

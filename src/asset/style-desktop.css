@@ -725,7 +725,7 @@
     /* right: 0; */
     padding: 5px;
     background-color: #fff;
-    z-index: 1000;
+    z-index: 10;
     background-color: var(--table-columnhead-background);
     position: absolute;
     /* top: 0px; */
@@ -780,6 +780,7 @@
     position: relative;
     justify-content: right;
   }
+ 
   .grid-column-align-right [data-sys-th-container]{
     justify-content: right!important;
   }

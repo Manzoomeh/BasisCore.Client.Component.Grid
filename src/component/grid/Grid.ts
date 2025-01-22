@@ -125,7 +125,7 @@ export default class Grid implements IGrid {
       ...Grid.getDefaults().culture.labels,
       ...(options?.culture?.labels ?? {}),
     };
-
+    
     // initialize deviceId
     const optionDeviceId = this.options.culture?.deviceId;
     if (optionDeviceId) {
@@ -156,6 +156,7 @@ export default class Grid implements IGrid {
       this._container.style["direction"] = this.options.direction;
       this._container.setAttribute("data-bc-grid-direction", this.options.direction);
     }
+    
     this._informationFormatter = Function(
       "from",
       "to",
@@ -528,6 +529,7 @@ export default class Grid implements IGrid {
   }
 
   private addTemplateRowFilterPart() {
+    
     if (this.options.filter === "row") {
       const filterItemsWrapper = this._container
         .querySelector("[data-bc-grid-header-container]")
@@ -783,6 +785,7 @@ export default class Grid implements IGrid {
     this.createTable();
   }
   private addTableRowFilterPart() {
+    
     if (this.options.filter === "row") {
 
       const dataSysThContainer = document.querySelectorAll("[data-sys-th-sort-icon-container]")
@@ -819,6 +822,8 @@ export default class Grid implements IGrid {
             event.stopPropagation();
             
             popup.style.display = "flex";
+
+            popup.querySelector("input")?.focus();
           });
 
           closeButton.addEventListener("click", () => {

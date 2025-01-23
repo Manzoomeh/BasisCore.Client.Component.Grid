@@ -51,14 +51,17 @@
         id: {
           title: "Data-Id",
           filter: true,
-          sort:false
+          sort:false,
+          headerCssClass: "grid-column-align-center",
         },
         custom0: {
           title: "custom0",
-          source: () => "statis"
+          source: () => "statis",
+          headerCssClass: "grid-column-align-center",
         },
         custom1: {
           title: "custom1",
+          headerCssClass: "grid-column-align-left",
           source: row => `${row.id}-${row.data}`,
           "cellMaker": (row, data, td) => `${row.id}-${row.data}`
         },

@@ -788,12 +788,10 @@ export default class Grid implements IGrid {
     
     if (this.options.filter === "row") {
 
-      const dataSysThContainer = document.querySelectorAll("[data-sys-th-sort-icon-container]")
-      const dataSyspopContainer = document.querySelectorAll("[data-sys-th-container]")
+      const dataSysThContainer = this._container.querySelectorAll("[data-sys-th-sort-icon-container]")
+      const dataSyspopContainer = this._container.querySelectorAll("[data-sys-th-container]")
 
       this.columns.forEach((columnInfo, i) => {
-
-
         if (columnInfo.filter) {
           const tdContainer = dataSysThContainer[i]
           const tdPopContainer = dataSyspopContainer[i]

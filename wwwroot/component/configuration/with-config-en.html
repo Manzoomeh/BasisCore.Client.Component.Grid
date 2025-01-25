@@ -78,6 +78,48 @@
             return data;
           }
         },
+       
+       
+        custom4: {
+          title: "custom4",
+          headerCssClass: "grid-column-align-right",
+          source: row => `${row.id}-${row.data}`,
+          "cellMaker": (row, data, td) => `${row.id}-${row.data}`
+        },
+        custom5: {
+          title: "custom5",
+          source: "data",
+          "cellMaker": (row, data, td) => `<button data-id="${row.id}" onclick="alert(this);">${data}</button>`
+        },
+        custom6: {
+          source: "id",
+          title: "custom6",
+          cellMaker: (row, data, td) => {
+            td.style["color"] = row.data?.indexOf("a") == -1 ? "red" : "blue";
+            return data;
+          }
+        },
+        
+        
+        custom7: {
+          title: "custom7",
+          headerCssClass: "grid-column-align-right",
+          source: row => `${row.id}-${row.data}`,
+          "cellMaker": (row, data, td) => `${row.id}-${row.data}`
+        },
+        custom: {
+          title: "custom",
+          source: "data",
+          "cellMaker": (row, data, td) => `<button data-id="${row.id}" onclick="alert(this);">${data}</button>`
+        },
+        custom6: {
+          source: "id",
+          title: "custom6",
+          cellMaker: (row, data, td) => {
+            td.style["color"] = row.data?.indexOf("a") == -1 ? "red" : "blue";
+            return data;
+          }
+        },
         data: {
           title: "Data",
           filter: true

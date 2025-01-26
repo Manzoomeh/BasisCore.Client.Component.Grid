@@ -736,7 +736,7 @@
     position: relative;
   }
   [data-bc-grid="d1"] [data-bc-table-container] [pop-up-search-form] {
-    /* right: 0; */
+    right: 0;
     padding: 5px;
     background-color: #fff;
     z-index: 10;

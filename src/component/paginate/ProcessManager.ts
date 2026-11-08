@@ -11,6 +11,7 @@ export default abstract class ProcessManager implements IGridProcessManager {
   public pageNumber: number;
   public sortInfo: ISortInfo;
   public filter: any = "";
+  public query: string;
   protected originalData: Array<GridRow>;
 
   constructor(owner: IGrid) {
@@ -28,14 +29,18 @@ export default abstract class ProcessManager implements IGridProcessManager {
     if (this.owner.options.filter === "simple" && this.filter?.length > 0) {
       rows = rows.filter((x) => x.acceptableBySimpleFilter(this.filter));
     } else if (
-      this.owner.options.filter === "row" &&
+      (this.owner.options.filter === "row" || this.owner.options.culture?.template === "template4" && this.owner.options.filter === "advanced") &&
       this.filter &&
       Reflect.ownKeys(this.filter).length > 0
     ) {
       rows = rows.filter((x) => x.acceptableByRowFilter(this.filter, type));
     }
     if (this.sortInfo) {
+      if (this.owner.options.culture?.template === "template4") rows = rows.slice();
       rows = rows.sort((a, b) => GridRow.compare(a, b, this.sortInfo));
+    }
+    if (this.owner.options.culture?.template === "template4" && this.query) {
+      rows = rows.filter((row) => row.acceptableBySimpleFilter(this.query));
     }
     rows.forEach((row, i) => row.setOrder(i));
     return rows;

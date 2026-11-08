@@ -6,6 +6,11 @@ const demoHttpServer = require("./server/http");
 module.exports = (env, options) => {
   return {
     entry: {
+      studio: {
+        import: "./src/StudioLoader.ts",
+        filename: "basiscore-grid/basiscore.grid.js",
+        library: { name: "grid", type: "assign" },
+      },
       grid: {
         import: "./src/Loader.ts",
         filename: "basiscore.grid.js",

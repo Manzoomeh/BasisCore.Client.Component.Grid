@@ -19,11 +19,13 @@ import ServerProcess from "../paginate/ServerProcess";
 import NoPaginate from "../paginate/NoPaginateProcessManager";
 import MixedProcess from "../paginate/MixedProcess";
 import Item from "./Item";
+import type MaterialTemplate from "./MaterialTemplate";
 import Card from "./Card";
 import { IBCUtil, IDictionary, IFixValue } from "basiscore";
 
 declare const $bc: IBCUtil;
 export default class Grid implements IGrid {
+  public materialTemplate: MaterialTemplate;
   private readonly _container: HTMLElement;
   private _table: HTMLElement;
   readonly options: IGridOptions;
@@ -165,6 +167,17 @@ export default class Grid implements IGrid {
     this._onSignalSourceCallback = signalSourceCallback;
     this._selectionChangeCallback = selectionChangeCallback;
     this.id = Math.random().toString(36).substring(2);
+    if (this.options.culture?.template === "template4") {
+      // Legacy instances must not initialize Template 4's styles or helpers.
+      const Template = require("./MaterialTemplate").default;
+      this._container.setAttribute("data-bc-grid", "studio");
+      this._container.setAttribute("data-bc-grid-template", "template4");
+      this.materialTemplate = new Template(this, this._container, Grid.getDefaults().culture.labels);
+      this.columns = this.materialTemplate.columns;
+      this.processManager = this.materialTemplate.process;
+      this.columnsInitialized = true;
+      return;
+    }
     if (this.options.mode == "grid") {
       if (this.deviceId == 1) {
         this.createUI();
@@ -1492,6 +1505,10 @@ export default class Grid implements IGrid {
   }
 
   public setSource(source: IGridSource, offsetOptions?: IOffsetOptions): void {
+    if (this.materialTemplate) {
+      this.source = null;
+      this.materialTemplate.setSource(source);
+    }
     if (!this.columnsInitialized) {
       const tr = this._head.querySelector("tr");
       if (source && source.length > 0 && source[0]) {
@@ -1524,6 +1541,7 @@ export default class Grid implements IGrid {
     }
     this.processManager.setSource(this._rows, offsetOptions);
     this.source = source;
+    this.materialTemplate?.syncSelection(this.getSelectedRows().length);
   }
 
   public displayRows(
@@ -1532,6 +1550,10 @@ export default class Grid implements IGrid {
     to: number,
     total: number
   ): void {
+    if (this.materialTemplate) {
+      this.materialTemplate.displayRows(rows, from, to, total);
+      return;
+    }
     this._body.innerHTML = "";
     if (rows?.length > 0) {
       rows?.forEach((row) => this._body.appendChild(row.uiElement));
@@ -1729,6 +1751,7 @@ export default class Grid implements IGrid {
   }
 
   private showUIProgress(): void {
+    if (this.materialTemplate) return;
     if (this.options.loader) {
       switch (typeof this.options.loader) {
         case "function": {
@@ -1750,6 +1773,7 @@ export default class Grid implements IGrid {
   }
 
   private hideUIProgress(): void {
+    if (this.materialTemplate) return;
     if (this.options.loader) {
       switch (typeof this.options.loader) {
         case "function": {
@@ -1796,9 +1820,30 @@ export default class Grid implements IGrid {
       .filter((x) => x.selected)
       .map((x) => x.data);
     this._selectionChangeCallback(selectedRows);
+    this.materialTemplate?.syncSelection(selectedRows.length);
+  }
+
+  public getSelectedRows() {
+    return (this._rows || [])
+      .filter((x) => x.selected)
+      .map((x) => x.data);
+  }
+
+  public setSelectedRows(selected: any[]) {
+    if (!this.materialTemplate) throw new Error("setSelectedRows is supported only by template4");
+    if (this.options.selectable === "single") selected = selected.slice(0, 1);
+    this._rows.forEach(row => {
+      if (!row._checkBox) row._checkBox = document.createElement("input");
+      row._checkBox.checked = selected.includes(row.data);
+    });
+    this.onSelectionChange();
   }
 
   public resetSelectAll() {
+    if (this.materialTemplate) {
+      this.materialTemplate.syncSelection();
+      return;
+    }
     const selectAllInput = this._container
       .querySelector("[data-bc-table-container] thead")
       ?.querySelector('[data-bc-select-all] input[type="checkbox"]');

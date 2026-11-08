@@ -1,0 +1,66 @@
+{
+  "source": "http://localhost:18474/",
+  "entry": "/component/configuration/mobileDesign/template4.html",
+  "assets": [
+    {
+      "path": "/assets/index-D-GXqfts.js",
+      "sha256": "e1b223f22b0165b7261366eb37b586e68cd1eb6fb6d9ef2d216203d3dd1c7c36"
+    },
+    {
+      "path": "/assets/index-ma8ssUgM.css",
+      "sha256": "0c1b885b9b4021569e14433c5164835811afc29a5b41c983af40d6bd6a8227d9"
+    },
+    {
+      "path": "/basiscore/basiscore.js",
+      "sha256": "14d7002ad9cf64009d831a2f2dafd8ce7790dc668cab7447504ccb68667be2ba"
+    },
+    {
+      "path": "/basiscore-grid/basiscore.grid.js",
+      "sha256": "63de26c369223876d972a5168095946d54358ea786c77440d6ff5c5a5afc3951"
+    },
+    {
+      "path": "/basisicon.ico",
+      "sha256": "3ee9ed1142fd7a1f7a4486fce84fe9186d6380f27f51e8be606e75ac96398ac5"
+    }
+  ],
+  "resources": [
+    {
+      "path": "/airlines/AF.png",
+      "sha256": "a6b710cc057557788d56acd7ffd369ede9e5cb42b377b901fee9445138f5582a"
+    },
+    {
+      "path": "/airlines/EK.png",
+      "sha256": "9c31309348c7a8883590f038eb916f91b1aad160e12261238ad87a19ccac766c"
+    },
+    {
+      "path": "/airlines/FZ.png",
+      "sha256": "aa2315323ebefcf8d8ce515bce6ac685902ebbbc12a26e006af95b888850dbb7"
+    },
+    {
+      "path": "/airlines/IA.png",
+      "sha256": "8746814f6a636b7f319843037c7c32d95f35e48bf63d42a8e11c4137d34bbe87"
+    },
+    {
+      "path": "/airlines/IR.png",
+      "sha256": "25d4b7e23a4b61f5c2e68dd14f37a160daf4ba250fe8311cc236e0111bca14b4"
+    },
+    {
+      "path": "/airlines/LH.png",
+      "sha256": "41d2717a7d8b8aa6e8e81fc377ba994f34d45f8f107fa41768bb62f5f1b16385"
+    },
+    {
+      "path": "/airlines/PC.png",
+      "sha256": "877f03d714f1c25e0d1cd88ca4fb597c20b619ed90bba8cb478e02cb78331401"
+    },
+    {
+      "path": "/airlines/QR.png",
+      "sha256": "16e5b4849bb98fb8399b2697c66bd243439f1c8147441a9eacaef720f4f20039"
+    },
+    {
+      "path": "/airlines/TK.png",
+      "sha256": "285744d6cccd7dee30799ef24659cd23e8d678526d0e21cfd656eec13313b189"
+    }
+  ],
+  "componentSource": "src/StudioLoader.ts",
+  "componentBuild": "webpack --mode=production"
+}

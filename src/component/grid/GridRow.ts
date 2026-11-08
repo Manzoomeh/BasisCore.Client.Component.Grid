@@ -13,6 +13,11 @@ declare const $bc:IBCUtil;
 export default class GridRow extends Item {
   public get uiElement(): HTMLElement {
     if (!this._uiElement) {
+      if (this._owner.materialTemplate) {
+        this._uiElement = this._owner.materialTemplate.createRow(this);
+        this._owner.options.rowMaker?.(this.data, this._uiElement);
+        return this._uiElement;
+      }
       if (this._owner.deviceId == 1) {
         this._uiElement = document.createElement("tr");
         this._uiElement.setAttribute("data-sys-tr", "");
@@ -285,8 +290,12 @@ export default class GridRow extends Item {
     let retVal = true;
     for (const key of Reflect.ownKeys(filter)) {
       const element = Reflect.get(filter, key);
-      const value = Reflect.get(this._dataProxy, key)?.toString().toLowerCase();
-      if (type && (type == "select" || type == "autocomplete")) {
+      const value = this._owner.materialTemplate
+        ? String(Reflect.get(this._dataProxy, key) ?? "").toLowerCase()
+        : Reflect.get(this._dataProxy, key)?.toString().toLowerCase();
+      const filterType = this._owner.materialTemplate && (this._owner.options.filter === "advanced" || this._owner.options.presentation?.view === "mobile" || this._owner.options.presentation?.filterMode !== "header")
+        ? this._owner.columns.find(column => column.name === key)?.filterData?.type || "text" : type;
+      if (filterType == "select" || filterType == "autocomplete") {
         retVal = retVal && value == element;
       } else {
         retVal = retVal && value.indexOf(element) >= 0;
@@ -302,7 +311,7 @@ export default class GridRow extends Item {
       .filter((col) => col.type === ColumnType.data)
       .find((col) => {
         let retVal = false;
-        if (col.filter) {
+        if (col.filter || this._owner.materialTemplate) {
           const value = Reflect.get(this._dataProxy, col.name)?.toString().toLowerCase();
           retVal = value && value.indexOf(filter) >= 0;
         }
@@ -312,6 +321,9 @@ export default class GridRow extends Item {
   }
 
   public static compare(first: GridRow, second: GridRow, sortInfo: ISortInfo): number {
+    if (first._owner.materialTemplate && sortInfo.column.compare) {
+      return sortInfo.column.compare(first._dataProxy[sortInfo.column.name], second._dataProxy[sortInfo.column.name]) * (sortInfo.sort === "asc" ? 1 : -1);
+    }
     let valFirst = Reflect.get(
       sortInfo.column.title ? first._dataProxy : first,
       sortInfo.column.name

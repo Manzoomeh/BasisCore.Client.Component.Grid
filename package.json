@@ -4,6 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "webpack --mode=production",
+    "build:demo": "webpack --mode=production && node scripts/update-template4-demo.cjs",
+    "test": "node tests/dashboard.test.mjs && node tests/guide-config.test.cjs",
+    "test:compat": "webpack --mode=development && node tests/run-compatibility.cjs",
+    "test:template4": "node tests/run-template4.cjs",
     "dev": "webpack serve --mode=development",
     "ws": "node server/websocket.js",
     "prerel": "if exist dist rd /s /q dist",
@@ -19,7 +25,9 @@
     "Data"
   ],
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "docs/**/*",
+    "NOTICE"
   ],
   "author": "Manzoomeh Negaran <info@manzoomeh.ir> (https://www.manzoomeh.ir)",
   "license": "ISC",
@@ -36,6 +44,7 @@
     "node-xlsx": "^0.23.0"
   },
   "devDependencies": {
+    "playwright": "1.61.1",
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^6.4.0",
     "style-loader": "^3.3.0",

@@ -57,6 +57,8 @@ Template 4 instead of changing the legacy download method. The existing required
   selection, client/server/mixed paging, sort/filter, makers and empty/source updates.
   All 216 fixture scenarios passed in Chrome, including creating a Template 4
   instance beside the legacy grid without changing its sampled styles/state.
+  The external LineIcons stylesheet is mocked; its live CSS/font effects are not
+  part of these local DOM/style comparisons.
 - `npm run test:template4`: native component lifecycle/reset, HTML header,
   desktop/mobile filters, radio/multi selection, operation menus, export
   success/failure, guide accessibility/isolation, mobile layout and bounds.
@@ -69,6 +71,17 @@ also checked; the npm package was not published. The original package-version
 number remains unchanged for the upstream maintainer to choose at release time.
 
 ## Limits And Remaining Risk
+
+### Legacy Refresh Selector
+
+The Template 4 refresh button now preserves `div[data-bc-refresh-container] span`
+for existing widget refresh functions, without changing those widgets or their
+configurations. `panel-transfer.browser.cjs` compares the legacy click with the
+visible button in client/server/mixed processing and desktop/mobile views:
+one callback, identical payload/encoding, no control when disabled, and no form
+submission on pointer/Enter/Space activation. This fixes the refresh selector
+only; it does not establish compatibility with all legacy DOM selectors or row
+lifecycle behavior.
 
 ### Semantic Action Guides
 

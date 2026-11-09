@@ -91,6 +91,32 @@ const assert = require('node:assert/strict');
         test(noData===false?!empty.host.querySelector('.empty-state'):empty.host.querySelector('.empty-state').textContent.includes(typeof noData==='string'?noData:'Custom callback'),'Existing noData option');
         empty.dispose();
       }
+      for (const view of ['table','mobile']) for (const process of ['client','server','mix']) {
+        const refresh=create({process,refresh:true,presentation:{view,search:false},
+          ProcessActionType:{search:'server',paging:'server',sort:'server'}});
+        refresh.events.length=0;
+        refresh.host.querySelector('.refresh-button').click();
+        test(refresh.events.length===1,`${view}/${process}: button emits one refresh callback`);
+        const expected=JSON.stringify(refresh.events[0]);
+        refresh.events.length=0;
+        // Existing panel widgets click this span after editing/deleting a record.
+        const element=refresh.host.querySelector('div[data-bc-refresh-container]');
+        element.querySelector('span').click();
+        test(refresh.events.length===1&&JSON.stringify(refresh.events[0])===expected,
+          `${view}/${process}: legacy refresh selector preserves callback payload/encoding`);
+        test(refresh.host.querySelectorAll('[data-bc-refresh-container]').length===1,
+          `${view}/${process}: only one refresh control exists`);
+        if(view==='mobile') {
+          const button=refresh.host.querySelector('.refresh-button');
+          test(getComputedStyle(element).order==='2'&&getComputedStyle(button).borderRadius==='9px'&&
+            getComputedStyle(button).marginInlineStart==='0px','Mobile refresh keeps its toolbar order/style');
+        }
+        refresh.dispose();
+        const disabled=create({refresh:false,presentation:{view,search:false}});
+        test(!disabled.host.querySelector('[data-bc-refresh-container], .refresh-button'),
+          `${view}/${process}: refresh:false renders no legacy or new trigger`);
+        disabled.dispose();
+      }
       for (const process of ['server','mix']) {
         const options={process,ProcessActionType:{search:'server',paging:'server',sort:'server'}};
         const simple=create({...options,filter:'simple',presentation:{search:true},refresh:true});
@@ -100,7 +126,12 @@ const assert = require('node:assert/strict');
         const snapshot=simple.grid.materialTemplate.captureState();simple.grid.materialTemplate.restoreState(snapshot);
         test(simple.events.at(-1).filter==='beta','Server search state restoration');
         simple.host.querySelector('.refresh-button').click();
-        test(simple.events.at(-1).filter==='beta','Refresh uses the same native request callback');simple.dispose();
+        test(simple.events.at(-1).filter==='beta','Refresh uses the same native request callback');
+        const payload=JSON.stringify(simple.events.at(-1)),beforeRefresh=simple.events.length;
+        simple.host.querySelector('[data-bc-refresh-container]').querySelector('span').click();
+        test(simple.events.length===beforeRefresh+1&&JSON.stringify(simple.events.at(-1))===payload,
+          'Legacy refresh preserves active filters and native callback encoding');
+        simple.dispose();
         const row=create(options);row.events.length=0;
         const filter=row.host.querySelector('[data-column-filter=name]');filter.value='Beta';filter.dispatchEvent(new Event('input'));
         test(row.events.at(-1).filter.name==='beta','Server/mixed column-filter object payload');
@@ -109,7 +140,7 @@ const assert = require('node:assert/strict');
       }
       return checks;
     });
-    assert(result>=45);
+    assert(result>=83);
 
     // A real BasisCore component, including form safety, old cellMaker menus and disposal.
     await page.addStyleTag({content:'.iconsOperations .iconsDetail{display:none;min-width:180px;padding:12px;border:1px solid #dbe1f1;border-radius:8px}.iconsOperations.show .iconsDetail{display:block}'});
@@ -142,6 +173,9 @@ const assert = require('node:assert/strict');
     await native.locator('.table-wrap').dispatchEvent('scroll');
     await page.waitForFunction(()=>!document.querySelector('#panel-native .iconsDetail').matches(':popover-open'));
     await native.locator('.sort-button').first().click();
+    await native.locator('.refresh-button').click();
+    await native.locator('.refresh-button').press('Enter');
+    await native.locator('.refresh-button').press('Space');
     assert.equal(await page.evaluate(()=>window.panelSubmits),0);
     const requests=[];
     await page.route('**/__test-grid-export*.xlsx',async route=>{
@@ -199,6 +233,6 @@ const assert = require('node:assert/strict');
     await grid.evaluate(element=>element.scrollIntoView({block:'start'}));
     await page.screenshot({path:'/tmp/panel-transfer-mobile.png'});
     assert.deepEqual(errors,[]);
-    console.log(`Panel transfer: ${result} compatibility checks, native lifecycle, independent/legacy headers, selection, server/mixed payloads, form-safe popover menus, export success/failure, compact desktop and mobile styles passed.`);
+    console.log(`Panel transfer: ${result} compatibility checks, legacy refresh selectors/callbacks, native lifecycle, independent/legacy headers, selection, server/mixed payloads, form-safe controls, export success/failure, compact desktop and mobile styles passed.`);
   } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exit(1);});

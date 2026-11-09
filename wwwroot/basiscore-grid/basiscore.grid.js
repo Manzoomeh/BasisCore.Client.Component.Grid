@@ -2079,7 +2079,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field input{min-width:0;font-size:16px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field input::placeholder{font-size:12px;color:var(--mobile-muted)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field kbd{display:none}
-:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>.button{order:2;min-height:44px;margin-inline:0;padding-inline:12px;border-color:var(--list-outline);border-radius:9px;background:var(--primary-container);color:var(--on-primary-container)}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>[data-bc-refresh-container]{order:2}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>.button,:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>[data-bc-refresh-container]>.button{order:2;min-height:44px;margin-inline:0;padding-inline:12px;border-color:var(--list-outline);border-radius:9px;background:var(--primary-container);color:var(--on-primary-container)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>.advanced-filter-button{order:1;flex:0 0 auto;margin-inline-start:auto;font-size:12px;background:color-mix(in srgb,var(--primary-container) 45%,var(--surface));color:var(--primary)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>.grid-exports{order:2;flex-basis:100%}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar>.icon-button{order:2;flex:0 0 44px;width:44px;height:44px;border-radius:9px}
@@ -6136,11 +6137,18 @@ var MaterialTemplate = /** @class */ (function () {
         this.settingsButton = this.iconButton("settingsIcon", this.label("tableSettings", "تنظیمات جدول"), function () { var _a, _b; return (_b = (_a = _this.presentation).onSettings) === null || _b === void 0 ? void 0 : _b.call(_a); });
         toolbar.append(this.search, MaterialTemplate_element("div", "toolbar-spacer"), this.selectionSummary, this.settingsButton);
         if (options.refresh) {
-            var refresh = MaterialTemplate_element("button", "button button-outlined refresh-button", this.label("refresh", "") || "تازه‌سازی");
+            var refreshContainer = MaterialTemplate_element("div");
+            refreshContainer.setAttribute("data-bc-refresh-container", "");
+            var refresh = MaterialTemplate_element("button", "button button-outlined refresh-button");
             refresh.type = "button";
-            refresh.prepend(this.icon("refreshIcon"));
-            refresh.addEventListener("click", function () { return owner.tryLoadData(); });
-            toolbar.append(refresh);
+            // Existing widgets click the legacy container's span; let it bubble to the native button.
+            refresh.append(this.icon("refreshIcon"), MaterialTemplate_element("span", "", this.label("refresh", "") || "تازه‌سازی"));
+            refresh.addEventListener("click", function (event) {
+                event.preventDefault();
+                owner.tryLoadData();
+            });
+            refreshContainer.append(refresh);
+            toolbar.append(refreshContainer);
         }
         toolbar.append(this.filterButton);
         var exports = MaterialTemplate_element("div", "grid-exports");

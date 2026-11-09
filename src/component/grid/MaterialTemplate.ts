@@ -138,11 +138,18 @@ export default class MaterialTemplate {
     this.settingsButton = this.iconButton("settingsIcon", this.label("tableSettings", "تنظیمات جدول"), () => this.presentation.onSettings?.());
     toolbar.append(this.search, element("div", "toolbar-spacer"), this.selectionSummary, this.settingsButton);
     if (options.refresh) {
-      const refresh = element("button", "button button-outlined refresh-button", this.label("refresh", "") || "تازه‌سازی");
+      const refreshContainer = element("div");
+      refreshContainer.setAttribute("data-bc-refresh-container", "");
+      const refresh = element("button", "button button-outlined refresh-button");
       refresh.type = "button";
-      refresh.prepend(this.icon("refreshIcon"));
-      refresh.addEventListener("click", () => owner.tryLoadData());
-      toolbar.append(refresh);
+      // Existing widgets click the legacy container's span; let it bubble to the native button.
+      refresh.append(this.icon("refreshIcon"), element("span", "", this.label("refresh", "") || "تازه‌سازی"));
+      refresh.addEventListener("click", event => {
+        event.preventDefault();
+        owner.tryLoadData();
+      });
+      refreshContainer.append(refresh);
+      toolbar.append(refreshContainer);
     }
     toolbar.append(this.filterButton);
     const exports = element("div", "grid-exports");

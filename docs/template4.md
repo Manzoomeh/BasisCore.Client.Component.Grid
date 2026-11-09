@@ -44,6 +44,16 @@ combined with a remote row-filter object. Inputs are not debounced. Do not migra
 remote select/autocomplete or combined-search widgets without adapting/testing
 that contract first.
 
+## Refresh
+
+With `refresh: true`, Template 4 retains `div[data-bc-refresh-container]` and its
+descendant `span`. Existing widget code such as
+`document.querySelector('[data-bc-refresh-container]').querySelector('span').click()`
+still uses the same native refresh callback and payload. The visible button is a
+form-safe keyboard-accessible `button`; clicking either target fires once.
+`refresh: false` omits the control. No widget/config migration is needed for this
+refresh selector; other DOM/migration limitations still apply.
+
 ## Selection
 
 `selectable: 'multi'` uses checkboxes; `single` uses radios and ignores select-all;

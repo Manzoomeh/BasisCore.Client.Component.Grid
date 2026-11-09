@@ -28,6 +28,10 @@ async function main() {
         if (url.origin === 'http://grid.test' && url.pathname === '/grid.js') {
           return route.fulfill({ contentType: 'application/javascript', body: bundle });
         }
+        // Compare local grid styles/behavior without depending on the external icon stylesheet.
+        if (url.href === 'https://basispanel.ir/asset/css/LineIcons.css') {
+          return route.fulfill({ contentType: 'text/css', body: '' });
+        }
         errors.push(`Unexpected request: ${url}`);
         return route.abort();
       });

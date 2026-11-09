@@ -34,8 +34,8 @@ build:demo` refreshes its checked-in bundle and hash. The studio shell itself
 remains a compiled snapshot, not editable source for the component. External
 font dependencies of the shell are preserved; the native stylesheet imports no
 remote fonts.
-The favicon comes from the existing local studio; the icon subset is Lucide with
-its license included.
+The favicon comes from the existing local studio. Interface icons use the
+BasisPanel-hosted LineIcons stylesheet and the locally bundled LineIcons font.
 
 Template 4's static assets were refreshed from the List Studio on port 18474.
 The mobile filter selector offers simple, row and none; row opens typed column
@@ -47,5 +47,15 @@ a separate mobile Template 5.
 The second gallery card inside Template 4 now demonstrates native
 `selectable: 'single'` radio selection. The standard/selected-table cards retain
 `selectable: 'multi'` checkboxes. This preset does not rewrite saved dataset JSON.
-Airline images are copied locally as well; the manifest's `resources` array
-records their hashes separately from directly referenced HTML assets.
+The flight-route sample uses one shared plane icon for airline cells; it does
+not bundle a separate image for every airline. The manifest's `resources` array
+records shared assets such as the locally bundled LineIcons font.
+
+The flight-route sample's three-dot menu is custom HTML in the native
+`columns.operation.cellMaker`; its tutorial lives in `columns.operation.guide.steps`.
+The studio dataset uses `operationGuide` only as an adapter field and passes it
+unchanged to that native column. It is not a new top-level Grid option.
+Column/step `priority` orders all tutorial steps (smaller first, default 1000).
+The editable shell source/build are recorded in `wwwroot/template4/manifest.json`.
+Updating the stock saved tour preserves rows/settings and does not replace
+customized guides; “restore sample” explicitly restores the new stock sample.

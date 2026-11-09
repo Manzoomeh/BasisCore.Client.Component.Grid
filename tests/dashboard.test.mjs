@@ -15,6 +15,7 @@ assert.strictEqual(`/${templates[3][2]}`, manifest.entry);
 assert(!templates[3][2].includes("://"));
 const studio = fs.readFileSync(new URL(templates[3][2], root), "utf8");
 assert(!studio.includes("localhost:18474"));
+assert(studio.includes("https://basispanel.ir/asset/css/LineIcons.css"), "Missing BasisPanel icon stylesheet");
 for (const asset of manifest.assets) {
   const data = fs.readFileSync(new URL(asset.path.slice(1), root));
   assert.strictEqual(createHash("sha256").update(data).digest("hex"), asset.sha256, asset.path);
@@ -26,13 +27,20 @@ for (const resource of manifest.resources || []) {
 }
 const scriptPath = studio.match(/src="([^"]+\.js)"/)?.[1];
 assert(scriptPath, "Missing Template 4 application script");
+const stylePath = studio.match(/href="(\/assets\/[^"]+\.css)"/)?.[1];
+assert(stylePath, "Missing Template 4 stylesheet");
+assert(fs.readFileSync(new URL(stylePath.slice(1), root), "utf8").includes("url(/LineIcons.woff2)"), "The app should load the icon font locally");
 const bundle = fs.readFileSync(new URL(scriptPath.slice(1), root), "utf8");
 assert(bundle.includes("component.grid.grid"));
 assert(bundle.includes("/basiscore-grid/basiscore.grid.js"));
 assert(bundle.includes("studio.rows"));
 assert(bundle.includes("فیلتر ستون‌ها"), "Missing mobile row-filter configuration");
 assert(bundle.includes("جدول انتخاب تکی"), "Missing native single-selection example");
-assert(manifest.resources?.some(resource => resource.path === "/airlines/EK.png"), "Missing local airline assets");
+assert.deepStrictEqual((manifest.resources || []).map(resource => resource.path), ["/LineIcons.woff2"], "The only shared resource should be the icon font");
+assert(bundle.includes("icon:plane"), "The airline sample should use one shared plane icon");
+assert(!bundle.includes("/airlines/"), "The flight-route sample should not reference airline image files");
+assert(!fs.existsSync(new URL("airlines/EK.png", root)), "Airline logo images should be removed");
+assert(!fs.readFileSync(new URL("dashboard/icons.mjs", root), "utf8").includes("<svg"), "Dashboard icons should use the company icon font");
 assert.strictEqual(new Set(examples.map(([id]) => id)).size, examples.length);
 assert.deepStrictEqual(examples.map(([, , path]) => path).sort(), originalPaths.sort());
 for (const example of examples) {

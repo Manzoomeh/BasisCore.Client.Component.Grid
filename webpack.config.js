@@ -91,6 +91,10 @@ module.exports = (env, options) => {
           test: /\.(png|gif)/i,
           type: "asset/inline",
         },
+        {
+          test: /\.woff2$/i,
+          type: "asset/inline",
+        },
       ],
     },
     resolve: {

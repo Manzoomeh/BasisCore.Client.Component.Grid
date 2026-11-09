@@ -1,6 +1,6 @@
 import { HttpMethod, IFixValue } from "basiscore";
 import { IDictionary, IGridType, ISortType } from "../../type-alias";
-import { GridGuideConfig, GuideTargets } from "./GuideConfig";
+import { GridGuideOptions, GuideTargets, ColumnGuideConfig } from "./GuideConfig";
 
 export type FilterType = "none" | "simple" | "row" | "advanced";
 
@@ -36,7 +36,7 @@ export type ExportType = "excel";
 export type FilterDataType = "text" | "select" | "autocomplete";
 
 export type IGridOptions = {
-  guide?: GridGuideConfig;
+  guide?: GridGuideOptions;
   guideTargets?: GuideTargets;
   presentation?: IGridPresentation;
   columns: IDictionary<IColumn>;
@@ -113,6 +113,7 @@ export type IColumnInfo = {
   cellMaker?: ICellMakerCallback;
   cssClass?: string | Array<string>;
   headerCssClass?: string | Array<string>;
+  guide?: ColumnGuideConfig;
 };
 
 export type IWidthCArd = {

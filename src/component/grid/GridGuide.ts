@@ -1,7 +1,6 @@
-import { GridGuideConfig, GuideTargets, isGuideConfig } from "./GuideConfig";
+import { GridGuideConfig, GuideTargets, isGuideConfig, parseGuideActionTarget } from "./GuideConfig";
 import "../../asset/guide.css";
-
-const icons: Record<string, string> = require("../../asset/material-icons.json");
+import lineIcon from "./LineIcon";
 
 function element<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string) {
   const node = document.createElement(tag);
@@ -24,11 +23,14 @@ export default class GridGuide {
   private next: HTMLButtonElement;
   private index = 0;
   private steps: GridGuideConfig["steps"] = [];
-  private target: HTMLElement | null = null;
+  private target: HTMLElement[] = [];
   private returnFocus: HTMLElement | null = null;
   private frame = 0;
   private mutation: MutationObserver | null = null;
   private resize: ResizeObserver | null = null;
+  private actionSource: HTMLElement | null = null;
+  private actionPreview: HTMLElement | null = null;
+  private actionItem: HTMLElement | null = null;
 
   constructor(private container: HTMLElement, private config: GridGuideConfig, private targets: GuideTargets) {}
 
@@ -37,19 +39,113 @@ export default class GridGuide {
       getComputedStyle(target).visibility !== "hidden" && target.getBoundingClientRect().width > 0 && target.getBoundingClientRect().height > 0;
   }
 
-  private resolve(name: string) {
-    if (!Object.prototype.hasOwnProperty.call(this.targets, name)) return null;
+  private resolve(name: string): HTMLElement[] {
+    if (parseGuideActionTarget(name)) {
+      const item = this.resolveAction(name);
+      // The preview is intentionally inert, so its own geometry (not live-target focusability) applies.
+      return item && item.getBoundingClientRect().width > 0 && item.getBoundingClientRect().height > 0 &&
+        getComputedStyle(item).visibility !== "hidden" ? [item] : [];
+    }
+    if (!Object.prototype.hasOwnProperty.call(this.targets, name)) return [];
     try {
       const target = this.targets[name]();
-      return GridGuide.visible(target) ? target : null;
+      return Array.from(new Set(Array.isArray(target) ? target : [target])).filter(GridGuide.visible);
     } catch {
-      return null;
+      return [];
     }
   }
 
-  start(trigger?: HTMLElement) {
-    if (!isGuideConfig(this.config) || this.dialog) return;
-    this.steps = this.config.steps.filter(step => !step.optional || this.resolve(step.target));
+  private findAction(name: string) {
+    const target = parseGuideActionTarget(name);
+    if (!target) return null;
+    const area = target.scope === "row"
+      ? Array.from(this.container.querySelectorAll<HTMLElement>("tbody tr[data-sys-tr], .mobile-row, .list-item, .data-card")).find(GridGuide.visible)
+      : this.container;
+    if (!area) return null;
+    for (const group of Array.from(area.querySelectorAll<HTMLElement>("[data-grid-actions]"))) {
+      if (group.dataset.gridActions !== target.scope) continue;
+      const trigger = Array.from(group.querySelectorAll<HTMLElement>("[data-grid-action-trigger]"))
+        .find(node => node.dataset.gridActionTrigger === target.scope) || null;
+      const menu = group.querySelector<HTMLElement>("[data-grid-action-menu]");
+      if (!GridGuide.visible(trigger) || !menu) continue;
+      const item = Array.from(menu.querySelectorAll<HTMLElement>("[data-grid-action]"))
+        .find(node => node.dataset.gridAction === target.key);
+      if (!item) continue;
+      // Ignore permission-hidden items, but do not mistake the closed menu for a missing action.
+      let hidden = false;
+      for (let node: HTMLElement | null = item; node && node !== menu; node = node.parentElement) {
+        if (node.hidden || node.getAttribute("aria-hidden") === "true" || getComputedStyle(node).display === "none") hidden = true;
+      }
+      if (!hidden) return { group, trigger, menu, item };
+    }
+    return null;
+  }
+
+  private available(name: string) {
+    return parseGuideActionTarget(name) ? Boolean(this.findAction(name)) : this.resolve(name).length > 0;
+  }
+
+  private clearActionPreview() {
+    this.actionPreview?.remove();
+    this.actionPreview = this.actionSource = this.actionItem = null;
+  }
+
+  private resolveAction(name: string): HTMLElement | null {
+    const source = this.findAction(name);
+    if (!this.dialog || !source) { this.clearActionPreview(); return null; }
+    if (this.actionSource !== source.item) {
+      this.clearActionPreview();
+      const shell = source.group.cloneNode(false) as HTMLElement;
+      const menu = source.menu.cloneNode(true) as HTMLElement;
+      const originals = Array.from(source.menu.querySelectorAll<HTMLElement>("[data-grid-action]"));
+      menu.querySelectorAll<HTMLElement>("[data-grid-action]").forEach((item, index) => {
+        for (let node: HTMLElement | null = originals[index]; node && node !== source.menu; node = node.parentElement) {
+          if (node.hidden || node.getAttribute("aria-hidden") === "true" || getComputedStyle(node).display === "none") item.hidden = true;
+        }
+      });
+      shell.append(menu);
+      shell.classList.add("show");
+      // Preview only: never click a source trigger, move live nodes, or copy executable handlers.
+      shell.querySelectorAll("script, iframe, object, embed, link, style, base, meta").forEach(node => node.remove());
+      [shell, ...Array.from(shell.querySelectorAll<HTMLElement>("*"))].forEach(node => {
+        Array.from(node.attributes).forEach(attribute => {
+          if (/^on/i.test(attribute.name) || /^(id|name|for|href|srcdoc|autofocus|form|formaction|popover|popovertarget|aria-controls|aria-labelledby|aria-describedby)$/i.test(attribute.name)) node.removeAttribute(attribute.name);
+        });
+        node.tabIndex = -1;
+      });
+      menu.hidden = false;
+      const preview = element("div", "bc-guide-action-preview");
+      preview.setAttribute("inert", "");
+      preview.setAttribute("aria-hidden", "true");
+      preview.addEventListener("click", event => { event.preventDefault(); event.stopPropagation(); }, true);
+      preview.append(shell);
+      this.dialog.prepend(preview);
+      this.actionSource = source.item;
+      this.actionPreview = preview;
+      this.actionItem = Array.from(menu.querySelectorAll<HTMLElement>("[data-grid-action]"))
+        .find(node => node.dataset.gridAction === source.item.dataset.gridAction) || null;
+    }
+    const viewport = window.visualViewport;
+    const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+    const width = viewport?.width || innerWidth, height = viewport?.height || innerHeight;
+    const grid = this.container.getBoundingClientRect();
+    const inPreview = this.mobile() && width > 480;
+    const laneLeft = inPreview ? Math.max(left, grid.left) : left;
+    const laneRight = inPreview ? Math.min(left + width, grid.right) : left + width;
+    const preview = this.actionPreview!;
+    preview.style.width = `${Math.min(240, Math.max(0, laneRight - laneLeft - 24))}px`;
+    preview.style.maxHeight = `${Math.max(44, height - 48)}px`;
+    const bounds = preview.getBoundingClientRect(), anchor = source.trigger.getBoundingClientRect();
+    preview.style.left = `${Math.max(laneLeft + 12, Math.min(anchor.right - bounds.width, laneRight - bounds.width - 12))}px`;
+    preview.style.top = `${Math.max(top + 12, Math.min(anchor.bottom + 8, top + height - bounds.height - 12))}px`;
+    this.actionItem?.scrollIntoView({block: "nearest", inline: "nearest", behavior: "instant" as ScrollBehavior});
+    return this.actionItem;
+  }
+
+  start(trigger?: HTMLElement, config: GridGuideConfig = this.config) {
+    if (!isGuideConfig(config) || this.dialog) return;
+    this.config = config;
+    this.steps = this.config.steps.filter(step => !step.optional || this.available(step.target));
     if (!this.steps.length) return;
     // Only one active guide owns focus, even when multiple grids share a page.
     document.dispatchEvent(new Event("basiscore:guide-start"));
@@ -117,7 +213,7 @@ export default class GridGuide {
     const button = element("button", className);
     button.type = "button";
     if (icon) {
-      button.innerHTML = icons[icon] || "";
+      button.append(lineIcon(icon, icon === "closeIcon" ? 18 : undefined));
       button.setAttribute("aria-label", label);
       button.title = label;
     } else button.textContent = label;
@@ -127,7 +223,7 @@ export default class GridGuide {
 
   private move(direction: number) {
     let next = this.index + direction;
-    while (next >= 0 && next < this.steps.length && this.steps[next].optional && !this.resolve(this.steps[next].target)) next += direction;
+    while (next >= 0 && next < this.steps.length && this.steps[next].optional && !this.available(this.steps[next].target)) next += direction;
     if (next >= this.steps.length) { this.close(); return; }
     if (next < 0) return;
     this.index = next;
@@ -136,6 +232,7 @@ export default class GridGuide {
 
   private show() {
     const step = this.steps[this.index];
+    this.clearActionPreview();
     this.counter.textContent = `مرحله ${this.number(this.index + 1)} از ${this.number(this.steps.length)}`;
     this.title.textContent = step.title;
     this.description.textContent = step.description;
@@ -149,9 +246,10 @@ export default class GridGuide {
       dot.dataset.state = index === this.index ? "current" : index < this.index ? "done" : "upcoming";
       return dot;
     }));
-    const target = this.resolve(step.target);
-    target?.scrollIntoView({ block: this.mobile() ? "start" : "center", inline: "nearest", behavior: "instant" as ScrollBehavior });
-    if (target && this.mobile()) window.scrollBy({ top: -12, behavior: "instant" as ScrollBehavior });
+    const action = this.findAction(step.target);
+    const target = action ? [action.trigger] : this.resolve(step.target);
+    target[0]?.scrollIntoView({ block: this.mobile() ? "start" : "center", inline: "nearest", behavior: "instant" as ScrollBehavior });
+    if (target.length && this.mobile()) window.scrollBy({ top: -12, behavior: "instant" as ScrollBehavior });
     this.schedule();
   }
 
@@ -170,14 +268,12 @@ export default class GridGuide {
   private position() {
     if (!this.container.isConnected) { this.close(); return; }
     const target = this.resolve(this.steps[this.index].target);
-    if (target !== this.target) {
-      if (this.target) this.resize?.unobserve(this.target);
-      this.target = target;
-      if (target) this.resize?.observe(target);
-    }
-    this.notice.hidden = !!target;
-    this.notice.textContent = target ? "" : "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.";
-    this.ring.hidden = !target;
+    this.target.filter(node => !target.includes(node)).forEach(node => this.resize?.unobserve(node));
+    target.filter(node => !this.target.includes(node)).forEach(node => this.resize?.observe(node));
+    this.target = target;
+    this.notice.hidden = target.length > 0;
+    this.notice.textContent = target.length ? "" : "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.";
+    this.ring.hidden = !target.length;
     const viewport = window.visualViewport;
     const width = viewport?.width || window.innerWidth;
     const height = viewport?.height || window.innerHeight;
@@ -185,22 +281,32 @@ export default class GridGuide {
     const top = viewport?.offsetTop || 0;
     const gap = 12;
     const mobile = this.mobile();
+    const padding = mobile ? 10 : 5;
+    const targetGap = gap + (mobile ? padding : 0);
     this.dialog?.classList.toggle("bc-guide-mobile", mobile);
     const grid = this.container.getBoundingClientRect();
-    const inPreview = mobile && width > 480 && target && this.container.contains(target);
+    const inPreview = mobile && width > 480 && target.length > 0 &&
+      (Boolean(this.actionPreview) || target.every(node => this.container.contains(node)));
     const laneLeft = inPreview ? Math.max(left, grid.left) : left;
     const laneRight = inPreview ? Math.min(left + width, grid.right) : left + width;
     this.panel.style.width = `${Math.min(368, Math.max(0, laneRight - laneLeft - gap * 2))}px`;
     this.panel.style.maxHeight = `${height - gap * 2}px`;
-    const rect = target?.getBoundingClientRect();
+    const rects = target.map(node => node.getBoundingClientRect());
+    const rect = rects.length ? DOMRect.fromRect({
+      x: Math.min(...rects.map(rect => rect.left)),
+      y: Math.min(...rects.map(rect => rect.top)),
+      width: Math.max(...rects.map(rect => rect.right)) - Math.min(...rects.map(rect => rect.left)),
+      height: Math.max(...rects.map(rect => rect.bottom)) - Math.min(...rects.map(rect => rect.top)),
+    }) : null;
     let panel = this.panel.getBoundingClientRect();
     let x = laneLeft + (laneRight - laneLeft - panel.width) / 2;
     let y = top + (height - panel.height) / 2;
-    if (rect) {
-      if (!mobile || (!inPreview && width > 480)) x = rect.right - panel.width;
-      if (rect.bottom + gap + panel.height <= top + height - gap) y = rect.bottom + gap;
-      else if (rect.top - gap - panel.height >= top + gap) y = rect.top - gap - panel.height;
-      else if (!mobile && rect.left - gap - panel.width >= left + gap) { x = rect.left - gap - panel.width; y = rect.top; }
+    const placement = this.actionPreview?.getBoundingClientRect() || rect;
+    if (placement) {
+      if (!mobile || (!inPreview && width > 480)) x = placement.right - panel.width;
+      if (placement.bottom + targetGap + panel.height <= top + height - gap) y = placement.bottom + targetGap;
+      else if (placement.top - targetGap - panel.height >= top + gap) y = placement.top - targetGap - panel.height;
+      else if (!mobile && placement.left - gap - panel.width >= left + gap) { x = placement.left - gap - panel.width; y = placement.top; }
       else {
         if (mobile) {
           // Leave part of a tall target visible; only the guide copy scrolls on short screens.
@@ -217,15 +323,15 @@ export default class GridGuide {
     });
     this.arrow.hidden = true;
     if (rect) {
-      const ringLeft = Math.max(left + 5, rect.left - 5);
-      let ringTop = Math.max(top + 5, rect.top - 5);
-      let ringBottom = Math.min(top + height - 5, rect.bottom + 5);
+      const ringLeft = Math.max(left + 5, rect.left - padding);
+      let ringTop = Math.max(top + 5, rect.top - padding);
+      let ringBottom = Math.min(top + height - 5, rect.bottom + padding);
       if (mobile && y < ringBottom && y + panel.height > ringTop) {
         if (y > ringTop) ringBottom = Math.min(ringBottom, y - gap);
         else ringTop = Math.max(ringTop, y + panel.height + gap);
       }
       Object.assign(this.ring.style, { left: `${ringLeft}px`, top: `${ringTop}px`,
-        width: `${Math.max(0, Math.min(left + width - 5, rect.right + 5) - ringLeft)}px`,
+        width: `${Math.max(0, Math.min(left + width - 5, rect.right + padding) - ringLeft)}px`,
         height: `${Math.max(0, ringBottom - ringTop)}px` });
       const below = y >= rect.bottom + gap;
       const above = y + panel.height <= rect.top - gap;
@@ -236,7 +342,7 @@ export default class GridGuide {
         Object.assign(this.arrow.style, { left: `${arrowX - 6}px`, top: `${below ? y - 6 : y + panel.height - 6}px` });
       }
     }
-    this.dialog?.classList.toggle("bc-guide-unavailable", !target);
+    this.dialog?.classList.toggle("bc-guide-unavailable", !target.length);
   }
 
   close = () => {
@@ -253,7 +359,8 @@ export default class GridGuide {
     this.dialog.close();
     this.dialog.remove();
     this.dialog = null;
-    this.target = null;
+    this.clearActionPreview();
+    this.target = [];
     if (this.returnFocus?.isConnected) this.returnFocus.focus({ preventScroll: true });
   };
 }

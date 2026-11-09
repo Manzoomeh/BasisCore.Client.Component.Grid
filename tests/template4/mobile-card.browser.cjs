@@ -1,7 +1,8 @@
 const {chromium} = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const {moreIcon} = JSON.parse(fs.readFileSync('src/asset/material-icons.json','utf8'));
+const {moreIcon:moreIconDefinition} = JSON.parse(fs.readFileSync('src/asset/line-icons.json','utf8'));
+const moreIcon = `<i class="lni ${moreIconDefinition.name}" style="font-size:${moreIconDefinition.size}px" aria-hidden="true"></i>`;
 
 (async()=>{
   const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL || 'chrome',headless:true});
@@ -11,6 +12,9 @@ const {moreIcon} = JSON.parse(fs.readFileSync('src/asset/material-icons.json','u
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'));
     await page.locator('[data-guide-start]').waitFor();
+    await page.evaluate(()=>document.fonts.ready);
+    assert(await page.locator('.lni').count()>0);
+    assert(await page.evaluate(()=>Array.from(document.fonts).some(font=>font.family==='LineIcons'&&font.status==='loaded')),'BasisPanel LineIcons font must load');
     await page.evaluate(async moreIcon=>{
       window.rowCalls=[];window.bulkCalls=[];window.fallbackCalls=0;
       const host=document.createElement('section');host.id='mobile-card-native';host.style.cssText='width:420px;max-width:100%;margin:16px auto';document.body.append(host);
@@ -116,7 +120,8 @@ const {moreIcon} = JSON.parse(fs.readFileSync('src/asset/material-icons.json','u
     const editor=page.locator('textarea.json-editor');
     const dataset=JSON.parse(await editor.inputValue());
     dataset.columns.push({key:'operation',label:'<button onclick="window.injectedColumn=true">Unsafe</button>',type:'text'});
-    dataset.rows.forEach(row=>{row.operation='<img src=x onerror="window.injectedColumn=true">';});
+    dataset.columns.push({key:'unsafe',label:'<button onclick="window.injectedColumn=true">Unsafe</button>',type:'text'});
+    dataset.rows.forEach(row=>{row.operation='<img src=x onerror="window.injectedColumn=true">';row.unsafe='<img src=x onerror="window.injectedColumn=true">';});
     await editor.fill(JSON.stringify(dataset));
     await page.locator('[data-action=apply]').click();
     await page.locator('.editor-message.success').waitFor();
@@ -124,7 +129,7 @@ const {moreIcon} = JSON.parse(fs.readFileSync('src/asset/material-icons.json','u
     await page.locator('[data-action=view][data-value=mobile]').click();
     const app=page.locator('[data-grid-slot=material]');
     await app.locator('[data-mobile-operation=operation]').first().waitFor();
-    assert.equal(await app.locator('.mobile-bulk-actions button,[data-mobile-operation] img,[data-mobile-operation] button').count(),0);
+    assert.equal(await app.locator('[onclick*="injectedColumn"],[onerror*="injectedColumn"],[data-mobile-operation] img[src$="/x"]').count(),0);
     assert.equal(await page.evaluate(()=>window.injectedColumn),undefined);
     await page.locator('[data-action=view][data-value=table]').click();
     assert.equal(await app.locator('thead button[onclick]').count(),0);

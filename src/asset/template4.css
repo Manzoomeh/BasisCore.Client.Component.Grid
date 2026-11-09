@@ -1,3 +1,6 @@
+@import url("https://basispanel.ir/asset/css/LineIcons.css");
+@font-face{font-family:"LineIcons";src:url("./LineIcons.woff2") format("woff2");font-style:normal;font-weight:normal}
+
 /* Opt out of legacy resets without changing the legacy stylesheets. */
 [data-bc-grid-template="template4"] { margin-bottom: 0; }
 [data-bc-grid-template="template4"] * { padding: revert; margin: revert; font-size: inherit; color: inherit; }

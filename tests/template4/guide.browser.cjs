@@ -1,5 +1,20 @@
 const {chromium} = require('playwright');
 const assert = require('node:assert/strict');
+const legacyGuide = require('../fixtures/legacy-flight-routes.json');
+
+async function useLegacyGuide(page) {
+  await page.locator('[data-guide-start]').waitFor();
+  await page.locator('button[data-action=workspace][data-value=config]').click();
+  const editor = page.locator('textarea.json-editor');
+  const dataset = JSON.parse(await editor.inputValue());
+  dataset.guide = legacyGuide;
+  delete dataset.operationGuide;
+  dataset.columns.forEach(column => delete column.guide);
+  await editor.fill(JSON.stringify(dataset));
+  await page.locator('[data-action=apply]').click();
+  await page.locator('.editor-message.success').waitFor();
+  await page.locator('button[data-action=workspace][data-value=preview]').click();
+}
 
 (async () => {
   const browser = await chromium.launch({headless:true,channel:process.env.BROWSER_CHANNEL || 'chrome'});
@@ -8,6 +23,7 @@ const assert = require('node:assert/strict');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'),{waitUntil:'domcontentloaded'});
+    await useLegacyGuide(page);
     await page.locator('[data-guide-start]').waitFor();
     const state = () => page.evaluate(() => {
       const command = window.$bc.all.flatMap(w=>w.GetComponentList()).find(c=>c.manager?.gridInstance?.options.culture.template==='template4');
@@ -144,21 +160,44 @@ const assert = require('node:assert/strict');
     await page.evaluate(async()=>{
       const existing=window.$bc.all.flatMap(w=>w.GetComponentList()).find(c=>c.manager?.gridInstance);
       const host=document.createElement('div');host.id='second-guide-grid';document.body.append(host);
-      window.secondGuideOptions={...existing.manager.gridInstance.options,guideTargets:{},guide:{schemaVersion:2,id:2,lid:1,revision:1,title:'Second',steps:[{id:'search',target:'list.search',title:'Second search',description:'Second grid only.'}]}};
+      window.secondGuideOptions={...existing.manager.gridInstance.options,guideTargets:{},guide:{schemaVersion:2,id:2,lid:1,revision:1,title:'Second columns'},columns:{
+        route:{title:'مسیر',source:'route',sort:false,filter:false,guide:{status:'active',id:'route-row',description:'مبدأ و مقصد همین مسیر را بررسی کنید.'}},
+        ignored:{title:'نادیده',source:'ignored',guide:{status:'inactive',id:'inactive-column',description:'این مرحله نمایش داده نمی‌شود.'}}
+      },presentation:{...existing.manager.gridInstance.options.presentation,view:'table'}};
       host.innerHTML='<basis core="component.grid.grid" run="atclient" datamembername="second.rows" options="secondGuideOptions"></basis>';
-      window.secondGuideWrapper=window.$bc.new().addFragment(host).setOptions({repositories:{'grid.grid':'/basiscore-grid/basiscore.grid.js'},sources:{'second.rows':[{id:'second',route:'Second route'}]}}).run();
+      window.secondGuideWrapper=window.$bc.new().addFragment(host).setOptions({repositories:{'grid.grid':'/basiscore-grid/basiscore.grid.js'},sources:{'second.rows':[{id:'second',route:'تهران ← دبی',ignored:'ignored'}]}}).run();
       await window.secondGuideWrapper.basiscore.content.initializeTask;
       await Promise.all(window.secondGuideWrapper.GetComponentList().map(c=>c.onInitialized));
     });
     await page.locator('#second-guide-grid [data-guide-start]').waitFor();
-    // Use the public component API to start a second guide while the first is modal.
+    // Column guidance targets its own header and samples the first visible row.
     await page.locator('[data-grid-slot=material] [data-guide-start]').click();
-    await page.evaluate(()=>window.secondGuideWrapper.GetComponentList().find(c=>c.manager?.gridInstance).manager.gridInstance.materialTemplate.guide.start());
+    await page.keyboard.press('Escape');
+    await page.locator('#second-guide-grid [data-guide-start]').click();
     assert.equal(await page.locator('.bc-guide').count(),1);
-    assert.equal(await page.locator('.bc-guide-title').innerText(),'Second search');
-    const secondSearch=await page.locator('#second-guide-grid .search-field input').boundingBox();
+    assert.equal(await page.locator('.bc-guide-title').innerText(),'مسیر');
+    assert.match(await page.locator('.bc-guide-description').innerText(),/نمونه از ردیف اول: تهران ← دبی/);
+    const secondHeader=await page.locator('#second-guide-grid th[data-guide-column-header="route"]').boundingBox();
+    const secondCell=await page.locator('#second-guide-grid tbody tr:first-child [data-guide-column-value="route"]').boundingBox();
     const secondRing=await page.locator('.bc-guide-ring').boundingBox();
-    assert(Math.abs(secondSearch.x-secondRing.x-5)<2);
+    assert(Math.abs(secondHeader.x-secondRing.x-5)<2);
+    assert(Math.abs(secondCell.y+secondCell.height+5-secondRing.y-secondRing.height)<2);
+    await page.keyboard.press('Escape');
+    await page.setViewportSize({width:390,height:844});
+    await page.evaluate(()=>{
+      const grid=window.secondGuideWrapper.GetComponentList().find(c=>c.manager?.gridInstance).manager.gridInstance;
+      grid.materialTemplate.updatePresentation({...grid.options.presentation,view:'mobile'});
+    });
+    await page.locator('#second-guide-grid .mobile-row').waitFor();
+    await page.locator('#second-guide-grid [data-guide-start]').click();
+    assert.match(await page.locator('.bc-guide-description').innerText(),/نمونه از ردیف اول: تهران ← دبی/);
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const mobileColumnLabel=await page.locator('#second-guide-grid [data-mobile-primary="route"]').boundingBox();
+    const mobileColumnValue=await page.locator('#second-guide-grid .mobile-row:first-child [data-guide-column-value="route"]').boundingBox();
+    const mobileColumnRing=await page.locator('.bc-guide-ring').boundingBox();
+    assert(Math.abs(Math.min(mobileColumnLabel.x,mobileColumnValue.x)-mobileColumnRing.x-10)<2);
+    assert(Math.abs(mobileColumnValue.y+mobileColumnValue.height+10-mobileColumnRing.y-mobileColumnRing.height)<2);
+    await page.keyboard.press('Escape');
     await page.evaluate(()=>window.secondGuideWrapper.basiscore.content.disposeAsync());
     assert.equal(await page.locator('.bc-guide').count(),0);
 
@@ -167,6 +206,7 @@ const assert = require('node:assert/strict');
       const phone = await touchContext.newPage();
       phone.on('pageerror', error=>errors.push(error.message));
       await phone.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'),{waitUntil:'domcontentloaded'});
+      await useLegacyGuide(phone);
       await phone.locator('[data-guide-start]').waitFor();
       await phone.locator('button[data-action=view][data-value=mobile]').tap();
       await phone.locator('[data-action=theme]').tap();

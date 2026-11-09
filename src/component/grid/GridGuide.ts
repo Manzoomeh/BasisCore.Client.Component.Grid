@@ -32,7 +32,10 @@ export default class GridGuide {
   private actionPreview: HTMLElement | null = null;
   private actionItem: HTMLElement | null = null;
 
-  constructor(private container: HTMLElement, private config: GridGuideConfig, private targets: GuideTargets) {}
+  constructor(private container: HTMLElement, private config: GridGuideConfig, private targets: GuideTargets,
+    private labels: Record<string, string> = {}) {}
+
+  private label(key: string, fallback: string) { return this.labels[key] ?? fallback; }
 
   static visible(target: HTMLElement | null): target is HTMLElement {
     return target instanceof HTMLElement && target.isConnected && !target.closest('[hidden], [inert]') &&
@@ -154,6 +157,7 @@ export default class GridGuide {
     this.index = 0;
     this.dialog = element("dialog", "bc-guide");
     this.dialog.dir = this.container.getAttribute("data-bc-grid-direction") || "rtl";
+    this.dialog.lang = this.container.closest("[lang]")?.getAttribute("lang") || document.documentElement.lang;
     this.dialog.setAttribute("aria-label", this.config.title);
     this.ring = element("div", "bc-guide-ring");
     this.ring.setAttribute("aria-hidden", "true");
@@ -166,7 +170,7 @@ export default class GridGuide {
     this.counter = element("span", "bc-guide-counter");
     this.counter.setAttribute("role", "status");
     this.counter.setAttribute("aria-live", "polite");
-    const close = this.button("بستن راهنما", "bc-guide-close", this.close, "closeIcon");
+    const close = this.button(this.label("guideClose", "بستن راهنما"), "bc-guide-close", this.close, "closeIcon");
     top.append(this.counter, close);
     this.title = element("h2", "bc-guide-title");
     this.description = element("p", "bc-guide-description");
@@ -174,9 +178,9 @@ export default class GridGuide {
     this.progress = element("div", "bc-guide-progress");
     this.progress.setAttribute("aria-hidden", "true");
     const footer = element("div", "bc-guide-footer");
-    this.previous = this.button("قبلی", "bc-guide-button", () => this.move(-1));
-    const skip = this.button("رد کردن", "bc-guide-button bc-guide-skip", this.close);
-    this.next = this.button("بعدی", "bc-guide-button bc-guide-next", () => this.move(1));
+    this.previous = this.button(this.label("guidePrevious", "قبلی"), "bc-guide-button", () => this.move(-1));
+    const skip = this.button(this.label("guideSkip", "رد کردن"), "bc-guide-button bc-guide-skip", this.close);
+    this.next = this.button(this.label("guideNext", "بعدی"), "bc-guide-button bc-guide-next", () => this.move(1));
     footer.append(this.previous, skip, this.next);
     const content = element("div", "bc-guide-content");
     content.setAttribute("aria-live", "polite");
@@ -233,14 +237,14 @@ export default class GridGuide {
   private show() {
     const step = this.steps[this.index];
     this.clearActionPreview();
-    this.counter.textContent = `مرحله ${this.number(this.index + 1)} از ${this.number(this.steps.length)}`;
+    this.counter.textContent = `${this.label("guideStep", "مرحله")} ${this.number(this.index + 1)} ${this.label("of", "از")} ${this.number(this.steps.length)}`;
     this.title.textContent = step.title;
     this.description.textContent = step.description;
     this.panel.setAttribute("aria-label", step.title);
     const previousFocused = document.activeElement === this.previous;
     this.previous.disabled = this.index === 0;
     if (previousFocused && this.previous.disabled) this.next.focus({ preventScroll: true });
-    this.next.textContent = this.index === this.steps.length - 1 ? "پایان راهنما" : "بعدی";
+    this.next.textContent = this.index === this.steps.length - 1 ? this.label("guideFinish", "پایان راهنما") : this.label("guideNext", "بعدی");
     this.progress.replaceChildren(...this.steps.map((_, index) => {
       const dot = element("span", "bc-guide-dot");
       dot.dataset.state = index === this.index ? "current" : index < this.index ? "done" : "upcoming";
@@ -253,7 +257,7 @@ export default class GridGuide {
     this.schedule();
   }
 
-  private number(value: number) { return value.toLocaleString("fa-IR"); }
+  private number(value: number) { return value.toLocaleString(this.dialog?.dir === "ltr" ? "en-US" : "fa-IR"); }
 
   private mobile() {
     return (window.visualViewport?.width || window.innerWidth) <= 480 ||
@@ -272,7 +276,7 @@ export default class GridGuide {
     target.filter(node => !this.target.includes(node)).forEach(node => this.resize?.observe(node));
     this.target = target;
     this.notice.hidden = target.length > 0;
-    this.notice.textContent = target.length ? "" : "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.";
+    this.notice.textContent = target.length ? "" : this.label("guideUnavailable", "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.");
     this.ring.hidden = !target.length;
     const viewport = window.visualViewport;
     const width = viewport?.width || window.innerWidth;

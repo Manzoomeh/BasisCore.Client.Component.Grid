@@ -3,12 +3,12 @@
   "entry": "/component/configuration/mobileDesign/template4.html",
   "assets": [
     {
-      "path": "/assets/index-ChAQYn4P.js",
-      "sha256": "32cc313f0328c194dc7b5b26e164be1ad622ae6e98930d3d5893442298b7eaec"
+      "path": "/assets/index-CP8-4xz3.js",
+      "sha256": "aea28ecbe4fbeb6c299aa94167261ae371a36fe25e2d8ac273c55bdafcdd19d0"
     },
     {
-      "path": "/assets/index-_9_xVDv-.css",
-      "sha256": "e438a7525446c2f17a34011be77c19c2a0472b1723ceec26c6250b1e30365f16"
+      "path": "/assets/index-D-AXPQCU.css",
+      "sha256": "cf7b4fe4ec9b9c78c536ef5fdfb5174c45b2ed4c1bfa319aecd07277647f0bfd"
     },
     {
       "path": "/basiscore/basiscore.js",
@@ -16,7 +16,7 @@
     },
     {
       "path": "/basiscore-grid/basiscore.grid.js",
-      "sha256": "3560cc43dd6604e417db5c8363e036bce36637f97ac3a41e960f4d9c1a996895"
+      "sha256": "4806c7a7231fafdd7e11dfeca78fbc7b075f05fb14db21caf858f59722cc2be1"
     },
     {
       "path": "/basisicon.ico",

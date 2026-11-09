@@ -122,7 +122,7 @@ export default class MaterialTemplate {
     this.filters.style.display = "none";
     this.selectedCount.style.display = "none";
     this.selectedCount.setAttribute("role", "status");
-    this.clearSelection = this.iconButton("closeIcon", "لغو انتخاب", () => this.owner.setSelectedRows([]));
+    this.clearSelection = this.iconButton("closeIcon", this.label("clearSelection", "لغو انتخاب"), () => this.owner.setSelectedRows([]));
     this.clearSelection.classList.add("clear-selection");
     this.clearSelection.style.display = "none";
     this.selectionSummary.style.display = "none";
@@ -228,7 +228,7 @@ export default class MaterialTemplate {
         ...options.guideTargets,
       };
       guidedColumns.forEach(({column, index}) => { targets[`column.${index}`] = () => this.guideColumnTarget(column); });
-      this.guide = new GridGuide(container, initialGuideConfig, targets);
+      this.guide = new GridGuide(container, initialGuideConfig, targets, options.culture.labels);
       const help = element("button", "button button-outlined guide-start-button");
       help.type = "button";
       help.title = this.label("guide", "راهنما");
@@ -327,7 +327,7 @@ export default class MaterialTemplate {
   private columnGuideDescription(column: IGridColumnInfo, description: string) {
     const example = this.guideColumnCell(column)?.textContent?.replace(/\s+/g, " ").trim().slice(0, 160);
     if (!example) return description;
-    const suffix = `\nنمونه از ردیف اول: ${example}`;
+    const suffix = `\n${this.label("firstRowExample", "نمونه از ردیف اول")}: ${example}`;
     return description.slice(0, Math.max(0, 2000 - suffix.length)) + suffix;
   }
   private closeMenus = (event?: Event) => {
@@ -545,7 +545,8 @@ export default class MaterialTemplate {
   private createFooter() {
     const sizes = element("div", "page-size");
     const available = Array.isArray(this.owner.options.paging) ? this.owner.options.paging : [this.owner.options.paging];
-    available.forEach(size => this.pageSize.append(new Option(new Intl.NumberFormat("fa-IR").format(size), String(size))));
+    const locale = this.owner.options.direction === "rtl" ? "fa-IR" : "en-US";
+    available.forEach(size => this.pageSize.append(new Option(new Intl.NumberFormat(locale).format(size), String(size))));
     this.pageSize.value = String(this.process.pageSize);
     this.pageSize.setAttribute("aria-label", this.label("pageSize", "نمایش"));
     this.pageSize.addEventListener("change", () => {

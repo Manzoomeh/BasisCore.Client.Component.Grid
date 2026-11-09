@@ -2002,6 +2002,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content .header-filter:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 :where([data-bc-grid-template="template4"]).preview-content .data-table td,:where([data-bc-grid-template="template4"]).preview-content .data-table.comfortable td{height:46px;padding:8px 10px;border:0;color:var(--list-ink);font-size:14px;line-height:1.65;overflow:hidden;text-overflow:ellipsis;background:var(--surface)}
 :where([data-bc-grid-template="template4"]).preview-content .data-table>:is(thead,tbody)>tr>:is(th,td){text-align:center}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table>:is(thead,tbody)>tr>:is(th,td):not(.check-cell):not(.action-cell){text-align:start}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table .th-content{justify-content:space-between}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table th:first-child{border-start-end-radius:0}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table th:last-child{border-start-start-radius:0}
 :where([data-bc-grid-template="template4"]).preview-content .data-table td[data-bc-data]{white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
 :where([data-bc-grid-template="template4"]).preview-content .data-table.compact td{height:38px;padding-block:5px;font-size:12px}
 :where([data-bc-grid-template="template4"]).preview-content .data-table tbody tr:nth-child(even) td{background:var(--list-stripe)}
@@ -2074,6 +2078,9 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter:has(.status-success){background:transparent}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter[aria-pressed=true]{border-color:#b7ceff;background:var(--primary-container)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter-count{min-width:20px;height:20px;padding:0 4px;border:0;font-size:11px;flex-shrink:0}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter{gap:3px;padding-inline:4px;flex-wrap:wrap}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter .status-pill{gap:3px;overflow-wrap:normal}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter-count{min-width:18px;padding-inline:3px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar{display:flex;flex-wrap:wrap;padding:0 12px 12px;gap:8px;min-height:0}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field{order:0;flex:1 1 0;height:44px;width:auto;min-width:0;border-radius:9px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field input{min-width:0;font-size:16px}
@@ -2117,6 +2124,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row-fields dt{margin-bottom:3px;color:var(--mobile-muted);font-size:11px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row-fields dd{font-size:14px;font-weight:500;line-height:1.6}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:normal}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .cell-with-icon{justify-content:flex-start}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon img{width:24px;height:24px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon>span{overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row .status-pill{gap:4px;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:600;line-height:1.5}
@@ -5545,11 +5553,13 @@ function GridGuide_element(tag, className, text) {
     return node;
 }
 var GridGuide = /** @class */ (function () {
-    function GridGuide(container, config, targets) {
+    function GridGuide(container, config, targets, labels) {
+        if (labels === void 0) { labels = {}; }
         var _this = this;
         this.container = container;
         this.config = config;
         this.targets = targets;
+        this.labels = labels;
         this.dialog = null;
         this.index = 0;
         this.steps = [];
@@ -5588,6 +5598,7 @@ var GridGuide = /** @class */ (function () {
                 _this.returnFocus.focus({ preventScroll: true });
         };
     }
+    GridGuide.prototype.label = function (key, fallback) { var _a; return (_a = this.labels[key]) !== null && _a !== void 0 ? _a : fallback; };
     GridGuide.visible = function (target) {
         return target instanceof HTMLElement && target.isConnected && !target.closest('[hidden], [inert]') &&
             getComputedStyle(target).visibility !== "hidden" && target.getBoundingClientRect().width > 0 && target.getBoundingClientRect().height > 0;
@@ -5709,7 +5720,7 @@ var GridGuide = /** @class */ (function () {
     };
     GridGuide.prototype.start = function (trigger, config) {
         var _this = this;
-        var _a, _b;
+        var _a, _b, _c;
         if (config === void 0) { config = this.config; }
         if (!isGuideConfig(config) || this.dialog)
             return;
@@ -5724,6 +5735,7 @@ var GridGuide = /** @class */ (function () {
         this.index = 0;
         this.dialog = GridGuide_element("dialog", "bc-guide");
         this.dialog.dir = this.container.getAttribute("data-bc-grid-direction") || "rtl";
+        this.dialog.lang = ((_a = this.container.closest("[lang]")) === null || _a === void 0 ? void 0 : _a.getAttribute("lang")) || document.documentElement.lang;
         this.dialog.setAttribute("aria-label", this.config.title);
         this.ring = GridGuide_element("div", "bc-guide-ring");
         this.ring.setAttribute("aria-hidden", "true");
@@ -5736,7 +5748,7 @@ var GridGuide = /** @class */ (function () {
         this.counter = GridGuide_element("span", "bc-guide-counter");
         this.counter.setAttribute("role", "status");
         this.counter.setAttribute("aria-live", "polite");
-        var close = this.button("بستن راهنما", "bc-guide-close", this.close, "closeIcon");
+        var close = this.button(this.label("guideClose", "بستن راهنما"), "bc-guide-close", this.close, "closeIcon");
         top.append(this.counter, close);
         this.title = GridGuide_element("h2", "bc-guide-title");
         this.description = GridGuide_element("p", "bc-guide-description");
@@ -5744,9 +5756,9 @@ var GridGuide = /** @class */ (function () {
         this.progress = GridGuide_element("div", "bc-guide-progress");
         this.progress.setAttribute("aria-hidden", "true");
         var footer = GridGuide_element("div", "bc-guide-footer");
-        this.previous = this.button("قبلی", "bc-guide-button", function () { return _this.move(-1); });
-        var skip = this.button("رد کردن", "bc-guide-button bc-guide-skip", this.close);
-        this.next = this.button("بعدی", "bc-guide-button bc-guide-next", function () { return _this.move(1); });
+        this.previous = this.button(this.label("guidePrevious", "قبلی"), "bc-guide-button", function () { return _this.move(-1); });
+        var skip = this.button(this.label("guideSkip", "رد کردن"), "bc-guide-button bc-guide-skip", this.close);
+        this.next = this.button(this.label("guideNext", "بعدی"), "bc-guide-button bc-guide-next", function () { return _this.move(1); });
         footer.append(this.previous, skip, this.next);
         var content = GridGuide_element("div", "bc-guide-content");
         content.setAttribute("aria-live", "polite");
@@ -5777,8 +5789,8 @@ var GridGuide = /** @class */ (function () {
         this.mutation.observe(this.container, { childList: true, subtree: true, attributes: true });
         window.addEventListener("scroll", this.schedule, { capture: true, passive: true });
         window.addEventListener("resize", this.schedule, { passive: true });
-        (_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.addEventListener("resize", this.schedule);
-        (_b = window.visualViewport) === null || _b === void 0 ? void 0 : _b.addEventListener("scroll", this.schedule);
+        (_b = window.visualViewport) === null || _b === void 0 ? void 0 : _b.addEventListener("resize", this.schedule);
+        (_c = window.visualViewport) === null || _c === void 0 ? void 0 : _c.addEventListener("scroll", this.schedule);
         this.show();
         this.panel.focus({ preventScroll: true });
     };
@@ -5814,7 +5826,7 @@ var GridGuide = /** @class */ (function () {
         var _b;
         var step = this.steps[this.index];
         this.clearActionPreview();
-        this.counter.textContent = "\u0645\u0631\u062D\u0644\u0647 ".concat(this.number(this.index + 1), " \u0627\u0632 ").concat(this.number(this.steps.length));
+        this.counter.textContent = "".concat(this.label("guideStep", "مرحله"), " ").concat(this.number(this.index + 1), " ").concat(this.label("of", "از"), " ").concat(this.number(this.steps.length));
         this.title.textContent = step.title;
         this.description.textContent = step.description;
         this.panel.setAttribute("aria-label", step.title);
@@ -5822,7 +5834,7 @@ var GridGuide = /** @class */ (function () {
         this.previous.disabled = this.index === 0;
         if (previousFocused && this.previous.disabled)
             this.next.focus({ preventScroll: true });
-        this.next.textContent = this.index === this.steps.length - 1 ? "پایان راهنما" : "بعدی";
+        this.next.textContent = this.index === this.steps.length - 1 ? this.label("guideFinish", "پایان راهنما") : this.label("guideNext", "بعدی");
         (_a = this.progress).replaceChildren.apply(_a, this.steps.map(function (_, index) {
             var dot = GridGuide_element("span", "bc-guide-dot");
             dot.dataset.state = index === _this.index ? "current" : index < _this.index ? "done" : "upcoming";
@@ -5835,7 +5847,7 @@ var GridGuide = /** @class */ (function () {
             window.scrollBy({ top: -12, behavior: "instant" });
         this.schedule();
     };
-    GridGuide.prototype.number = function (value) { return value.toLocaleString("fa-IR"); };
+    GridGuide.prototype.number = function (value) { var _a; return value.toLocaleString(((_a = this.dialog) === null || _a === void 0 ? void 0 : _a.dir) === "ltr" ? "en-US" : "fa-IR"); };
     GridGuide.prototype.mobile = function () {
         var _a;
         return (((_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.width) || window.innerWidth) <= 480 ||
@@ -5853,7 +5865,7 @@ var GridGuide = /** @class */ (function () {
         target.filter(function (node) { return !_this.target.includes(node); }).forEach(function (node) { var _a; return (_a = _this.resize) === null || _a === void 0 ? void 0 : _a.observe(node); });
         this.target = target;
         this.notice.hidden = target.length > 0;
-        this.notice.textContent = target.length ? "" : "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.";
+        this.notice.textContent = target.length ? "" : this.label("guideUnavailable", "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.");
         this.ring.hidden = !target.length;
         var viewport = window.visualViewport;
         var width = (viewport === null || viewport === void 0 ? void 0 : viewport.width) || window.innerWidth;
@@ -6120,7 +6132,7 @@ var MaterialTemplate = /** @class */ (function () {
         this.filters.style.display = "none";
         this.selectedCount.style.display = "none";
         this.selectedCount.setAttribute("role", "status");
-        this.clearSelection = this.iconButton("closeIcon", "لغو انتخاب", function () { return _this.owner.setSelectedRows([]); });
+        this.clearSelection = this.iconButton("closeIcon", this.label("clearSelection", "لغو انتخاب"), function () { return _this.owner.setSelectedRows([]); });
         this.clearSelection.classList.add("clear-selection");
         this.clearSelection.style.display = "none";
         this.selectionSummary.style.display = "none";
@@ -6239,7 +6251,7 @@ var MaterialTemplate = /** @class */ (function () {
                 var column = _a.column, index = _a.index;
                 targets_1["column.".concat(index)] = function () { return _this.guideColumnTarget(column); };
             });
-            this.guide = new grid_GridGuide(container, initialGuideConfig, targets_1);
+            this.guide = new grid_GridGuide(container, initialGuideConfig, targets_1, options.culture.labels);
             var help_1 = MaterialTemplate_element("button", "button button-outlined guide-start-button");
             help_1.type = "button";
             help_1.title = this.label("guide", "راهنما");
@@ -6387,7 +6399,7 @@ var MaterialTemplate = /** @class */ (function () {
         var example = (_b = (_a = this.guideColumnCell(column)) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.replace(/\s+/g, " ").trim().slice(0, 160);
         if (!example)
             return description;
-        var suffix = "\n\u0646\u0645\u0648\u0646\u0647 \u0627\u0632 \u0631\u062F\u06CC\u0641 \u0627\u0648\u0644: ".concat(example);
+        var suffix = "\n".concat(this.label("firstRowExample", "نمونه از ردیف اول"), ": ").concat(example);
         return description.slice(0, Math.max(0, 2000 - suffix.length)) + suffix;
     };
     MaterialTemplate.prototype.dispose = function () {
@@ -6635,7 +6647,8 @@ var MaterialTemplate = /** @class */ (function () {
         var _this = this;
         var sizes = MaterialTemplate_element("div", "page-size");
         var available = Array.isArray(this.owner.options.paging) ? this.owner.options.paging : [this.owner.options.paging];
-        available.forEach(function (size) { return _this.pageSize.append(new Option(new Intl.NumberFormat("fa-IR").format(size), String(size))); });
+        var locale = this.owner.options.direction === "rtl" ? "fa-IR" : "en-US";
+        available.forEach(function (size) { return _this.pageSize.append(new Option(new Intl.NumberFormat(locale).format(size), String(size))); });
         this.pageSize.value = String(this.process.pageSize);
         this.pageSize.setAttribute("aria-label", this.label("pageSize", "نمایش"));
         this.pageSize.addEventListener("change", function () {

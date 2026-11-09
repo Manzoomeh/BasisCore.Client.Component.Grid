@@ -19,6 +19,13 @@ it is not repeated in the body. No details button or inferred date footer is add
 column exists. Interactive trusted `operation.title` HTML supplies mobile bulk
 actions; otherwise the selected-row bar shows count and clear only.
 
+## Language
+
+For English/LTR desktop and mobile configuration, see the
+[English sample and complete label dictionary](template4-english.md).
+The existing `direction` and `culture.labels` options remain the contract;
+changing direction alone does not translate column titles or application HTML.
+
 ## Filtering
 
 - `filter: 'none'`: no column filters.

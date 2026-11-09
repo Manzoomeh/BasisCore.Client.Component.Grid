@@ -72,6 +72,16 @@ number remains unchanged for the upstream maintainer to choose at release time.
 
 ## Limits And Remaining Risk
 
+### English/LTR Preview
+
+The native English studio sample exercises `direction: 'ltr'` plus
+`culture.labels` in desktop and mobile presentations. Guide controls and the
+first-row example caption now accept that dictionary; Persian fallbacks remain
+unchanged. Page-size digits follow the existing direction convention. The
+English browser test covers local interaction and 390/320px mobile bounds,
+not live backend contracts. Application column titles, HTML and data still need
+their own translations; the component does not infer language from `guide.lid`.
+
 ### Legacy Refresh Selector
 
 The Template 4 refresh button now preserves `div[data-bc-refresh-container] span`

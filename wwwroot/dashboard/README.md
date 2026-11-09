@@ -59,3 +59,10 @@ Column/step `priority` orders all tutorial steps (smaller first, default 1000).
 The editable shell source/build are recorded in `wwwroot/template4/manifest.json`.
 Updating the stock saved tour preserves rows/settings and does not replace
 customized guides; “restore sample” explicitly restores the new stock sample.
+
+The preview header includes **فارسی / English** for the flight-route samples.
+English uses `direction: 'ltr'` and the existing `culture.labels` configuration,
+including HTML action captions and guide controls. Desktop/table and mobile
+share that configuration. Switching language changes the sample source, keeps
+presentation controls and never overwrites saved Persian rows. The shell stays
+Persian. See `docs/template4-english.md` for the reusable configuration and tests.

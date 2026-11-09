@@ -143,6 +143,10 @@
 :where([data-bc-grid-template="template4"]).preview-content .header-filter:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 :where([data-bc-grid-template="template4"]).preview-content .data-table td,:where([data-bc-grid-template="template4"]).preview-content .data-table.comfortable td{height:46px;padding:8px 10px;border:0;color:var(--list-ink);font-size:14px;line-height:1.65;overflow:hidden;text-overflow:ellipsis;background:var(--surface)}
 :where([data-bc-grid-template="template4"]).preview-content .data-table>:is(thead,tbody)>tr>:is(th,td){text-align:center}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table>:is(thead,tbody)>tr>:is(th,td):not(.check-cell):not(.action-cell){text-align:start}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table .th-content{justify-content:space-between}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table th:first-child{border-start-end-radius:0}
+:where([data-bc-grid-template="template4"]).preview-content[data-bc-grid-direction=ltr] .data-table th:last-child{border-start-start-radius:0}
 :where([data-bc-grid-template="template4"]).preview-content .data-table td[data-bc-data]{white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
 :where([data-bc-grid-template="template4"]).preview-content .data-table.compact td{height:38px;padding-block:5px;font-size:12px}
 :where([data-bc-grid-template="template4"]).preview-content .data-table tbody tr:nth-child(even) td{background:var(--list-stripe)}
@@ -215,6 +219,9 @@
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter:has(.status-success){background:transparent}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter[aria-pressed=true]{border-color:#b7ceff;background:var(--primary-container)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filter-count{min-width:20px;height:20px;padding:0 4px;border:0;font-size:11px;flex-shrink:0}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter{gap:3px;padding-inline:4px;flex-wrap:wrap}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter .status-pill{gap:3px;overflow-wrap:normal}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .quick-filter-count{min-width:18px;padding-inline:3px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar{display:flex;flex-wrap:wrap;padding:0 12px 12px;gap:8px;min-height:0}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field{order:0;flex:1 1 0;height:44px;width:auto;min-width:0;border-radius:9px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field input{min-width:0;font-size:16px}
@@ -258,6 +265,7 @@
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row-fields dt{margin-bottom:3px;color:var(--mobile-muted);font-size:11px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row-fields dd{font-size:14px;font-weight:500;line-height:1.6}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:normal}
+:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile][data-bc-grid-direction=ltr] .cell-with-icon{justify-content:flex-start}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon img{width:24px;height:24px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .cell-with-icon>span{overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-row .status-pill{gap:4px;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:600;line-height:1.5}

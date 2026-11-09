@@ -59,6 +59,8 @@ npm run test:template4
 
 The studio is at `/component/configuration/mobileDesign/template4.html` on that
 server. `GRID_STUDIO_URL` overrides its URL for browser tests.
+The Template 4 studio offers **فارسی / English** for the flight-route sample in
+desktop and mobile views. See the [English/LTR configuration](docs/template4-english.md).
 
 ## HTML Action Guides
 

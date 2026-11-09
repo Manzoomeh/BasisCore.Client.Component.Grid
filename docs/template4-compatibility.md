@@ -70,6 +70,19 @@ number remains unchanged for the upstream maintainer to choose at release time.
 
 ## Limits And Remaining Risk
 
+### Semantic Action Guides
+
+Template 4 supports opt-in HTML action markers without replacing widget
+`cellMaker`/header HTML or invoking widget handlers. Action steps append to column
+steps; a noninteractive, handler-free menu preview is owned and cleaned up by the
+guide dialog. Existing live menus/selection remain untouched. Templates 1-3 do
+not use this path. See [the authoring contract](guides/actions.md) and
+`tests/template4/action-guide.browser.cjs` for desktop/mobile, permission-hidden
+items, unchanged handlers/state, missing actions, Escape and disposal coverage.
+The preview requires a menu already rendered inside the grid; external/lazy
+portals and nested submenus are not supported. Ancestor-dependent widget CSS is
+not guaranteed inside the dialog preview.
+
 The combined library is larger even when only a legacy template is selected.
 Measured production standalone minified output was about 151 KiB before versus
 281 KiB after; gzip was about 39 KiB versus 63 KiB (roughly +25 KB compressed).

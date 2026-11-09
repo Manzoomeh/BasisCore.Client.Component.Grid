@@ -65,19 +65,41 @@ populate the supplied element and return nothing. It runs once per instance
 creates no header. Escape untrusted values yourself; these callbacks are not an
 HTML sanitizer or safe handlers for user-provided code.
 
-The optional `guide` is validated JSON with positive integer `id`/`lid`, revision
-and logical target names. `guideTargets` maps external names to resolver functions;
-it does not evaluate selectors/code from JSON. Guide titles/descriptions are
-rendered as plain text. See the [JSON](guides/flight-routes.json) and
-[team explanation](guides/flight-routes.md).
+Top-level `guide` is the tutorial switch: `true` enables configured column steps;
+an object (including `{}`) can also hold global steps, title and optional metadata
+(`schemaVersion`, integer `id`, integer `lid`, `revision`). Missing/`false` hides
+the button even with active column guides; an enabled tour without steps also
+hides it. Boolean mode uses the localized guide label and invents no identity or
+language IDs. Supplied metadata is validated; `isGuideMetadata` still requires
+complete metadata for database records. Column steps are defined in
+`columns.<name>.guide` with `status`, a string step `id`, and `description`;
+Template 4 highlights the column from its header through its first rendered cell
+(the field label and value together on mobile), and adds that cell's text as an
+example. Empty tables highlight only the header. `guideTargets` remains available for legacy external
+steps and maps trusted names to resolver functions; JSON selectors/code are never
+evaluated. Guide titles/descriptions are rendered as plain text. See the
+[JSON](guides/flight-routes.json) and
+[team explanation](guides/flight-routes.md). A column can instead supply `steps`
+for multiple explanations/actions. Child `target`/`title` default to that column;
+`optional` and numeric `priority` inherit from its guide. Smaller priorities run
+first across all columns and global steps (default `1000`, stable ties). If both
+`description` and `steps` exist, the column overview is an additional step.
+
+Semantic HTML action targets `list.row.action.<key>` and `list.bulk.action.<key>`
+are read-only menu previews, not action invocations. They use marked application
+HTML and can be declared in `columns.operation.guide.steps` or in the existing
+`options.guide.steps`. All global steps now coexist with column guides, including
+search and external targets; they are no longer filtered to action targets only.
+Final step IDs must be unique and the combined tour must contain at most 50 steps. See the complete
+[HTML action-guide contract](guides/actions.md), including required markers,
+permissions, ordering, mobile bulk selection and lifecycle restrictions.
 
 ## Styles And Lifecycle
 
 `src/asset/template4.css` is the editable, scoped library stylesheet. It is loaded
-only when a Template 4 instance is created. It does not import external fonts;
-provide Vazirmatn in the host page, or the Tahoma/sans-serif fallback is used.
-SVG icon data is a Lucide subset; its license is in
-`wwwroot/dashboard/lucide-LICENSE`.
+only when a Template 4 instance is created. It uses the BasisPanel-hosted LineIcons
+stylesheet and bundles the matching font locally. Provide Vazirmatn in the host page, or the
+Tahoma/sans-serif fallback is used.
 
 BasisCore reset/disposal closes guides/popovers, removes observers and clears
 Template 4 markers before reusing a host for a legacy template. Direct consumers

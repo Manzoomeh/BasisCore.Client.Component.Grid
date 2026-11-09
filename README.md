@@ -60,6 +60,24 @@ npm run test:template4
 The studio is at `/component/configuration/mobileDesign/template4.html` on that
 server. `GRID_STUDIO_URL` overrides its URL for browser tests.
 
+## HTML Action Guides
+
+Set top-level `guide: true` or a guide object to enable configured tutorial steps.
+Missing/`false`, or a tour with no steps, shows no guide button. No synthetic
+guide ID is assigned when using the boolean switch.
+
+Keep your existing `operation.title`, `cellMaker` HTML and action handlers.
+Add semantic `data-grid-actions`, `data-grid-action-trigger`,
+`data-grid-action-menu` and `data-grid-action` markers, then reference actions as
+`list.row.action.edit` or `list.bulk.action.delete` in
+`columns.operation.guide.steps` (existing `options.guide.steps` also works).
+Use `priority` on column guides or individual steps to order the combined tour;
+smaller numbers run first, with a stable default of `1000`. Global list/page steps
+and multi-step column explanations can coexist.
+The guide shows a read-only menu preview; it never invokes action handlers.
+See the complete [action-guide contract and examples (Persian)](docs/guides/actions.md)
+and the [runnable desktop/mobile example](wwwroot/component/configuration/mobileDesign/action-guides.html).
+
 See [Template 4](docs/template4.md), the
 [compatibility report](docs/template4-compatibility.md), and the
 [example gallery](wwwroot/dashboard/README.md).

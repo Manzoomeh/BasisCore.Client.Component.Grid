@@ -1,5 +1,9 @@
 # Template 4
 
+This document describes `1.5.0-rc.1`, the core edition on `master`.
+Tutorial/Guide support is not included; the full snapshot remains on
+`basisfly/template4-with-guide`. See [release versions](releases.md).
+
 Activate with `culture.template: 'template4'`; no existing template is replaced.
 The existing BasisCore component, data sources, refresh/selected source callbacks,
 process managers, sorting and pagination remain in use.
@@ -70,7 +74,7 @@ row even across pages. Events still flow through `selectedSourceId`.
 Template-4-only helper and rejects legacy instances. In single mode it keeps only
 the first supplied row. It matches row objects by identity, not an assumed key.
 
-## Header And Guide
+## Header
 
 ```js
 headerMaker: element => '<h3>Passenger details</h3><p>Identity and age groups</p>',
@@ -82,35 +86,6 @@ populate the supplied element and return nothing. It runs once per instance
 creates no header. Escape untrusted values yourself; these callbacks are not an
 HTML sanitizer or safe handlers for user-provided code.
 
-Top-level `guide` is the tutorial switch: `true` enables configured column steps;
-an object (including `{}`) can also hold global steps, title and optional metadata
-(`schemaVersion`, integer `id`, integer `lid`, `revision`). Missing/`false` hides
-the button even with active column guides; an enabled tour without steps also
-hides it. Boolean mode uses the localized guide label and invents no identity or
-language IDs. Supplied metadata is validated; `isGuideMetadata` still requires
-complete metadata for database records. Column steps are defined in
-`columns.<name>.guide` with `status`, a string step `id`, and `description`;
-Template 4 highlights the column from its header through its first rendered cell
-(the field label and value together on mobile), and adds that cell's text as an
-example. Empty tables highlight only the header. `guideTargets` remains available for legacy external
-steps and maps trusted names to resolver functions; JSON selectors/code are never
-evaluated. Guide titles/descriptions are rendered as plain text. See the
-[JSON](guides/flight-routes.json) and
-[team explanation](guides/flight-routes.md). A column can instead supply `steps`
-for multiple explanations/actions. Child `target`/`title` default to that column;
-`optional` and numeric `priority` inherit from its guide. Smaller priorities run
-first across all columns and global steps (default `1000`, stable ties). If both
-`description` and `steps` exist, the column overview is an additional step.
-
-Semantic HTML action targets `list.row.action.<key>` and `list.bulk.action.<key>`
-are read-only menu previews, not action invocations. They use marked application
-HTML and can be declared in `columns.operation.guide.steps` or in the existing
-`options.guide.steps`. All global steps now coexist with column guides, including
-search and external targets; they are no longer filtered to action targets only.
-Final step IDs must be unique and the combined tour must contain at most 50 steps. See the complete
-[HTML action-guide contract](guides/actions.md), including required markers,
-permissions, ordering, mobile bulk selection and lifecycle restrictions.
-
 ## Styles And Lifecycle
 
 `src/asset/template4.css` is the editable, scoped library stylesheet. It is loaded
@@ -118,7 +93,7 @@ only when a Template 4 instance is created. It uses the BasisPanel-hosted LineIc
 stylesheet and bundles the matching font locally. Provide Vazirmatn in the host page, or the
 Tahoma/sans-serif fallback is used.
 
-BasisCore reset/disposal closes guides/popovers, removes observers and clears
+BasisCore reset/disposal closes popovers, removes observers and clears
 Template 4 markers before reusing a host for a legacy template. Direct consumers
 must call `grid.materialTemplate.dispose()` before removing/reusing their host.
 

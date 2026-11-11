@@ -8,7 +8,7 @@ const {chromium} = require('playwright');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html');
-    await page.locator('[data-guide-start]').waitFor();
+    await page.locator('[data-engine=basiscore-component] tbody tr').first().waitFor();
     await page.evaluate(async () => {
       const host = document.createElement('div');
       host.id = 'native-switch'; document.body.append(host);
@@ -17,8 +17,6 @@ const {chromium} = require('playwright');
         paging: [2], rowNumber: '', selectable: 'multi', selectAll: true,
         selectedSourceId: 'switch.selected',
         columns: {name: {title: 'Name', position: '#4'}},
-        guide: {schemaVersion: 2, id: 1, lid: 1, revision: 1, title: 'Test',
-          steps: [{id: 'header', target: 'list.header', title: 'Header', description: 'Test description'}]},
         rowMaker: (row, element) => element.setAttribute('data-switch-row', row.name),
       };
       host.innerHTML = '<basis core="component.grid.grid" run="atclient" datamembername="switch.rows" resetsourceid="switch.reset" options="switchOptions"></basis>';
@@ -31,8 +29,7 @@ const {chromium} = require('playwright');
     });
     const host = page.locator('#native-switch');
     for (const template of ['template1', 'template2', 'template3']) for (const deviceId of [1, 2]) {
-      await host.locator('[data-guide-start]').click();
-      await page.locator('dialog.bc-guide[open]').waitFor();
+      assert.equal(await host.locator('[data-switch-row]').count(),2);
       await page.evaluate(({template, deviceId}) => {
         window.switchPrevious = window.switchGrid();
         window.switchOptions.culture = {template, deviceId, labels: {}};
@@ -53,6 +50,6 @@ const {chromium} = require('playwright');
     }
     await page.evaluate(() => window.switchRuntime.basiscore.content.disposeAsync());
     assert.deepEqual(errors, []);
-    console.log('Native lifecycle: Template 4 -> templates 1/2/3 on desktop/mobile -> Template 4, source/rowMaker preservation, guide cleanup and no leaked template markers passed.');
+    console.log('Native lifecycle: Template 4 -> templates 1/2/3 on desktop/mobile -> Template 4, source/rowMaker preservation and no leaked template markers passed.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

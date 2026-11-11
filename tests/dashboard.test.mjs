@@ -37,7 +37,7 @@ assert(bundle.includes("studio.rows"));
 assert(bundle.includes("فیلتر ستون‌ها"), "Missing mobile row-filter configuration");
 assert(bundle.includes("جدول انتخاب تکی"), "Missing native single-selection example");
 assert(bundle.includes("sample-language") && bundle.includes("flight-routes-en"), "Missing English sample language control");
-assert(bundle.includes("guideUnavailable") && bundle.includes("Close guide"), "Missing English guide labels");
+assert(!bundle.includes('guideUnavailable') && !bundle.includes('operationGuide'), "Core dashboard must not bundle Guide");
 assert.deepStrictEqual((manifest.resources || []).map(resource => resource.path), ["/LineIcons.woff2"], "The only shared resource should be the icon font");
 assert(bundle.includes("icon:plane"), "The airline sample should use one shared plane icon");
 assert(!bundle.includes("/airlines/"), "The flight-route sample should not reference airline image files");

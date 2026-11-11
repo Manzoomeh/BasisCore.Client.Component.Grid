@@ -15,7 +15,6 @@
   "resultsIcon": { "name": "lni-list", "size": 20 },
   "emptyIcon": { "name": "lni-search", "size": 26 },
   "closeIcon": { "name": "lni-close", "size": 14 },
-  "helpIcon": { "name": "lni-question-circle", "size": 18 },
   "refreshIcon": { "name": "lni-reload", "size": 16 },
   "downloadIcon": { "name": "lni-download", "size": 16 }
 }

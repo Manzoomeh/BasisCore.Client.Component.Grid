@@ -1,131 +1,77 @@
-# Template 4 Compatibility And Merge Handoff
+# Template 4 Core Compatibility
 
-## Baseline And Scope
+## Baseline And Editions
 
-- Fork: `daniyalsh1/BasisCore.Client.Component.Grid`.
-- Upstream: `Manzoomeh/BasisCore.Client.Component.Grid`.
-- Both remote default branches were `master` at
-  `ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1` when checked on 2026-11-08.
-- Work branch: `codex/grid-template-dashboard`; requested local merge target: `master`.
-- No push, upstream PR/MR creation, deployment or package publication is part of this change.
+- Upstream baseline: `ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`, version 1.4.2.
+- Candidate on `master`: `1.5.0-rc.1`, Template 4 core, without Guide.
+- Full experimental snapshot: branch `basisfly/template4-with-guide`, commit
+  `ada5e1f`. Its historical 1.4.2 package number is not a new published release.
+- No push, package publication or upstream PR is performed by the release check.
 
-Previously the fork contained only an imported studio bundle. The native Template
-4 TypeScript and scoped styles now live in this repository and build with the
-existing Webpack/TypeScript toolchain. The studio shell remains a compiled demo
-snapshot from the separate List Studio project; it is not the editable component
-source and is not required by production grids. `build:demo` regenerates its grid
-bundle from this repository, preserving the separate shell and asset manifest.
+The native TypeScript, scoped styles and editable private studio are all in this
+repository. `build:demo` rebuilds the component and shell and updates the local
+asset hashes/version. The studio uses native `component.grid.grid` commands,
+not a separate implementation or a React renderer.
 
-## What Is Independent
+## Isolation
 
-All original layout HTML, images and legacy CSS files remain byte-for-byte
-unchanged. The default template, original Loader/ComponentLoader exports, legacy
-filter placement, export implementation and rendering methods remain unchanged.
-Template 4 is opt-in. Its DOM, header, guide, filter controls, mobile cards,
-selection summary and styles are owned by `MaterialTemplate` and new files.
+All original layout HTML, images and legacy CSS remain unchanged. Defaults still
+select `template1`; templates 1-3 keep their original rendering paths. Template 4
+owns its new DOM, header, filters, mobile cards and styles. Guide code, public
+configuration, tutorial CSS and tutorial examples are absent from this candidate.
 
-There are small shared hooks, so this is not 100% isolated code:
-
-| Shared location | New behavior | Legacy path |
+| Shared location | Template 4 behavior | Legacy behavior |
 | --- | --- | --- |
-| `Grid` constructor/render/source/progress/selection | Delegate to Template 4 only | Existing paths retained |
-| `GridRow` | New rows, typed filters, null normalization, optional comparator | Guarded by Template 4 instance |
-| `ProcessManager` | Advanced filter, combined query, copy before sorting | Guarded by `culture.template === 'template4'`; old in-place sort preserved |
-| `PaginateProcessManager` | Keep an empty list on page 1 | Template-4-only guard |
-| BasisCore component | Expose instance and dispose/reset new helpers | Cleanup is a no-op without Template 4 |
-| Options | Add template/presentation/header/guide options | Existing fields/types retained; no default-template override |
+| Grid hooks | Delegate rendering/source/progress/selection | Existing paths retained |
+| GridRow | Native rows, typed filters, optional comparator | Guarded by Template 4 |
+| ProcessManager | Advanced filters, query, copy before sorting | Original behavior retained |
+| PaginateProcessManager | Empty list stays on page 1 | New guard only |
+| BasisCore component | Instance exposure and reset/disposal | No Template 4 helpers on old grids |
+| Options | Template/presentation/header options | Existing fields/types retained |
 
-Importing the library does not initialize Template 4 styles/helpers on a
-legacy-only page. Creating a new template beside a legacy one is explicitly
-tested for DOM/computed-style/state changes. Resetting the same native component
-from Template 4 to templates 1/2/3 removes new markers/classes and closes its guide.
+Legacy-only pages do not initialize the new stylesheet. The parity test mounts
+Template 4 beside old instances and compares sampled DOM/styles/state. Native
+reset tests switch between Template 4 and every old template/device combination.
+This demonstrates preservation of the tested old paths, **not** drop-in
+compatibility when arbitrary old widgets switch to Template 4.
 
-Unrelated earlier fixes were deliberately kept out of legacy paths: global
-filter lookup was not changed; custom comparison and copy-sorting are new-template
-only; the improved export error handling/default GET/URL cleanup lives inside
-Template 4 instead of changing the legacy download method. The existing required
-`IExportInfo.method` type is retained.
+## Checks
 
-## Verification
+- Type checking for the library and the private studio, including actual native
+  option/state types rather than a copied component implementation.
+- Production Webpack entry points and declarations, cycle detection, package
+  and lockfile version equality, manifest hashes and version banners.
+- Artifact assertions reject tutorial runtime/styles/options in every shipped
+  component bundle and the public declarations.
+- 216 legacy comparisons against a freshly built baseline; 72 original files
+  and 24 Grid methods are checked unchanged before browser comparisons.
+- Core browser suites: real BasisCore mount/reset, header HTML, filter modes,
+  English/LTR, mobile bounds/touch, radio/multi selection, HTML menus, native
+  refresh selectors, server/mix callback fixtures and export success/failure.
+- Core storage tests import saved full-version rows without mutating the old
+  browser key. Changes are saved to `basiscore-grid-template4-core-datasets-v1`.
 
-- TypeScript checking and all original Webpack entry points build successfully.
-- Production build includes the new standalone demo entry and passes cycle detection.
-- `npm test`: gallery paths/asset hashes/BasisCore entry and guide validation.
-- `npm run test:compat`: rebuilds the upstream baseline, checks unchanged legacy
-  files and methods (72 original files and 24 methods), then compares normalized DOM, controls, computed styles,
-  state and callbacks across templates 1/2/3, device 1/2, RTL/LTR, filter modes,
-  selection, client/server/mixed paging, sort/filter, makers and empty/source updates.
-  All 216 fixture scenarios passed in Chrome, including creating a Template 4
-  instance beside the legacy grid without changing its sampled styles/state.
-  The external LineIcons stylesheet is mocked; its live CSS/font effects are not
-  part of these local DOM/style comparisons.
-- `npm run test:template4`: native component lifecycle/reset, HTML header,
-  desktop/mobile filters, radio/multi selection, operation menus, export
-  success/failure, guide accessibility/isolation, mobile layout and bounds.
+`npm run test:release` rebuilds and runs these checks. Browser tests serve the
+checked-in production demo bundle, cache the BasisPanel icon stylesheet and
+font, and block unexpected external requests. The legacy parity comparison
+mocks external icon CSS. Physical devices, live fonts/CDNs, Safari/Firefox and
+backend behavior are not certified by these local tests.
 
-The browser parity suite uses deterministic local fixtures. Legacy direct-Grid
-tests use a minimal BasisCore HTML utility; separate lifecycle/studio tests use
-the real BasisCore component loader/data sources.
-TypeScript declaration emission and `npm pack --dry-run --ignore-scripts` were
-also checked; the npm package was not published. The original package-version
-number remains unchanged for the upstream maintainer to choose at release time.
+## Migration Limits
 
-## Limits And Remaining Risk
+Changing only `culture.template` is not sufficient for every widget. Existing
+limitations remain: remote autocomplete/link options, remote select payloads
+(`{id,value}` versus plain values), debounce and combined server search,
+`editMode`, `widthCard`/legacy mode buttons, custom loaders, implicit columns,
+legacy mobile slot mappings and arbitrary external DOM/lifecycle dependencies.
+Use templates 1-3 for unsupported workflows; see [configuration](template4.md).
 
-### English/LTR Preview
+The legacy refresh pattern `div[data-bc-refresh-container] span` is explicitly
+preserved and tested in desktop/mobile and client/server/mix configurations.
+That fix does not promise compatibility with all other widget selectors.
 
-The native English studio sample exercises `direction: 'ltr'` plus
-`culture.labels` in desktop and mobile presentations. Guide controls and the
-first-row example caption now accept that dictionary; Persian fallbacks remain
-unchanged. Page-size digits follow the existing direction convention. The
-English browser test covers local interaction and 390/320px mobile bounds,
-not live backend contracts. Application column titles, HTML and data still need
-their own translations; the component does not infer language from `guide.lid`.
-
-### Legacy Refresh Selector
-
-The Template 4 refresh button now preserves `div[data-bc-refresh-container] span`
-for existing widget refresh functions, without changing those widgets or their
-configurations. `panel-transfer.browser.cjs` compares the legacy click with the
-visible button in client/server/mixed processing and desktop/mobile views:
-one callback, identical payload/encoding, no control when disabled, and no form
-submission on pointer/Enter/Space activation. This fixes the refresh selector
-only; it does not establish compatibility with all legacy DOM selectors or row
-lifecycle behavior.
-
-### Semantic Action Guides
-
-Template 4 supports opt-in HTML action markers without replacing widget
-`cellMaker`/header HTML or invoking widget handlers. Action steps append to column
-steps; a noninteractive, handler-free menu preview is owned and cleaned up by the
-guide dialog. Existing live menus/selection remain untouched. Templates 1-3 do
-not use this path. See [the authoring contract](guides/actions.md) and
-`tests/template4/action-guide.browser.cjs` for desktop/mobile, permission-hidden
-items, unchanged handlers/state, missing actions, Escape and disposal coverage.
-The preview requires a menu already rendered inside the grid; external/lazy
-portals and nested submenus are not supported. Ancestor-dependent widget CSS is
-not guaranteed inside the dialog preview.
-
-The combined library is larger even when only a legacy template is selected.
-Measured production standalone minified output was about 151 KiB before versus
-281 KiB after; gzip was about 39 KiB versus 63 KiB (roughly +25 KB compressed).
-This is not unchanged download/parse cost. Splitting a separate optional bundle
-would be a separate packaging decision; no asynchronous loading/API change was
-introduced merely to hide this cost.
-
-No zero-regression guarantee is claimed. Chrome and emulated phone viewports are
-covered; physical phones, Safari/Firefox/older engines, live server/mixed API
-behavior, remote autocomplete, backend contracts and every downstream widget
-configuration have not been exhaustively tested. The legacy compatibility suite
-does not attempt to repair pre-existing upstream bugs.
-
-New UI uses modern CSS and browser APIs; legacy CSS remains unchanged. The guide
-uses dialog/ResizeObserver/visualViewport. Popover menus have a fallback. Test
-tooling adds Playwright only as a development dependency (Node 18+); production
-dependencies and the TypeScript ES5 target remain unchanged. Existing upstream
-Uglify/Webpack peer/deprecation and bundle-size warnings are disclosed, not removed.
-
-Before broad migration, review the unsupported Template 4 contracts listed in
-[template4.md](template4.md). Existing templates do not need config changes.
-The compiled studio shell has its own demo/font assets; production users need
-only the grid library and their options, not that dashboard.
+HTML header/cell callbacks are trusted application code, not an HTML sanitizer.
+The JSON studio escapes content before generating HTML. Current new-template
+menus use Popover where supported, with a fallback; legacy CSS is unchanged.
+Shared downloads/bundle size and modern browser APIs remain release concerns.
+Existing upstream Webpack/Uglify deprecation/size warnings have not been hidden.

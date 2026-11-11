@@ -1,95 +1,7 @@
+/*! BasisCore Grid 1.5.0-rc.1 | Template 4 core (without Guide) */
 /******/ (() => { // webpackBootstrap
 /******/ 	// runtime can't be in strict mode because a global variable is assign and maybe created.
 /******/ 	var __webpack_modules__ = ({
-
-/***/ 930:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(601);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(314);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.bc-guide {
-  position: fixed; inset: 0; width: 100%; height: 100dvh; max-width: none; max-height: none;
-  margin: 0; padding: 0; border: 0; background: transparent; overflow: hidden;
-  color: #172b46; font: 14px/1.8 'Vazirmatn', Tahoma, sans-serif; letter-spacing: 0;
-}
-.bc-guide::backdrop { background: transparent; }
-.bc-guide *, .bc-guide *::before, .bc-guide *::after { box-sizing: border-box; }
-.bc-guide [hidden] { display: none !important; }
-.bc-guide-ring {
-  position: fixed; pointer-events: none; border: 2px solid #0666ff; border-radius: 24px;
-  box-shadow: 0 0 0 9999px #11223f59; background: transparent;
-}
-.bc-guide-unavailable { background: #11223f59; }
-.bc-guide-action-preview { position: fixed; overflow: auto; max-width: calc(100vw - 24px); border: 1px solid #cdd6e6; border-radius: 8px; background: #fff; color: #172b46; pointer-events: none; }
-.bc-guide-action-preview > [data-grid-actions] { display: block !important; position: static !important; float: none !important; width: auto !important; height: auto !important; margin: 0 !important; }
-.bc-guide-action-preview [data-grid-action-menu] { display: block !important; position: static !important; inset: auto !important; transform: none !important; visibility: visible !important; opacity: 1 !important; width: auto !important; min-width: 0 !important; max-height: none !important; margin: 0 !important; padding: 8px !important; border: 0 !important; box-shadow: none !important; }
-.bc-guide-action-preview [data-grid-action] { min-height: 44px; padding: 8px 12px; align-items: center; gap: 8px; color: inherit; text-decoration: none; }
-.bc-guide-action-preview [data-grid-action]:not([hidden]) { display: flex; }
-.bc-guide-action-preview [data-grid-action][hidden] { display: none !important; }
-.bc-guide-action-preview [data-grid-action] svg { width: 20px; height: 20px; flex-shrink: 0; }
-.bc-guide-panel {
-  position: fixed; overflow: auto; overscroll-behavior: contain; border-radius: 24px;
-  padding: 18px 20px; background: #fff; box-shadow: 0 12px 40px #152b5033;
-  border: 1px solid #a6c6fc;
-}
-.bc-guide-arrow { position: fixed; width: 12px; height: 12px; transform: rotate(45deg); background: #fff; pointer-events: none; }
-.bc-guide-arrow[data-side=below] { border-top: 1px solid #a6c6fc; border-left: 1px solid #a6c6fc; }
-.bc-guide-arrow[data-side=above] { border-bottom: 1px solid #a6c6fc; border-right: 1px solid #a6c6fc; }
-.bc-guide-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.bc-guide-counter { border-radius: 5px; padding: 2px 9px; background: #e8f1ff; color: #1455b6; font-size: 12px; font-weight: 600; }
-.bc-guide-close { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 6px; background: transparent; color: #43536c; cursor: pointer; }
-.bc-guide-close:hover { background: #edf2fa; }
-.bc-guide-close .lni { font-size: 18px !important; }
-.bc-guide-title { margin: 12px 0 8px; font-size: 18px; font-weight: 700; line-height: 1.7; overflow-wrap: anywhere; }
-.bc-guide-description { margin: 0; color: #43536c; font-size: 14px; line-height: 1.9; white-space: pre-line; overflow-wrap: anywhere; }
-.bc-guide-notice { color: #67521d; background: #fff5d9; border-radius: 5px; padding: 8px 10px; font-size: 12px; }
-.bc-guide-progress { display: flex; gap: 5px; margin-top: 18px; }
-.bc-guide-dot { flex: 1; height: 3px; border-radius: 2px; background: #e0e6ef; }
-.bc-guide-dot[data-state=done] { background: #9fc1fa; }
-.bc-guide-dot[data-state=current] { background: #0666ff; }
-.bc-guide-footer { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
-.bc-guide-button { min-height: 40px; padding: 7px 14px; border: 1px solid #cdd6e6; border-radius: 6px; background: #fff; color: #344764; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
-.bc-guide-button:hover { background: #edf3fd; }
-.bc-guide-button:disabled { opacity: .4; cursor: default; }
-.bc-guide-skip { border-color: transparent; margin-inline-end: auto; }
-.bc-guide-next { background: #0666ff; border-color: #0666ff; color: #fff; }
-.bc-guide-next:hover { background: #0955ce; }
-.bc-guide :focus-visible { outline: 2px solid #0666ff; outline-offset: 3px; }
-.bc-guide-panel:focus { outline: none; }
-.bc-guide-mobile .bc-guide-ring { border-radius: 12px; }
-.bc-guide-mobile .bc-guide-panel { display: flex; flex-direction: column; padding: 14px 16px; overflow: hidden; }
-.bc-guide-mobile .bc-guide-content { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
-.bc-guide-mobile .bc-guide-top, .bc-guide-mobile .bc-guide-progress, .bc-guide-mobile .bc-guide-footer { flex-shrink: 0; }
-.bc-guide-mobile .bc-guide-title { margin-top: 10px; font-size: 17px; }
-.bc-guide-mobile .bc-guide-description { font-size: 15px; line-height: 1.85; }
-.bc-guide-mobile .bc-guide-close { width: 44px; height: 44px; }
-.bc-guide-mobile .bc-guide-button { min-height: 44px; min-width: 44px; padding-inline: 12px; }
-.bc-guide-mobile .bc-guide-progress { justify-content: center; margin-top: 14px; gap: 6px; }
-.bc-guide-mobile .bc-guide-dot { flex: 0 0 6px; height: 6px; border-radius: 50%; }
-:root[data-theme=dark] .bc-guide { color: #e3e8f2; }
-:root[data-theme=dark] .bc-guide-action-preview { background: #202631; color: #e3e8f2; border-color: #4b6692; }
-:root[data-theme=dark] .bc-guide-panel { background: #202631; border-color: #4b6692; }
-:root[data-theme=dark] .bc-guide-arrow { background: #202631; border-color: #4b6692; }
-:root[data-theme=dark] .bc-guide-description, :root[data-theme=dark] .bc-guide-close { color: #c3cee0; }
-:root[data-theme=dark] .bc-guide-button:not(.bc-guide-next) { background: #2b3544; color: #e3e8f2; border-color: #52617b; }
-@media (prefers-reduced-motion: reduce) { .bc-guide * { scroll-behavior: auto !important; } }
-`, ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
 
 /***/ 270:
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
@@ -1923,7 +1835,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content .mobile-tools[hidden]{display:none}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar{flex-wrap:wrap;gap:8px;padding:16px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field{width:100%;flex-basis:100%;min-width:0}
-:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar [data-guide-start]{width:44px;height:44px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .search-field kbd,:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .toolbar-spacer{display:none}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .preview-toolbar .button{margin-inline-start:auto;min-height:44px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .mobile-tools{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 16px;border-block:1px solid var(--outline-variant);background:var(--surface-low)}
@@ -1982,7 +1893,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content .list-filter-bar>.button{min-height:42px;border:1px solid var(--list-outline);border-radius:10px;background:var(--primary-container);color:var(--on-primary-container);font-size:12px}
 :where([data-bc-grid-template="template4"]).preview-content .preview-toolbar{min-height:0;padding:12px 16px;gap:8px;flex-wrap:wrap}
 :where([data-bc-grid-template="template4"]).preview-content .preview-toolbar>.icon-button{width:38px;height:38px;border-color:var(--list-outline);border-radius:10px;color:var(--list-ink);background:var(--surface)}
-:where([data-bc-grid-template="template4"]).preview-content .preview-toolbar>:is(.advanced-filter-button,.guide-start-button){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-inline:0;padding:8px 14px;border:1px solid var(--list-outline);border-radius:10px;background:var(--primary-container);color:var(--on-primary-container);font-size:12px}
+:where([data-bc-grid-template="template4"]).preview-content .preview-toolbar>.advanced-filter-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-inline:0;padding:8px 14px;border:1px solid var(--list-outline);border-radius:10px;background:var(--primary-container);color:var(--on-primary-container);font-size:12px}
 :where([data-bc-grid-template="template4"]).preview-content .search-field{height:38px;min-width:0;max-width:100%;border:1px solid var(--list-outline);border-radius:10px;background:var(--surface);color:var(--muted)}
 :where([data-bc-grid-template="template4"]).preview-content .search-field:focus-within{border-color:var(--primary)}
 :where([data-bc-grid-template="template4"]).preview-content .table-wrap{padding:0 6px;scrollbar-width:thin;scrollbar-color:#b7c7e5 transparent}
@@ -2067,8 +1978,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@font-face{font-family:"LineIcons";src
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .grid-section-header{gap:10px;padding:14px 12px 10px}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .grid-header-content h3{font-size:16px;line-height:1.6}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .grid-header-content p{margin-top:3px;font-size:11px;line-height:1.6;color:var(--mobile-muted)}
-:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .guide-start-button[data-guide-start]{display:grid;place-items:center;flex:0 0 44px;width:44px;min-width:44px;height:44px;min-height:44px;margin:0;padding:0;border:1px solid var(--list-outline);border-radius:10px;background:var(--primary-container);color:var(--primary)}
-:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .guide-start-copy{display:none}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .list-filter-bar{min-height:0;margin:0 12px 8px;padding:4px;border:0;border-radius:12px;background:var(--surface-low)}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .list-filter-bar[hidden],:where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .list-filter-bar:has(.quick-filters:empty){display:none}
 :where([data-bc-grid-template="template4"]).preview-content[data-view=mobile] .quick-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}
@@ -3270,7 +3179,7 @@ var Grid = /** @class */ (function () {
         this.id = Math.random().toString(36).substring(2);
         if (((_f = this.options.culture) === null || _f === void 0 ? void 0 : _f.template) === "template4") {
             // Legacy instances must not initialize Template 4's styles or helpers.
-            var Template = (__webpack_require__(242)/* ["default"] */ .A);
+            var Template = (__webpack_require__(786)/* ["default"] */ .A);
             this._container.setAttribute("data-bc-grid", "studio");
             this._container.setAttribute("data-bc-grid-template", "template4");
             this.materialTemplate = new Template(this, this._container, Grid.getDefaults().culture.labels);
@@ -5361,7 +5270,7 @@ var GridRow = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 242:
+/***/ 786:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5441,514 +5350,6 @@ var update = injectStylesIntoStyleTag_default()(template4/* default */.A, option
 
        /* harmony default export */ const asset_template4 = (template4/* default */.A && template4/* default */.A.locals ? template4/* default */.A.locals : undefined);
 
-;// ./src/component/grid/GuideConfig.ts
-// Semantic action keys are matched as data values, never evaluated as CSS or JavaScript.
-function parseGuideActionTarget(target) {
-    var match = /^list\.(row|bulk)\.action\.([a-zA-Z0-9_-]{1,80})$/.exec(target);
-    return match ? { scope: match[1], key: match[2] } : null;
-}
-var GuideConfig_text = function (input, max) { return typeof input === "string" && input.trim().length > 0 && input.length <= max; };
-var key = function (input) { return GuideConfig_text(input, 120) && /^[a-zA-Z0-9_.-]+$/.test(input); };
-var priority = function (input) { return input === undefined || (Number.isSafeInteger(input) && input >= 0); };
-function validSteps(steps, column) {
-    if (column === void 0) { column = false; }
-    if (!Array.isArray(steps) || !steps.length || steps.length > 50)
-        return false;
-    var ids = new Set();
-    return steps.every(function (step) {
-        if (!step || !key(step.id) || ids.has(step.id) || ((!column || step.target !== undefined) && !key(step.target)) ||
-            ((!column || step.title !== undefined) && !GuideConfig_text(step.title, 200)) || !GuideConfig_text(step.description, 2000) ||
-            !priority(step.priority) || (step.optional !== undefined && typeof step.optional !== "boolean"))
-            return false;
-        ids.add(step.id);
-        return true;
-    });
-}
-function isGuideOptions(value) {
-    if (typeof value === "boolean")
-        return true;
-    if (!value || typeof value !== "object" || Array.isArray(value))
-        return false;
-    var config = value;
-    if (config.schemaVersion !== undefined && config.schemaVersion !== 2)
-        return false;
-    for (var _i = 0, _a = ["id", "lid", "revision"]; _i < _a.length; _i++) {
-        var field = _a[_i];
-        var number = config[field];
-        if (number !== undefined && (!Number.isSafeInteger(number) || number < 1))
-            return false;
-    }
-    return (config.title === undefined || GuideConfig_text(config.title, 200)) &&
-        (config.steps === undefined || (Array.isArray(config.steps) && !config.steps.length) || validSteps(config.steps));
-}
-function isGuideMetadata(value) {
-    if (!isGuideOptions(value) || typeof value !== "object")
-        return false;
-    return value.schemaVersion === 2 && value.id !== undefined && value.lid !== undefined &&
-        value.revision !== undefined && value.title !== undefined && (value.steps === undefined || validSteps(value.steps));
-}
-function isGuideConfig(value) {
-    return isGuideOptions(value) && typeof value === "object" && GuideConfig_text(value.title, 200) && validSteps(value.steps);
-}
-function isColumnGuideConfig(value) {
-    if (!value || typeof value !== "object")
-        return false;
-    var guide = value;
-    return (guide.status === "active" || guide.status === "inactive") &&
-        key(guide.id) && priority(guide.priority) &&
-        (guide.description === undefined ? guide.steps !== undefined : GuideConfig_text(guide.description, 2000)) &&
-        (guide.steps === undefined || validSteps(guide.steps, true)) &&
-        (guide.optional === undefined || typeof guide.optional === "boolean");
-}
-
-// EXTERNAL MODULE: ./node_modules/css-loader/dist/cjs.js!./src/asset/guide.css
-var guide = __webpack_require__(930);
-;// ./src/asset/guide.css
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var guide_options = {};
-
-guide_options.styleTagTransform = (styleTagTransform_default());
-guide_options.setAttributes = (setAttributesWithoutAttributes_default());
-
-      guide_options.insert = insertBySelector_default().bind(null, "head");
-    
-guide_options.domAPI = (styleDomAPI_default());
-guide_options.insertStyleElement = (insertStyleElement_default());
-
-var guide_update = injectStylesIntoStyleTag_default()(guide/* default */.A, guide_options);
-
-
-
-
-       /* harmony default export */ const asset_guide = (guide/* default */.A && guide/* default */.A.locals ? guide/* default */.A.locals : undefined);
-
-;// ./src/component/grid/GridGuide.ts
-var __spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-
-
-
-function GridGuide_element(tag, className, text) {
-    var node = document.createElement(tag);
-    node.className = className;
-    if (text !== undefined)
-        node.textContent = text;
-    return node;
-}
-var GridGuide = /** @class */ (function () {
-    function GridGuide(container, config, targets, labels) {
-        if (labels === void 0) { labels = {}; }
-        var _this = this;
-        this.container = container;
-        this.config = config;
-        this.targets = targets;
-        this.labels = labels;
-        this.dialog = null;
-        this.index = 0;
-        this.steps = [];
-        this.target = [];
-        this.returnFocus = null;
-        this.frame = 0;
-        this.mutation = null;
-        this.resize = null;
-        this.actionSource = null;
-        this.actionPreview = null;
-        this.actionItem = null;
-        this.schedule = function () {
-            if (!_this.dialog || _this.frame)
-                return;
-            _this.frame = requestAnimationFrame(function () { _this.frame = 0; _this.position(); });
-        };
-        this.close = function () {
-            var _a, _b, _c, _d, _e;
-            if (!_this.dialog)
-                return;
-            cancelAnimationFrame(_this.frame);
-            _this.frame = 0;
-            (_a = _this.mutation) === null || _a === void 0 ? void 0 : _a.disconnect();
-            (_b = _this.resize) === null || _b === void 0 ? void 0 : _b.disconnect();
-            window.removeEventListener("scroll", _this.schedule, true);
-            window.removeEventListener("resize", _this.schedule);
-            (_c = window.visualViewport) === null || _c === void 0 ? void 0 : _c.removeEventListener("resize", _this.schedule);
-            (_d = window.visualViewport) === null || _d === void 0 ? void 0 : _d.removeEventListener("scroll", _this.schedule);
-            document.removeEventListener("basiscore:guide-start", _this.close);
-            _this.dialog.close();
-            _this.dialog.remove();
-            _this.dialog = null;
-            _this.clearActionPreview();
-            _this.target = [];
-            if ((_e = _this.returnFocus) === null || _e === void 0 ? void 0 : _e.isConnected)
-                _this.returnFocus.focus({ preventScroll: true });
-        };
-    }
-    GridGuide.prototype.label = function (key, fallback) { var _a; return (_a = this.labels[key]) !== null && _a !== void 0 ? _a : fallback; };
-    GridGuide.visible = function (target) {
-        return target instanceof HTMLElement && target.isConnected && !target.closest('[hidden], [inert]') &&
-            getComputedStyle(target).visibility !== "hidden" && target.getBoundingClientRect().width > 0 && target.getBoundingClientRect().height > 0;
-    };
-    GridGuide.prototype.resolve = function (name) {
-        if (parseGuideActionTarget(name)) {
-            var item = this.resolveAction(name);
-            // The preview is intentionally inert, so its own geometry (not live-target focusability) applies.
-            return item && item.getBoundingClientRect().width > 0 && item.getBoundingClientRect().height > 0 &&
-                getComputedStyle(item).visibility !== "hidden" ? [item] : [];
-        }
-        if (!Object.prototype.hasOwnProperty.call(this.targets, name))
-            return [];
-        try {
-            var target = this.targets[name]();
-            return Array.from(new Set(Array.isArray(target) ? target : [target])).filter(GridGuide.visible);
-        }
-        catch (_a) {
-            return [];
-        }
-    };
-    GridGuide.prototype.findAction = function (name) {
-        var target = parseGuideActionTarget(name);
-        if (!target)
-            return null;
-        var area = target.scope === "row"
-            ? Array.from(this.container.querySelectorAll("tbody tr[data-sys-tr], .mobile-row, .list-item, .data-card")).find(GridGuide.visible)
-            : this.container;
-        if (!area)
-            return null;
-        for (var _i = 0, _a = Array.from(area.querySelectorAll("[data-grid-actions]")); _i < _a.length; _i++) {
-            var group = _a[_i];
-            if (group.dataset.gridActions !== target.scope)
-                continue;
-            var trigger = Array.from(group.querySelectorAll("[data-grid-action-trigger]"))
-                .find(function (node) { return node.dataset.gridActionTrigger === target.scope; }) || null;
-            var menu = group.querySelector("[data-grid-action-menu]");
-            if (!GridGuide.visible(trigger) || !menu)
-                continue;
-            var item = Array.from(menu.querySelectorAll("[data-grid-action]"))
-                .find(function (node) { return node.dataset.gridAction === target.key; });
-            if (!item)
-                continue;
-            // Ignore permission-hidden items, but do not mistake the closed menu for a missing action.
-            var hidden = false;
-            for (var node = item; node && node !== menu; node = node.parentElement) {
-                if (node.hidden || node.getAttribute("aria-hidden") === "true" || getComputedStyle(node).display === "none")
-                    hidden = true;
-            }
-            if (!hidden)
-                return { group: group, trigger: trigger, menu: menu, item: item };
-        }
-        return null;
-    };
-    GridGuide.prototype.available = function (name) {
-        return parseGuideActionTarget(name) ? Boolean(this.findAction(name)) : this.resolve(name).length > 0;
-    };
-    GridGuide.prototype.clearActionPreview = function () {
-        var _a;
-        (_a = this.actionPreview) === null || _a === void 0 ? void 0 : _a.remove();
-        this.actionPreview = this.actionSource = this.actionItem = null;
-    };
-    GridGuide.prototype.resolveAction = function (name) {
-        var _a;
-        var source = this.findAction(name);
-        if (!this.dialog || !source) {
-            this.clearActionPreview();
-            return null;
-        }
-        if (this.actionSource !== source.item) {
-            this.clearActionPreview();
-            var shell = source.group.cloneNode(false);
-            var menu = source.menu.cloneNode(true);
-            var originals_1 = Array.from(source.menu.querySelectorAll("[data-grid-action]"));
-            menu.querySelectorAll("[data-grid-action]").forEach(function (item, index) {
-                for (var node = originals_1[index]; node && node !== source.menu; node = node.parentElement) {
-                    if (node.hidden || node.getAttribute("aria-hidden") === "true" || getComputedStyle(node).display === "none")
-                        item.hidden = true;
-                }
-            });
-            shell.append(menu);
-            shell.classList.add("show");
-            // Preview only: never click a source trigger, move live nodes, or copy executable handlers.
-            shell.querySelectorAll("script, iframe, object, embed, link, style, base, meta").forEach(function (node) { return node.remove(); });
-            __spreadArray([shell], Array.from(shell.querySelectorAll("*")), true).forEach(function (node) {
-                Array.from(node.attributes).forEach(function (attribute) {
-                    if (/^on/i.test(attribute.name) || /^(id|name|for|href|srcdoc|autofocus|form|formaction|popover|popovertarget|aria-controls|aria-labelledby|aria-describedby)$/i.test(attribute.name))
-                        node.removeAttribute(attribute.name);
-                });
-                node.tabIndex = -1;
-            });
-            menu.hidden = false;
-            var preview_1 = GridGuide_element("div", "bc-guide-action-preview");
-            preview_1.setAttribute("inert", "");
-            preview_1.setAttribute("aria-hidden", "true");
-            preview_1.addEventListener("click", function (event) { event.preventDefault(); event.stopPropagation(); }, true);
-            preview_1.append(shell);
-            this.dialog.prepend(preview_1);
-            this.actionSource = source.item;
-            this.actionPreview = preview_1;
-            this.actionItem = Array.from(menu.querySelectorAll("[data-grid-action]"))
-                .find(function (node) { return node.dataset.gridAction === source.item.dataset.gridAction; }) || null;
-        }
-        var viewport = window.visualViewport;
-        var left = (viewport === null || viewport === void 0 ? void 0 : viewport.offsetLeft) || 0, top = (viewport === null || viewport === void 0 ? void 0 : viewport.offsetTop) || 0;
-        var width = (viewport === null || viewport === void 0 ? void 0 : viewport.width) || innerWidth, height = (viewport === null || viewport === void 0 ? void 0 : viewport.height) || innerHeight;
-        var grid = this.container.getBoundingClientRect();
-        var inPreview = this.mobile() && width > 480;
-        var laneLeft = inPreview ? Math.max(left, grid.left) : left;
-        var laneRight = inPreview ? Math.min(left + width, grid.right) : left + width;
-        var preview = this.actionPreview;
-        preview.style.width = "".concat(Math.min(240, Math.max(0, laneRight - laneLeft - 24)), "px");
-        preview.style.maxHeight = "".concat(Math.max(44, height - 48), "px");
-        var bounds = preview.getBoundingClientRect(), anchor = source.trigger.getBoundingClientRect();
-        preview.style.left = "".concat(Math.max(laneLeft + 12, Math.min(anchor.right - bounds.width, laneRight - bounds.width - 12)), "px");
-        preview.style.top = "".concat(Math.max(top + 12, Math.min(anchor.bottom + 8, top + height - bounds.height - 12)), "px");
-        (_a = this.actionItem) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "instant" });
-        return this.actionItem;
-    };
-    GridGuide.prototype.start = function (trigger, config) {
-        var _this = this;
-        var _a, _b, _c;
-        if (config === void 0) { config = this.config; }
-        if (!isGuideConfig(config) || this.dialog)
-            return;
-        this.config = config;
-        this.steps = this.config.steps.filter(function (step) { return !step.optional || _this.available(step.target); });
-        if (!this.steps.length)
-            return;
-        // Only one active guide owns focus, even when multiple grids share a page.
-        document.dispatchEvent(new Event("basiscore:guide-start"));
-        document.addEventListener("basiscore:guide-start", this.close);
-        this.returnFocus = trigger || document.activeElement;
-        this.index = 0;
-        this.dialog = GridGuide_element("dialog", "bc-guide");
-        this.dialog.dir = this.container.getAttribute("data-bc-grid-direction") || "rtl";
-        this.dialog.lang = ((_a = this.container.closest("[lang]")) === null || _a === void 0 ? void 0 : _a.getAttribute("lang")) || document.documentElement.lang;
-        this.dialog.setAttribute("aria-label", this.config.title);
-        this.ring = GridGuide_element("div", "bc-guide-ring");
-        this.ring.setAttribute("aria-hidden", "true");
-        this.arrow = GridGuide_element("div", "bc-guide-arrow");
-        this.arrow.setAttribute("aria-hidden", "true");
-        this.arrow.hidden = true;
-        this.panel = GridGuide_element("section", "bc-guide-panel");
-        this.panel.tabIndex = -1;
-        var top = GridGuide_element("div", "bc-guide-top");
-        this.counter = GridGuide_element("span", "bc-guide-counter");
-        this.counter.setAttribute("role", "status");
-        this.counter.setAttribute("aria-live", "polite");
-        var close = this.button(this.label("guideClose", "بستن راهنما"), "bc-guide-close", this.close, "closeIcon");
-        top.append(this.counter, close);
-        this.title = GridGuide_element("h2", "bc-guide-title");
-        this.description = GridGuide_element("p", "bc-guide-description");
-        this.notice = GridGuide_element("p", "bc-guide-notice");
-        this.progress = GridGuide_element("div", "bc-guide-progress");
-        this.progress.setAttribute("aria-hidden", "true");
-        var footer = GridGuide_element("div", "bc-guide-footer");
-        this.previous = this.button(this.label("guidePrevious", "قبلی"), "bc-guide-button", function () { return _this.move(-1); });
-        var skip = this.button(this.label("guideSkip", "رد کردن"), "bc-guide-button bc-guide-skip", this.close);
-        this.next = this.button(this.label("guideNext", "بعدی"), "bc-guide-button bc-guide-next", function () { return _this.move(1); });
-        footer.append(this.previous, skip, this.next);
-        var content = GridGuide_element("div", "bc-guide-content");
-        content.setAttribute("aria-live", "polite");
-        content.setAttribute("aria-atomic", "true");
-        content.append(this.title, this.description, this.notice);
-        this.panel.append(top, content, this.progress, footer);
-        this.dialog.append(this.ring, this.arrow, this.panel);
-        this.dialog.addEventListener("cancel", function (event) { event.preventDefault(); _this.close(); });
-        this.dialog.addEventListener("keydown", function (event) {
-            if (event.key !== "Tab")
-                return;
-            var controls = Array.from(_this.panel.querySelectorAll("button:not(:disabled)"));
-            var first = controls[0], last = controls[controls.length - 1];
-            if (event.shiftKey && (document.activeElement === first || document.activeElement === _this.panel)) {
-                event.preventDefault();
-                last.focus();
-            }
-            else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            }
-        });
-        document.body.append(this.dialog);
-        this.dialog.showModal();
-        this.resize = new ResizeObserver(this.schedule);
-        this.resize.observe(this.panel);
-        this.mutation = new MutationObserver(this.schedule);
-        this.mutation.observe(this.container, { childList: true, subtree: true, attributes: true });
-        window.addEventListener("scroll", this.schedule, { capture: true, passive: true });
-        window.addEventListener("resize", this.schedule, { passive: true });
-        (_b = window.visualViewport) === null || _b === void 0 ? void 0 : _b.addEventListener("resize", this.schedule);
-        (_c = window.visualViewport) === null || _c === void 0 ? void 0 : _c.addEventListener("scroll", this.schedule);
-        this.show();
-        this.panel.focus({ preventScroll: true });
-    };
-    GridGuide.prototype.button = function (label, className, action, icon) {
-        var button = GridGuide_element("button", className);
-        button.type = "button";
-        if (icon) {
-            button.append(lineIcon(icon, icon === "closeIcon" ? 18 : undefined));
-            button.setAttribute("aria-label", label);
-            button.title = label;
-        }
-        else
-            button.textContent = label;
-        button.addEventListener("click", action);
-        return button;
-    };
-    GridGuide.prototype.move = function (direction) {
-        var next = this.index + direction;
-        while (next >= 0 && next < this.steps.length && this.steps[next].optional && !this.available(this.steps[next].target))
-            next += direction;
-        if (next >= this.steps.length) {
-            this.close();
-            return;
-        }
-        if (next < 0)
-            return;
-        this.index = next;
-        this.show();
-    };
-    GridGuide.prototype.show = function () {
-        var _a;
-        var _this = this;
-        var _b;
-        var step = this.steps[this.index];
-        this.clearActionPreview();
-        this.counter.textContent = "".concat(this.label("guideStep", "مرحله"), " ").concat(this.number(this.index + 1), " ").concat(this.label("of", "از"), " ").concat(this.number(this.steps.length));
-        this.title.textContent = step.title;
-        this.description.textContent = step.description;
-        this.panel.setAttribute("aria-label", step.title);
-        var previousFocused = document.activeElement === this.previous;
-        this.previous.disabled = this.index === 0;
-        if (previousFocused && this.previous.disabled)
-            this.next.focus({ preventScroll: true });
-        this.next.textContent = this.index === this.steps.length - 1 ? this.label("guideFinish", "پایان راهنما") : this.label("guideNext", "بعدی");
-        (_a = this.progress).replaceChildren.apply(_a, this.steps.map(function (_, index) {
-            var dot = GridGuide_element("span", "bc-guide-dot");
-            dot.dataset.state = index === _this.index ? "current" : index < _this.index ? "done" : "upcoming";
-            return dot;
-        }));
-        var action = this.findAction(step.target);
-        var target = action ? [action.trigger] : this.resolve(step.target);
-        (_b = target[0]) === null || _b === void 0 ? void 0 : _b.scrollIntoView({ block: this.mobile() ? "start" : "center", inline: "nearest", behavior: "instant" });
-        if (target.length && this.mobile())
-            window.scrollBy({ top: -12, behavior: "instant" });
-        this.schedule();
-    };
-    GridGuide.prototype.number = function (value) { var _a; return value.toLocaleString(((_a = this.dialog) === null || _a === void 0 ? void 0 : _a.dir) === "ltr" ? "en-US" : "fa-IR"); };
-    GridGuide.prototype.mobile = function () {
-        var _a;
-        return (((_a = window.visualViewport) === null || _a === void 0 ? void 0 : _a.width) || window.innerWidth) <= 480 ||
-            (this.container.dataset.view === "mobile" && this.container.getBoundingClientRect().width <= 480);
-    };
-    GridGuide.prototype.position = function () {
-        var _this = this;
-        var _a, _b, _c;
-        if (!this.container.isConnected) {
-            this.close();
-            return;
-        }
-        var target = this.resolve(this.steps[this.index].target);
-        this.target.filter(function (node) { return !target.includes(node); }).forEach(function (node) { var _a; return (_a = _this.resize) === null || _a === void 0 ? void 0 : _a.unobserve(node); });
-        target.filter(function (node) { return !_this.target.includes(node); }).forEach(function (node) { var _a; return (_a = _this.resize) === null || _a === void 0 ? void 0 : _a.observe(node); });
-        this.target = target;
-        this.notice.hidden = target.length > 0;
-        this.notice.textContent = target.length ? "" : this.label("guideUnavailable", "این بخش در نمای فعلی در دسترس نیست؛ می‌توانید به مرحله بعد بروید.");
-        this.ring.hidden = !target.length;
-        var viewport = window.visualViewport;
-        var width = (viewport === null || viewport === void 0 ? void 0 : viewport.width) || window.innerWidth;
-        var height = (viewport === null || viewport === void 0 ? void 0 : viewport.height) || window.innerHeight;
-        var left = (viewport === null || viewport === void 0 ? void 0 : viewport.offsetLeft) || 0;
-        var top = (viewport === null || viewport === void 0 ? void 0 : viewport.offsetTop) || 0;
-        var gap = 12;
-        var mobile = this.mobile();
-        var padding = mobile ? 10 : 5;
-        var targetGap = gap + (mobile ? padding : 0);
-        (_a = this.dialog) === null || _a === void 0 ? void 0 : _a.classList.toggle("bc-guide-mobile", mobile);
-        var grid = this.container.getBoundingClientRect();
-        var inPreview = mobile && width > 480 && target.length > 0 &&
-            (Boolean(this.actionPreview) || target.every(function (node) { return _this.container.contains(node); }));
-        var laneLeft = inPreview ? Math.max(left, grid.left) : left;
-        var laneRight = inPreview ? Math.min(left + width, grid.right) : left + width;
-        this.panel.style.width = "".concat(Math.min(368, Math.max(0, laneRight - laneLeft - gap * 2)), "px");
-        this.panel.style.maxHeight = "".concat(height - gap * 2, "px");
-        var rects = target.map(function (node) { return node.getBoundingClientRect(); });
-        var rect = rects.length ? DOMRect.fromRect({
-            x: Math.min.apply(Math, rects.map(function (rect) { return rect.left; })),
-            y: Math.min.apply(Math, rects.map(function (rect) { return rect.top; })),
-            width: Math.max.apply(Math, rects.map(function (rect) { return rect.right; })) - Math.min.apply(Math, rects.map(function (rect) { return rect.left; })),
-            height: Math.max.apply(Math, rects.map(function (rect) { return rect.bottom; })) - Math.min.apply(Math, rects.map(function (rect) { return rect.top; })),
-        }) : null;
-        var panel = this.panel.getBoundingClientRect();
-        var x = laneLeft + (laneRight - laneLeft - panel.width) / 2;
-        var y = top + (height - panel.height) / 2;
-        var placement = ((_b = this.actionPreview) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect()) || rect;
-        if (placement) {
-            if (!mobile || (!inPreview && width > 480))
-                x = placement.right - panel.width;
-            if (placement.bottom + targetGap + panel.height <= top + height - gap)
-                y = placement.bottom + targetGap;
-            else if (placement.top - targetGap - panel.height >= top + gap)
-                y = placement.top - targetGap - panel.height;
-            else if (!mobile && placement.left - gap - panel.width >= left + gap) {
-                x = placement.left - gap - panel.width;
-                y = placement.top;
-            }
-            else {
-                if (mobile) {
-                    // Leave part of a tall target visible; only the guide copy scrolls on short screens.
-                    this.panel.style.maxHeight = "".concat(Math.min(height - gap * 2, height * .6), "px");
-                    panel = this.panel.getBoundingClientRect();
-                }
-                y = top + height - panel.height - gap;
-            }
-        }
-        x = Math.max(laneLeft + gap, Math.min(x, laneRight - panel.width - gap));
-        y = Math.max(top + gap, Math.min(y, top + height - panel.height - gap));
-        Object.assign(this.panel.style, {
-            left: "".concat(x, "px"), top: "".concat(y, "px"),
-        });
-        this.arrow.hidden = true;
-        if (rect) {
-            var ringLeft = Math.max(left + 5, rect.left - padding);
-            var ringTop = Math.max(top + 5, rect.top - padding);
-            var ringBottom = Math.min(top + height - 5, rect.bottom + padding);
-            if (mobile && y < ringBottom && y + panel.height > ringTop) {
-                if (y > ringTop)
-                    ringBottom = Math.min(ringBottom, y - gap);
-                else
-                    ringTop = Math.max(ringTop, y + panel.height + gap);
-            }
-            Object.assign(this.ring.style, { left: "".concat(ringLeft, "px"), top: "".concat(ringTop, "px"),
-                width: "".concat(Math.max(0, Math.min(left + width - 5, rect.right + padding) - ringLeft), "px"),
-                height: "".concat(Math.max(0, ringBottom - ringTop), "px") });
-            var below = y >= rect.bottom + gap;
-            var above = y + panel.height <= rect.top - gap;
-            var arrowX = Math.max(x + 28, Math.min(rect.left + rect.width / 2, x + panel.width - 28));
-            if (mobile && (below || above) && arrowX >= rect.left - 5 && arrowX <= rect.right + 5) {
-                this.arrow.hidden = false;
-                this.arrow.dataset.side = below ? "below" : "above";
-                Object.assign(this.arrow.style, { left: "".concat(arrowX - 6, "px"), top: "".concat(below ? y - 6 : y + panel.height - 6, "px") });
-            }
-        }
-        (_c = this.dialog) === null || _c === void 0 ? void 0 : _c.classList.toggle("bc-guide-unavailable", !target.length);
-    };
-    return GridGuide;
-}());
-/* harmony default export */ const grid_GridGuide = (GridGuide);
-
 ;// ./src/component/grid/MaterialTemplate.ts
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -5997,17 +5398,6 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var MaterialTemplate_spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-
-
 
 
 
@@ -6211,62 +5601,6 @@ var MaterialTemplate = /** @class */ (function () {
             item.append(button, status);
             exports.append(item);
         });
-        var guidedColumns = this.dataColumns.flatMap(function (column, index) {
-            var guide = column.guide;
-            return isColumnGuideConfig(guide) && guide.status === "active" ? [{ column: column, index: index, guide: guide }] : [];
-        });
-        var makeGuideConfig = function () {
-            var _a;
-            if (!options.guide || !isGuideOptions(options.guide))
-                return null;
-            // The boolean switch uses column content without inventing database identity/language metadata.
-            var settings = options.guide === true ? {} : options.guide;
-            var columnSteps = guidedColumns.flatMap(function (_a) {
-                var column = _a.column, index = _a.index, guide = _a.guide;
-                var target = "column.".concat(index);
-                var title = _this.columnTitle(column);
-                var overview = guide.description === undefined ? [] : [{
-                        id: guide.id,
-                        target: target,
-                        title: title,
-                        priority: guide.priority, optional: guide.optional,
-                        description: _this.columnGuideDescription(column, guide.description),
-                    }];
-                var steps = (guide.steps || []).map(function (step) {
-                    var _a, _b, _c, _d;
-                    return (__assign(__assign({}, step), { target: (_a = step.target) !== null && _a !== void 0 ? _a : target, title: (_b = step.title) !== null && _b !== void 0 ? _b : title, optional: (_c = step.optional) !== null && _c !== void 0 ? _c : guide.optional, priority: (_d = step.priority) !== null && _d !== void 0 ? _d : guide.priority, description: step.target === undefined ? _this.columnGuideDescription(column, step.description) : step.description }));
-                });
-                return MaterialTemplate_spreadArray(MaterialTemplate_spreadArray([], overview, true), steps, true);
-            });
-            // Stable ties preserve column/array order; explicit targets coexist with column guides.
-            var steps = MaterialTemplate_spreadArray(MaterialTemplate_spreadArray([], columnSteps, true), (settings.steps || []), true).sort(function (left, right) { var _a, _b; return ((_a = left.priority) !== null && _a !== void 0 ? _a : 1000) - ((_b = right.priority) !== null && _b !== void 0 ? _b : 1000); });
-            var config = __assign(__assign({}, settings), { title: (_a = settings.title) !== null && _a !== void 0 ? _a : _this.label("guide", "راهنما"), steps: steps });
-            return isGuideConfig(config) ? config : null;
-        };
-        var initialGuideConfig = makeGuideConfig();
-        if (initialGuideConfig) {
-            var firstVisible_1 = function (selector) { return Array.from(container.querySelectorAll(selector)).find(function (node) { return grid_GridGuide.visible(node); }) || null; };
-            var targets_1 = __assign({ "list.header": function () { return _this.headerContent.parentElement ? _this.headerContent : toolbar; }, "list.search": function () { return _this.queryInput; }, "list.filters": function () { return _this.headerFilters ? firstVisible_1(".header-filter") : _this.filterButton; }, "list.row": function () { return firstVisible_1("tbody tr[data-sys-tr], .mobile-row, .list-item, .data-card"); }, "list.row.checkbox": function () { return firstVisible_1('tbody input[type="checkbox"], .mobile-row input[type="checkbox"], .list-item input[type="checkbox"], .data-card input[type="checkbox"]'); }, "list.bulk.actions": function () { return _this.clearSelection; }, "list.bulk.menu": function () { return firstVisible_1('[data-grid-actions="bulk"] [data-grid-action-trigger="bulk"], thead .iconsOperations > .icon, .mobile-bulk-actions .iconsOperations > .icon, .mobile-bulk-actions button'); }, "list.row.actions": function () { return firstVisible_1('[data-grid-actions="row"] [data-grid-action-trigger="row"], tbody .iconsOperations > .icon, .action-cell button, .mobile-row-actions .iconsOperations > .icon, .mobile-row-actions button, .mobile-row-actions a[href], .list-item .iconsOperations > .icon, .list-trailing button, .data-card .iconsOperations > .icon, .card-heading button'); }, "list.pagination": function () { return options.paging ? _this.footer : null; } }, options.guideTargets);
-            guidedColumns.forEach(function (_a) {
-                var column = _a.column, index = _a.index;
-                targets_1["column.".concat(index)] = function () { return _this.guideColumnTarget(column); };
-            });
-            this.guide = new grid_GridGuide(container, initialGuideConfig, targets_1, options.culture.labels);
-            var help_1 = MaterialTemplate_element("button", "button button-outlined guide-start-button");
-            help_1.type = "button";
-            help_1.title = this.label("guide", "راهنما");
-            help_1.setAttribute("aria-label", help_1.title);
-            help_1.append(this.icon("helpIcon"), MaterialTemplate_element("span", "guide-start-copy", " ".concat(help_1.title)));
-            help_1.addEventListener("click", function () {
-                var _a;
-                var config = makeGuideConfig();
-                if (config)
-                    (_a = _this.guide) === null || _a === void 0 ? void 0 : _a.start(help_1, config);
-            });
-            help_1.dataset.guideStart = "";
-            this.guideButton = help_1;
-            toolbar.append(help_1);
-        }
         this.createFooter();
         this.mobileSelectAll.type = "checkbox";
         var selectLabel = MaterialTemplate_element("label", "mobile-select-all");
@@ -6378,35 +5712,10 @@ var MaterialTemplate = /** @class */ (function () {
         configurable: true
     });
     MaterialTemplate.prototype.columnTitle = function (column) { var _a, _b; return (_b = (_a = this.columnLabels.get(column)) !== null && _a !== void 0 ? _a : column.name) !== null && _b !== void 0 ? _b : ""; };
-    MaterialTemplate.prototype.guideColumnTarget = function (column) {
-        var headings = Array.from(this.container.querySelectorAll("[data-guide-column]"));
-        var heading = headings.find(function (node) { return node.dataset.guideColumn === column.name && grid_GridGuide.visible(node); }) ||
-            Array.from(this.container.querySelectorAll("[data-guide-column-header]"))
-                .find(function (node) { return node.dataset.guideColumnHeader === column.name && grid_GridGuide.visible(node); }) || null;
-        var start = this.presentation.view === "mobile"
-            ? (heading === null || heading === void 0 ? void 0 : heading.closest("[data-mobile-field], [data-mobile-primary]")) || heading
-            : (heading === null || heading === void 0 ? void 0 : heading.closest("th")) || heading;
-        var cell = this.guideColumnCell(column);
-        return start && cell ? [start, cell] : start;
-    };
-    MaterialTemplate.prototype.guideColumnCell = function (column) {
-        var firstRow = this.body.querySelector("tbody tr, .mobile-row, .list-item, .data-card");
-        return Array.from((firstRow === null || firstRow === void 0 ? void 0 : firstRow.querySelectorAll("[data-guide-column-value]")) || [])
-            .find(function (node) { return node.dataset.guideColumnValue === column.name; }) || null;
-    };
-    MaterialTemplate.prototype.columnGuideDescription = function (column, description) {
-        var _a, _b;
-        var example = (_b = (_a = this.guideColumnCell(column)) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.replace(/\s+/g, " ").trim().slice(0, 160);
-        if (!example)
-            return description;
-        var suffix = "\n".concat(this.label("firstRowExample", "نمونه از ردیف اول"), ": ").concat(example);
-        return description.slice(0, Math.max(0, 2000 - suffix.length)) + suffix;
-    };
     MaterialTemplate.prototype.dispose = function () {
-        var _a, _b;
-        (_a = this.guide) === null || _a === void 0 ? void 0 : _a.close();
+        var _a;
         this.closeMenus();
-        (_b = this.menuObserver) === null || _b === void 0 ? void 0 : _b.disconnect();
+        (_a = this.menuObserver) === null || _a === void 0 ? void 0 : _a.disconnect();
         this.container.removeEventListener("scroll", this.closeMenus, true);
         this.container.classList.remove("preview-content", "has-pagination");
         this.container.removeAttribute("data-bc-grid-template");
@@ -6743,9 +6052,6 @@ var MaterialTemplate = /** @class */ (function () {
             if (this.settingsButton.parentElement !== this.toolbar)
                 this.selectionSummary.after(this.settingsButton);
         }
-        var guideParent = view === "mobile" && hasHeader ? this.sectionHeader : this.toolbar;
-        if (this.guideButton && this.guideButton.parentElement !== guideParent)
-            guideParent.append(this.guideButton);
         this.quickFilters.querySelectorAll("[data-quick-filter]").forEach(function (button) {
             var _a;
             button.setAttribute("aria-pressed", String(button.dataset.quickFilter === (((_a = _this.process.filter) === null || _a === void 0 ? void 0 : _a[_this.presentation.quickFilter]) || "")));
@@ -6772,8 +6078,6 @@ var MaterialTemplate = /** @class */ (function () {
                 var _b;
                 var th = MaterialTemplate_element("th", column.type === src_enum/* ColumnType */.$.select ? "check-cell" : column.name === "operation" ? "action-cell" : "");
                 th.scope = "col";
-                if (column.name && column.type === src_enum/* ColumnType */.$.data)
-                    th.dataset.guideColumnHeader = column.name;
                 if (column.width)
                     th.style.width = column.width;
                 if (column.headerCssClass)
@@ -6794,8 +6098,6 @@ var MaterialTemplate = /** @class */ (function () {
                 else {
                     var content = MaterialTemplate_element("div", "th-content");
                     var title = MaterialTemplate_element("span");
-                    if (column.name && column.type === src_enum/* ColumnType */.$.data)
-                        title.dataset.guideColumn = column.name;
                     title.innerHTML = column.title;
                     var hasFilter = _this.headerFilters && filtering && column.type === src_enum/* ColumnType */.$.data && column.filter;
                     var control = hasFilter && !independent_1 ? _this.createColumnFilter(column) : null;
@@ -6937,8 +6239,6 @@ var MaterialTemplate = /** @class */ (function () {
         var cell = MaterialTemplate_element(tag);
         if (tag === "td" && column.name === "operation")
             cell.classList.add("action-cell");
-        if (column.name)
-            cell.dataset.guideColumnValue = column.name;
         var value = row._dataProxy[column.name];
         cell.setAttribute("data-bc-data", "");
         if (column.cellMaker)
@@ -7018,11 +6318,9 @@ var MaterialTemplate = /** @class */ (function () {
             var badgeColumn_1 = fields.find(function (column) { return column.name === _this.presentation.badgeKey && column !== firstColumn_1; });
             if (firstColumn_1) {
                 var title_1 = MaterialTemplate_element("h3");
-                title_1.dataset.guideColumnValue = firstColumn_1.name;
                 title_1.append.apply(title_1, Array.from(this.cell(row, firstColumn_1).childNodes));
                 copy_1.dataset.mobilePrimary = firstColumn_1.name;
                 var label = MaterialTemplate_element("span", "mobile-field-label", this.columnTitle(firstColumn_1));
-                label.dataset.guideColumn = firstColumn_1.name;
                 copy_1.append(label, title_1);
             }
             heading_1.append(copy_1);
@@ -7031,7 +6329,6 @@ var MaterialTemplate = /** @class */ (function () {
                 var status_1 = this.cell(row, badgeColumn_1);
                 status_1.classList.add("mobile-row-badge");
                 status_1.dataset.mobileBadge = badgeColumn_1.name;
-                status_1.dataset.guideColumn = badgeColumn_1.name;
                 status_1.setAttribute("role", "group");
                 status_1.setAttribute("aria-label", this.columnTitle(badgeColumn_1));
                 trailing.append(status_1);
@@ -7056,7 +6353,6 @@ var MaterialTemplate = /** @class */ (function () {
                 var value = MaterialTemplate_element("dd");
                 value.append(_this.cell(row, column));
                 var label = MaterialTemplate_element("dt", "", _this.columnTitle(column));
-                label.dataset.guideColumn = column.name;
                 field.append(label, value);
                 data_1.append(field);
             });
@@ -7101,10 +6397,8 @@ var MaterialTemplate = /** @class */ (function () {
         columns.filter(function (column) { return ![titleKey, subtitleKey, image === null || image === void 0 ? void 0 : image.name].includes(column.name); }).slice(0, 3).forEach(function (column) {
             var field = MaterialTemplate_element("div");
             var value = MaterialTemplate_element("strong");
-            value.dataset.guideColumnValue = column.name;
             value.append.apply(value, Array.from(_this.cell(row, column).childNodes));
             var label = MaterialTemplate_element("span", "", _this.columnTitle(column));
-            label.dataset.guideColumn = column.name;
             field.append(label, value);
             meta.append(field);
         });
@@ -7734,7 +7028,7 @@ module.exports = "<section data-bc-filter=\"\">\n  <div data-bc-filter-btn-wrapp
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"searchIcon":{"name":"lni-search","size":18},"filterIcon":{"name":"lni-funnel","size":16},"settingsIcon":{"name":"lni-equalizer","size":18},"moreIcon":{"name":"lni-more-alt","size":18},"arrowUpIcon":{"name":"lni-arrow-up","size":14},"arrowDownIcon":{"name":"lni-arrow-down","size":14},"sortIcon":{"name":"lni-sort-amount-asc","size":14},"previous":{"name":"lni-chevron-right","size":18},"next":{"name":"lni-chevron-left","size":18},"pagePreviousIcon":{"name":"lni-chevron-left","size":16},"pageNextIcon":{"name":"lni-chevron-right","size":16},"firstPageIcon":{"name":"lni-angle-double-left","size":16},"lastPageIcon":{"name":"lni-angle-double-right","size":16},"resultsIcon":{"name":"lni-list","size":20},"emptyIcon":{"name":"lni-search","size":26},"closeIcon":{"name":"lni-close","size":14},"helpIcon":{"name":"lni-question-circle","size":18},"refreshIcon":{"name":"lni-reload","size":16},"downloadIcon":{"name":"lni-download","size":16}}');
+module.exports = /*#__PURE__*/JSON.parse('{"searchIcon":{"name":"lni-search","size":18},"filterIcon":{"name":"lni-funnel","size":16},"settingsIcon":{"name":"lni-equalizer","size":18},"moreIcon":{"name":"lni-more-alt","size":18},"arrowUpIcon":{"name":"lni-arrow-up","size":14},"arrowDownIcon":{"name":"lni-arrow-down","size":14},"sortIcon":{"name":"lni-sort-amount-asc","size":14},"previous":{"name":"lni-chevron-right","size":18},"next":{"name":"lni-chevron-left","size":18},"pagePreviousIcon":{"name":"lni-chevron-left","size":16},"pageNextIcon":{"name":"lni-chevron-right","size":16},"firstPageIcon":{"name":"lni-angle-double-left","size":16},"lastPageIcon":{"name":"lni-angle-double-right","size":16},"resultsIcon":{"name":"lni-list","size":20},"emptyIcon":{"name":"lni-search","size":26},"closeIcon":{"name":"lni-close","size":14},"refreshIcon":{"name":"lni-reload","size":16},"downloadIcon":{"name":"lni-download","size":16}}');
 
 /***/ }),
 

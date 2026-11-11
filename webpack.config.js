@@ -2,6 +2,8 @@ const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const demoHttpServer = require("./server/http");
+const {BannerPlugin} = require("webpack");
+const {version} = require("./package.json");
 
 module.exports = (env, options) => {
   return {
@@ -44,6 +46,7 @@ module.exports = (env, options) => {
         },
       },
     },
+    output: {clean: true},
     externals: {
       basiscore: "basiscore",
     },
@@ -101,6 +104,7 @@ module.exports = (env, options) => {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".png"], // there's a dot missing
     },
     plugins: [
+      new BannerPlugin(`BasisCore Grid ${version} | Template 4 core (without Guide)`),
       new CircularDependencyPlugin({
         // `onStart` is called before the cycle detection starts
         onStart({ compilation }) {

@@ -11,7 +11,7 @@ const moreIcon = `<i class="lni ${moreIconDefinition.name}" style="font-size:${m
     const page=await browser.newPage({viewport:{width:1440,height:1100},reducedMotion:'reduce'});
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'));
-    await page.locator('[data-guide-start]').waitFor();
+    await page.locator('[data-engine=basiscore-component] tbody tr').first().waitFor();
     await page.evaluate(()=>document.fonts.ready);
     assert(await page.locator('.lni').count()>0);
     assert(await page.evaluate(()=>Array.from(document.fonts).some(font=>font.family==='LineIcons'&&font.status==='loaded')),'BasisPanel LineIcons font must load');
@@ -22,7 +22,6 @@ const moreIcon = `<i class="lni ${moreIconDefinition.name}" style="font-size:${m
         culture:{deviceId:1,template:'template4',labels:{searchPlaceholder:'جستجو در مسیرها…',selectedItems:'مسیر انتخاب شده'}},
         process:'client',filter:'row',paging:[2],selectable:'multi',selectAll:true,rowNumber:'',selectedSourceId:'card.selected',
         headerMaker:()=>'<h3>لیست مسیرهای پروازی</h3><p>مدیریت مسیرهای پروازی و برنامه حرکت ناوگان</p>',
-        guide:{schemaVersion:2,id:4,lid:1,revision:1,title:'Guide',steps:[{id:'row-action',target:'list.row.actions',title:'Row actions',description:'Configured actions'}]},
         columns:{
           operation:{title:'<button type="button" data-bulk-action onclick="window.bulkCalls.push(window.mobileCardRuntime.GetComponentList()[0].manager.gridInstance.getSelectedRows().map(row=>row.id))">عملیات گروهی</button>',cellMaker:row=>row.id===3?'':`<div class="iconsOperations"><button type="button" class="icon" aria-label="عملیات ${row.id}" onclick="this.parentElement.classList.toggle('show')">${moreIcon}</button><div class="iconsDetail"><button type="button" data-row-action="${row.id}" onclick="window.rowCalls.push(${row.id})">ویرایش مسیر</button></div></div>`},
           route:{title:'مسیر پرواز'},airline:{title:'ایرلاین'},aircraft:{title:'نوع هواپیما'},code:{title:'کد مسیر'},
@@ -55,7 +54,7 @@ const moreIcon = `<i class="lni ${moreIconDefinition.name}" style="font-size:${m
     assert.equal(await rows.first().locator('a, .mobile-row-operations').count(),0);
     assert(!await host.getByText('مشاهده جزئیات',{exact:true}).count());
     assert(!await host.locator('[data-panel-filter=operation],.mobile-tools option[value^="operation:"]').count());
-    assert(await grid.locator('.grid-section-header [data-guide-start]').isVisible());
+    assert.equal(await grid.locator('[data-guide-start]').count(),0);
     const search=await grid.locator('.search-field').boundingBox();
     const filter=await grid.locator('.advanced-filter-button').boundingBox();
     assert(Math.abs(search.y-filter.y)<2&&filter.x+filter.width<=search.x);
@@ -93,7 +92,7 @@ const moreIcon = `<i class="lni ${moreIconDefinition.name}" style="font-size:${m
       assert(await grid.evaluate(element=>element.scrollWidth<=element.clientWidth+1));
       assert(await rows.first().evaluate(element=>element.scrollWidth<=element.clientWidth+1));
       assert(await rows.first().locator('.mobile-row-fields').evaluate(element=>getComputedStyle(element).gridTemplateColumns.split(' ').length===1));
-      for(const control of [grid.locator('[data-guide-start]'),grid.locator('.advanced-filter-button'),rows.first().locator('.mobile-row-select'),rows.first().locator('.mobile-row-actions .icon')]) {
+      for(const control of [grid.locator('.advanced-filter-button'),rows.first().locator('.mobile-row-select'),rows.first().locator('.mobile-row-actions .icon')]) {
         const box=await control.boundingBox();assert(box.width>=44&&box.height>=44);
       }
     }

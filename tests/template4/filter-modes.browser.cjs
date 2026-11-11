@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
     const errors = [];
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'));
-    await page.locator('[data-guide-start]').waitFor();
+    await page.locator('[data-engine=basiscore-component] tbody tr').first().waitFor();
 
     // Native options, not dashboard mapping: filter wins over every presentation style.
     const cases = await page.evaluate(()=>{
@@ -108,13 +108,13 @@ const assert = require('node:assert/strict');
       assert.equal(await grid.locator('.advanced-filter-button:visible').count(),0);
     }
     await mode.selectOption('advanced');
-    const stored=await page.evaluate(()=>localStorage.getItem('material-list-studio-datasets'));
+    const stored=await page.evaluate(()=>localStorage.getItem('basiscore-grid-template4-core-datasets-v1'));
     await page.setViewportSize({width:390,height:844});
     await page.locator('[data-action=view][data-value=mobile]').click();
     await grid.locator('.mobile-row').first().waitFor();
     assert.deepEqual(await mode.locator('option').evaluateAll(options=>options.map(option=>option.value)),['simple','row','none']);
     assert.equal(await mode.inputValue(),'row');
-    assert.equal(await page.evaluate(()=>localStorage.getItem('material-list-studio-datasets')),stored);
+    assert.equal(await page.evaluate(()=>localStorage.getItem('basiscore-grid-template4-core-datasets-v1')),stored);
     assert.equal(await grid.getByRole('button',{name:/فیلتر پیشرفته/}).count(),0);
     await grid.locator('.advanced-filter-button').click();
     assert.equal(await grid.locator('[data-column-filter]').count(),0);
@@ -137,7 +137,7 @@ const assert = require('node:assert/strict');
     await mode.selectOption('row');
     await grid.locator('.mobile-row').first().waitFor();
     assert.equal(await grid.locator('.mobile-row').count(),1);
-    const datasetAfter=await page.evaluate(()=>JSON.parse(localStorage.getItem('material-list-studio-datasets')).find(dataset=>dataset.id==='flight-routes'));
+    const datasetAfter=await page.evaluate(()=>JSON.parse(localStorage.getItem('basiscore-grid-template4-core-datasets-v1')).find(dataset=>dataset.id==='flight-routes'));
     assert.equal(datasetAfter.filter,'row');
     assert.equal(datasetAfter.features.filterMode,'header');
     await grid.locator('.clear-filters').click();

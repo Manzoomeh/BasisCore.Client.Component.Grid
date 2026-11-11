@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
     const errors = [];
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'));
-    await page.locator('[data-guide-start]').waitFor();
+    await page.locator('[data-engine=basiscore-component] tbody tr').first().waitFor();
 
     const result = await page.evaluate(() => {
       const check = (condition,message) => {if (!condition) throw new Error(message);};

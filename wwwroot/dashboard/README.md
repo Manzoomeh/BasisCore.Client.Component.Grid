@@ -1,68 +1,37 @@
 # Grid Examples Dashboard
 
-The dashboard at `/` is plain HTML, CSS and JavaScript. Its first three template links
-open the existing sample pages inside an iframe; they do not mount or configure
-a second grid implementation. `/examples.html` preserves the original catalog.
+The root dashboard previews templates 1, 2 and 3 in their original sample pages;
+the Template 4 card opens `/component/configuration/mobileDesign/template4.html`
+on the same server. `/examples.html` preserves all 31 original examples.
+No original sample configuration or rendering path is rewritten.
 
-The original templates' sample HTML, BasisCore script URLs, grid options and
-data sources stay unchanged. The native library now includes the opt-in Template 4
-implementation; its styles do not restyle the old previews. Viewport controls
-resize the iframe without reloading it. Browser history selects samples, and
-reload explicitly recreates the current sample frame.
+The current edition is Template 4 core, without Guide. The gallery/version badge
+and studio identify the package version. The studio offers desktop/mobile,
+Persian/English, filters, sorting, paging, radio/checkbox selection, trusted HTML
+actions, JSON editing/import/export and a classic comparison.
 
-From the repository root:
+Its editable source is in `demo/template4`, a private build package. Install
+`npm --prefix demo/template4 ci`, then run `npm run build:demo` at the repo root.
+The library build remains independent (`npm run build`). The demo's own
+Zod/Vite/Tailwind dependencies are not component runtime dependencies.
 
-```sh
-npm ci --legacy-peer-deps
-npm run build:demo
-npm run dev -- --host 127.0.0.1 --port 18477 --no-open
-node tests/dashboard.test.mjs
-```
+The studio always mounts native `component.grid.grid` commands, uses the local
+component repository and BasisCore data sources. It does not instantiate an
+alternative table engine. The same native Template 4 source is used by standard
+component/standalone exports and the studio bundle.
 
-Examples retain their existing external dependencies and placeholder data.
-The Template 4 card opens `/component/configuration/mobileDesign/template4.html`
-on the same server as the catalog, as the full studio rather than a nested iframe.
-The studio shell assets from port 18474 are checked in locally: no redirect,
-proxy, separate server, or runtime connection to port 18474 is needed.
-`wwwroot/template4/manifest.json` records their provenance and SHA-256 hashes.
-Its grids use BasisCore `component.grid.grid` commands, the local component
-repository, and BasisCore data sources; the dashboard does not instantiate Grid
-directly. Original template assets/rendering paths remain unchanged. The native
-component is now built from `src/StudioLoader.ts` in this repository with the
-same implementation included in the standard library entry points. `npm run
-build:demo` refreshes its checked-in bundle and hash. The studio shell itself
-remains a compiled snapshot, not editable source for the component. External
-font dependencies of the shell are preserved; the native stylesheet imports no
-remote fonts.
-The favicon comes from the existing local studio. Interface icons use the
-BasisPanel-hosted LineIcons stylesheet and the locally bundled LineIcons font.
+The manifest in `wwwroot/template4/manifest.json` records version, edition,
+relative source paths and SHA-256 hashes of served assets. Rebuilding removes
+only obsolete assets listed in the previous manifest, not other local snapshots.
+No separate server, proxy, port 18474 or external source checkout is needed.
 
-Template 4's static assets were refreshed from the List Studio on port 18474.
-The mobile filter selector offers simple, row and none; row opens typed column
-filters, while the desktop filter configuration remains intact. Template 4 is
-still a presentation of the native BasisCore grid. The shared library now accepts
-`culture.template: 'template4'`; this does not replace templates 1–3 or register
-a separate mobile Template 5.
+Core browser storage is isolated from the full snapshot. If only old studio data
+exists, its rows/settings are read into the core schema without mutating the
+original key. New writes go to `basiscore-grid-template4-core-datasets-v1`;
+unsupported tutorial metadata is not exposed by the core JSON editor.
 
-The second gallery card inside Template 4 now demonstrates native
-`selectable: 'single'` radio selection. The standard/selected-table cards retain
-`selectable: 'multi'` checkboxes. This preset does not rewrite saved dataset JSON.
-The flight-route sample uses one shared plane icon for airline cells; it does
-not bundle a separate image for every airline. The manifest's `resources` array
-records shared assets such as the locally bundled LineIcons font.
-
-The flight-route sample's three-dot menu is custom HTML in the native
-`columns.operation.cellMaker`; its tutorial lives in `columns.operation.guide.steps`.
-The studio dataset uses `operationGuide` only as an adapter field and passes it
-unchanged to that native column. It is not a new top-level Grid option.
-Column/step `priority` orders all tutorial steps (smaller first, default 1000).
-The editable shell source/build are recorded in `wwwroot/template4/manifest.json`.
-Updating the stock saved tour preserves rows/settings and does not replace
-customized guides; “restore sample” explicitly restores the new stock sample.
-
-The preview header includes **فارسی / English** for the flight-route samples.
-English uses `direction: 'ltr'` and the existing `culture.labels` configuration,
-including HTML action captions and guide controls. Desktop/table and mobile
-share that configuration. Switching language changes the sample source, keeps
-presentation controls and never overwrites saved Persian rows. The shell stays
-Persian. See `docs/template4-english.md` for the reusable configuration and tests.
+The favicon and shared LineIcons font remain local; the live page also uses
+BasisPanel-hosted icon CSS and the existing font fallbacks. Test fixtures cache
+that stylesheet and block live API/CDN requests. Airline cells share one sample
+plane icon, not separate logo images. See `docs/releases.md` for the full-version
+backup and publication policy, and `docs/template4.md` for migration limitations.

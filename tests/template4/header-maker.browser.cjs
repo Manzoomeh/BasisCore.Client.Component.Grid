@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
     const errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto((process.env.GRID_STUDIO_URL || 'http://localhost:18477/component/configuration/mobileDesign/template4.html'));
-    await page.locator('[data-guide-start]').waitFor();
+    await page.locator('[data-engine=basiscore-component] tbody tr').first().waitFor();
 
     // Omitted/empty/non-callable headers leave the existing layout untouched.
     assert(await page.evaluate(()=>{
@@ -105,12 +105,12 @@ const assert = require('node:assert/strict');
     await page.locator('[data-action=view][data-value=mobile]').click();
     for(const width of [320,390]) {
       await page.setViewportSize({width,height:844});
-      await header.locator('[data-guide-start]').waitFor();
+      await header.locator('.grid-header-content').waitFor();
       assert(await header.evaluate(element=>element.scrollWidth<=element.clientWidth+1));
-      const box=await header.locator('[data-guide-start]').boundingBox();
+      const box=await grid.locator('.advanced-filter-button').boundingBox();
       assert(box.height>=44&&box.width>=44&&box.x>=0&&box.x+box.width<=width);
       const text=await header.locator('.grid-header-content').boundingBox();
-      assert(box.y>=text.y+text.height||box.x+box.width<=text.x);
+      assert(box.y>=text.y+text.height);
       assert.equal(await header.locator('.advanced-filter-button').count(),0);
       assert(await grid.locator('.preview-toolbar>.advanced-filter-button').isVisible());
     }

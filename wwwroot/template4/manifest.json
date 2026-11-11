@@ -1,14 +1,14 @@
 {
-  "source": "http://localhost:18474/",
+  "source": "demo/template4",
   "entry": "/component/configuration/mobileDesign/template4.html",
   "assets": [
     {
-      "path": "/assets/index-CP8-4xz3.js",
-      "sha256": "aea28ecbe4fbeb6c299aa94167261ae371a36fe25e2d8ac273c55bdafcdd19d0"
+      "path": "/assets/index-B8ZTtWSP.css",
+      "sha256": "6d330153cf251b9e0ff5e2e1d242c08c9ca7c07172dd98248ffc62548ddb427c"
     },
     {
-      "path": "/assets/index-D-AXPQCU.css",
-      "sha256": "cf7b4fe4ec9b9c78c536ef5fdfb5174c45b2ed4c1bfa319aecd07277647f0bfd"
+      "path": "/assets/index-DXfe-gBK.js",
+      "sha256": "c6dcf9b1b1c0db20a860bea4aa86c549c1f1ed3c53eca434721869d8c4f71ade"
     },
     {
       "path": "/basiscore/basiscore.js",
@@ -16,7 +16,7 @@
     },
     {
       "path": "/basiscore-grid/basiscore.grid.js",
-      "sha256": "4806c7a7231fafdd7e11dfeca78fbc7b075f05fb14db21caf858f59722cc2be1"
+      "sha256": "00da9a1c931d11f72698409e1742d7d682a2861f56675ee74bcf6e17c0b92aca"
     },
     {
       "path": "/basisicon.ico",
@@ -30,7 +30,9 @@
     }
   ],
   "componentSource": "src/StudioLoader.ts",
-  "componentBuild": "webpack --mode=production",
-  "shellSource": "/home/danial/PycharmProjects/project-bolt-sb1-tnlg2v6r/project/src",
-  "shellBuild": "vite build --configLoader runner"
+  "componentBuild": "npm run build",
+  "shellSource": "demo/template4/src",
+  "shellBuild": "npm --prefix demo/template4 run build",
+  "version": "1.5.0-rc.1",
+  "edition": "template4-core"
 }

@@ -1,18 +1,25 @@
 # BasisCore Grid
 
-This fork adds the opt-in `template4` renderer to BasisCore Grid 1.4.2, based on
-upstream commit `ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`. The default remains
-`template1`. Templates 1, 2 and 3 retain their original rendering paths and assets.
+## Template 4 Core: 1.5.0-rc.1
 
-The implementation is native BasisCore/TypeScript. No React runtime or dependency
-is introduced. A page continues to use its existing component command:
+This release candidate adds the opt-in `template4` renderer to upstream 1.4.2
+(`ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`). It includes desktop and mobile
+presentations, Persian/RTL and English/LTR examples, and the comparison studio.
+It **does not include Guide**: no tutorial runtime, options, styles or samples.
+The full experimental snapshot is preserved on `basisfly/template4-with-guide`
+at `ada5e1f`. See [release versions](docs/releases.md) before publishing either edition.
+
+The implementation is native BasisCore/TypeScript, with no React runtime.
+The default remains `template1`; templates 1, 2 and 3 remain available with
+their original rendering paths and assets. Template 4 is not a universal
+drop-in replacement for all legacy options; read the [migration limits](docs/template4.md#migration-limits).
 
 ```html
 <basis core="component.grid.grid" run="atclient"
   datamembername="sample.rows" options="options"></basis>
 ```
 
-Register `dist/basiscore.grid.component.js` as the component library and opt in:
+Register `dist/basiscore.grid.component.js` and opt in using the existing options:
 
 ```js
 const options = {
@@ -20,66 +27,52 @@ const options = {
   culture: {deviceId: 1, template: 'template4', labels: {}},
   process: 'client', direction: 'rtl', filter: 'row',
   paging: [10, 30, 50], selectable: 'multi', selectAll: true,
-  presentation: {view: 'table', search: true},
-  selectedSourceId: 'sample.selected',
-  refreshSourceId: 'sample.refresh',
+  presentation: {view: 'table', search: true}, // Use 'mobile' for vertical cards.
+  selectedSourceId: 'sample.selected', refreshSourceId: 'sample.refresh',
 };
 ```
 
-`dist/basiscore.grid.js` retains the standalone `grid.Grid` entry point.
-`dist/basiscore-grid/basiscore.grid.js` combines the two original exports for the
-demo studio; it is built from the same component source, not a second grid engine.
+The standalone entry remains `dist/basiscore.grid.js`. The studio entry combines
+the native exports from `src/StudioLoader.ts`; it is not a second grid engine.
+Public declarations are emitted to `dist/types` by the production build.
 
-## Build And Check
+## Build And Verify
 
-Use Node 18+ for browser tests (verified with Node 22). The existing upstream
-Uglify/Webpack peer conflict requires `--legacy-peer-deps`; production dependencies
-and versions are not upgraded by this change.
+Use Node 22. Install the private studio dependencies separately; they are not
+added to the component's production dependencies. Both installs have lockfiles.
 
 ```sh
 npm ci --legacy-peer-deps
-npm run typecheck
-npm run build
+npm --prefix demo/template4 ci
 npm run build:demo
 npm test
-npm run test:compat
+npm run dev -- --host 127.0.0.1 --port 18477 --no-open
 ```
 
-The compatibility runner builds the upstream commit from the local Git history,
-checks unchanged legacy files/methods, then compares both builds in a browser.
-It needs Git, tar and Chrome. Alternatively install Playwright Chromium with
-`npx playwright install chromium` and set `BROWSER_CHANNEL=chromium`.
-
-For the full studio and native component checks, start a separate terminal:
+In a second terminal, with that server running:
 
 ```sh
-npm run dev -- --host 127.0.0.1 --port 18477 --no-open
-npm run test:template4
+npm run test:release
 ```
 
-The studio is at `/component/configuration/mobileDesign/template4.html` on that
-server. `GRID_STUDIO_URL` overrides its URL for browser tests.
-The Template 4 studio offers **فارسی / English** for the flight-route sample in
-desktop and mobile views. See the [English/LTR configuration](docs/template4-english.md).
+The release check runs component/studio type checks, studio unit tests, 216
+legacy comparisons, a fresh production build, artifact/version assertions and
+all core browser suites. `GRID_STUDIO_URL` overrides the preview URL.
+Chrome is the default test engine. Alternatively install Playwright Chromium
+and set `BROWSER_CHANNEL=chromium`.
 
-## HTML Action Guides
+The root dashboard compares the templates. Open
+`/component/configuration/mobileDesign/template4.html` for the full studio,
+including **فارسی / English**, desktop/mobile, row filters, radio/checkbox
+selection, HTML actions, paging and classic comparison.
 
-Set top-level `guide: true` or a guide object to enable configured tutorial steps.
-Missing/`false`, or a tour with no steps, shows no guide button. No synthetic
-guide ID is assigned when using the boolean switch.
+The editable shell lives in `demo/template4`; `build:demo` rebuilds and copies
+only its generated assets and the native component into `wwwroot`. There is no
+runtime dependency on another local project or port. Tests use deterministic
+local data, cached LineIcons CSS and the bundled icon font, not live APIs/CDNs.
+Actual host styles and live backend contracts still require downstream testing.
 
-Keep your existing `operation.title`, `cellMaker` HTML and action handlers.
-Add semantic `data-grid-actions`, `data-grid-action-trigger`,
-`data-grid-action-menu` and `data-grid-action` markers, then reference actions as
-`list.row.action.edit` or `list.bulk.action.delete` in
-`columns.operation.guide.steps` (existing `options.guide.steps` also works).
-Use `priority` on column guides or individual steps to order the combined tour;
-smaller numbers run first, with a stable default of `1000`. Global list/page steps
-and multi-step column explanations can coexist.
-The guide shows a read-only menu preview; it never invokes action handlers.
-See the complete [action-guide contract and examples (Persian)](docs/guides/actions.md)
-and the [runnable desktop/mobile example](wwwroot/component/configuration/mobileDesign/action-guides.html).
-
-See [Template 4](docs/template4.md), the
-[compatibility report](docs/template4-compatibility.md), and the
-[example gallery](wwwroot/dashboard/README.md).
+See [Template 4 configuration](docs/template4.md),
+[English configuration](docs/template4-english.md),
+[compatibility](docs/template4-compatibility.md) and
+[the dashboard](wwwroot/dashboard/README.md).

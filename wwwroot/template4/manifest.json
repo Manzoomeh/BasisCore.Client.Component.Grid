@@ -7,8 +7,8 @@
       "sha256": "6d330153cf251b9e0ff5e2e1d242c08c9ca7c07172dd98248ffc62548ddb427c"
     },
     {
-      "path": "/assets/index-DXfe-gBK.js",
-      "sha256": "c6dcf9b1b1c0db20a860bea4aa86c549c1f1ed3c53eca434721869d8c4f71ade"
+      "path": "/assets/index-BEhwtrb-.js",
+      "sha256": "0af716ccba971b427303f95db54e01b2e0f3bd2fa5e3eb86e42bf90ec8c8e7ef"
     },
     {
       "path": "/basiscore/basiscore.js",
@@ -16,7 +16,7 @@
     },
     {
       "path": "/basiscore-grid/basiscore.grid.js",
-      "sha256": "00da9a1c931d11f72698409e1742d7d682a2861f56675ee74bcf6e17c0b92aca"
+      "sha256": "eaf63f38efa224e79481ef9fab3e3b64c15bcfd9831a1dffbd663ac80a73f3a0"
     },
     {
       "path": "/basisicon.ico",
@@ -33,6 +33,6 @@
   "componentBuild": "npm run build",
   "shellSource": "demo/template4/src",
   "shellBuild": "npm --prefix demo/template4 run build",
-  "version": "1.5.0-rc.1",
-  "edition": "template4-core"
+  "version": "1.6.0-rc.1",
+  "edition": "template4-guide"
 }

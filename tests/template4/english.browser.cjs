@@ -68,7 +68,23 @@ const localOnly = route => {
     await grid.locator('.quick-filter').first().click();
     await grid.screenshot({path:'/tmp/template4-english-desktop.png'});
 
-    assert.equal(await page.locator('[data-guide-start],.bc-guide').count(),0);
+    async function guide() {
+      await grid.locator('[data-guide-start]').click();
+      const dialog=page.locator('dialog.bc-guide');
+      assert.equal(await dialog.getAttribute('dir'),'ltr');
+      assert.equal(await dialog.getAttribute('lang'),'en');
+      assert.equal(await dialog.locator('.bc-guide-title').innerText(),'Flight route');
+      assert.match(await dialog.locator('.bc-guide-description').innerText(),/Example from the first row:/);
+      assert.match(await dialog.locator('.bc-guide-counter').innerText(),/^Step 1 of 10$/);
+      for(let step=1;step<10;step++)await dialog.getByRole('button',{name:'Next',exact:true}).click();
+      assert.equal(await dialog.locator('.bc-guide-title').innerText(),'Delete route');
+      await dialog.locator('.bc-guide-action-preview [data-grid-action=delete]').waitFor({state:'visible'});
+      assert(await dialog.getByRole('button',{name:'Finish guide'}).isVisible());
+      const bounds=await dialog.locator('.bc-guide-panel').boundingBox(),viewport=page.viewportSize();
+      assert(bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=viewport.width+1&&bounds.y+bounds.height<=viewport.height+1);
+      await page.keyboard.press('Escape');
+    }
+    await guide();
     await page.locator('[data-action=view][data-value=mobile]').click();
     await grid.locator('.mobile-row').first().waitFor();
     for (const width of [390,320]) {
@@ -89,14 +105,26 @@ const localOnly = route => {
       await grid.locator('.mobile-row:first-child input[type=checkbox]').check();
       assert.equal(await grid.locator('.selection-count').innerText(),'1 selected');
       await grid.getByRole('button',{name:'Clear selection',exact:true}).click();
+      await guide();
       await grid.screenshot({path:`/tmp/template4-english-mobile-${width}.png`});
     }
+    await page.evaluate(()=>{
+      const component=window.$bc.all.flatMap(wrapper=>wrapper.GetComponentList()).find(item=>item.manager?.gridInstance?.materialTemplate);
+      component.manager.gridInstance.options.culture.labels.guideNext='Continue';
+      if(component.manager.gridInstance.options.guide.lid!==2)throw new Error('English sample guide must use lid 2');
+    });
+    await grid.locator('[data-guide-start]').click();
+    assert(await page.getByRole('button',{name:'Continue',exact:true}).isVisible());
+    await page.keyboard.press('Escape');
     await page.locator('[data-action=sample-language][data-value=fa]').click();
     await grid.locator('.grid-header-content h3').filter({hasText:'لیست مسیرهای پروازی'}).waitFor();
     assert.equal(await grid.getAttribute('data-bc-grid-direction'),'rtl');
     assert.equal(await grid.getAttribute('data-view'),'mobile','Switching language keeps the chosen presentation');
     assert.equal(await host.getAttribute('lang'),'fa');
     assert.match(await grid.locator('.page-size option:checked').innerText(),/۶/);
+    await grid.locator('[data-guide-start]').click();
+    assert.match(await page.locator('.bc-guide-counter').innerText(),/^مرحله ۱ از/);
+    await page.keyboard.press('Escape');
     assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('material-list-studio-datasets') || 'null')),original,
       'Preview language switches must not rewrite saved datasets');
     const touch = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
@@ -122,6 +150,6 @@ const localOnly = route => {
     await phoneGrid.getByRole('button',{name:'Clear selection',exact:true}).tap();
     await touch.close();
     assert.deepEqual(errors,[]);
-    console.log('Template 4 English: real BasisCore mount, LTR desktop/mobile, labels/digits/dates, filtering, paging, selection, HTML actions, 390/320px bounds and unchanged saved Persian data passed.');
+    console.log('Template 4 English: real BasisCore mount, LTR desktop/mobile, labels/digits/dates, filtering, paging, selection, HTML actions, localized guides, 390/320px bounds and unchanged saved Persian data passed.');
   } finally { await browser.close(); }
 })().catch(error => {console.error(error);process.exitCode=1;});

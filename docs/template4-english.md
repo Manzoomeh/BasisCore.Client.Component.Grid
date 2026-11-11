@@ -1,4 +1,4 @@
-# English Template 4 Core
+# English Template 4 + Guide
 
 Open `/component/configuration/mobileDesign/template4.html`, then select
 **English** above the preview. Table and mobile use the same native component.
@@ -30,7 +30,10 @@ const englishLabels = {
   pagination: 'Pagination', results: 'results', page: 'Page', of: 'of',
   emptyTitle: 'No results found', emptyMessage: 'Try another search or change your filters.',
   editRow: 'Edit row', cardOptions: 'Card actions', rowOptions: 'Row actions',
-  untitled: 'Untitled', selectedItems: 'selected',
+  untitled: 'Untitled', selectedItems: 'selected', guide: 'Guide', firstRowExample: 'Example from the first row',
+  guideClose: 'Close guide', guidePrevious: 'Previous', guideSkip: 'Skip', guideNext: 'Next',
+  guideFinish: 'Finish guide', guideStep: 'Step',
+  guideUnavailable: 'This section is not available in the current view. You can continue to the next step.',
 };
 const options = {
   direction: 'ltr', culture: {deviceId: 1, template: 'template4', labels: englishLabels},
@@ -47,9 +50,13 @@ Translate column titles, `headerMaker`/`cellMaker` HTML and select captions
 (`fixValues.value`), without changing the IDs your application expects.
 Omitted labels retain their existing fallbacks; Persian defaults are unchanged.
 
-The core edition has no tutorial UI or `guide` configuration. The full snapshot
-and future release plan are documented in [releases](releases.md).
+The Guide candidate supports the same root/column configuration in both
+languages. Supply English descriptions/titles and `lid: 2`, and pass the Guide
+labels above through `culture.labels`. Layout uses `direction`; `lid` does not
+translate content automatically. The demo includes seven column steps followed
+by three inert action-menu previews. See [Guide integration](guides/actions.md)
+and [release versions](releases.md).
 
 The English browser suite verifies real BasisCore mounting, LTR ordering,
 localized dates/digits, filters, sort, selection, actions, empty state, pagination,
-320/390px bounds and touch controls. It does not exercise a live backend.
+localized tours, 320/390px bounds and touch controls. It does not exercise a live backend.

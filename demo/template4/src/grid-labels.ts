@@ -13,5 +13,8 @@ export const englishGridLabels = {
   pagination: 'Pagination', results: 'results', page: 'Page', of: 'of',
   emptyTitle: 'No results found', emptyMessage: 'Try another search or change your filters.',
   columnSearch: 'Search...', editRow: 'Edit row', cardOptions: 'Card actions', rowOptions: 'Row actions',
-  untitled: 'Untitled', selectedItems: 'selected',
+  untitled: 'Untitled', selectedItems: 'selected', guide: 'Guide', firstRowExample: 'Example from the first row',
+  guideClose: 'Close guide', guidePrevious: 'Previous', guideSkip: 'Skip', guideNext: 'Next',
+  guideFinish: 'Finish guide', guideStep: 'Step',
+  guideUnavailable: 'This section is not available in the current view. You can continue to the next step.',
 };

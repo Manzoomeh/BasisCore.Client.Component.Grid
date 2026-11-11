@@ -104,7 +104,7 @@ module.exports = (env, options) => {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".png"], // there's a dot missing
     },
     plugins: [
-      new BannerPlugin(`BasisCore Grid ${version} | Template 4 core (without Guide)`),
+      new BannerPlugin(`BasisCore Grid ${version} | Template 4 + Guide (opt-in)`),
       new CircularDependencyPlugin({
         // `onStart` is called before the cycle detection starts
         onStart({ compilation }) {

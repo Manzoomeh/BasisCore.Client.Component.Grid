@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>نمونهٔ راهنمای عملیات گرید</title>
+  <style>
+    body { margin:24px; font:14px/1.8 Tahoma,sans-serif; background:#f7f9fc; }
+    main { max-width:1000px; margin:auto; }
+    button { font:inherit; cursor:pointer; }
+    .iconsOperations { position:relative; }
+    .iconsDetail { display:none; min-width:180px; background:white; padding:8px; border:1px solid #ccd7e8; border-radius:8px; }
+    .iconsOperations.show .iconsDetail { display:block; }
+    .iconItem { display:flex; width:100%; min-height:44px; align-items:center; padding:8px; border:0; background:transparent; }
+    #grid { margin-top:16px; }
+  </style>
+  <script src="/basiscore/basiscore.js"></script>
+  <script>
+    // Your application owns these handlers. The guide NEVER calls either function.
+    function toggleActions(trigger) { trigger.closest('[data-grid-actions]').classList.toggle('show'); }
+    function sampleAction(key) { document.querySelector('#result').textContent = 'عملیات نمونه: ' + key; }
+    function menu(scope) {
+      return `<div class="iconsOperations" data-grid-actions="${scope}">
+        <button type="button" class="icon" data-grid-action-trigger="${scope}" aria-label="عملیات" onclick="toggleActions(this)">...</button>
+        <div class="iconsDetail" data-grid-action-menu>
+          ${scope === 'row' ? '<button type="button" class="iconItem" data-grid-action="edit" onclick="sampleAction(\'edit\')">ویرایش</button>' : ''}
+          <button type="button" class="iconItem" data-grid-action="delete" onclick="sampleAction('delete')">حذف</button>
+        </div>
+      </div>`;
+    }
+    const options = {
+      culture:{template:'template4',deviceId:1,labels:{}}, process:'client', direction:'rtl',
+      filter:'row', paging:[10], selectable:'multi', selectAll:true,
+      selectedSourceId:'sample.selected',
+      headerMaker:() => '<h3>مسیرهای پروازی</h3>',
+      // Grid-level steps remain available for list/page controls, alongside column guides.
+      guide:{schemaVersion:2,id:1001,lid:1,revision:2,title:'راهنمای مسیرها'},
+      columns:{
+        route:{title:'مسیر',source:'route',guide:{status:'active',id:'route-column',priority:10,description:'مبدأ و مقصد مسیر را بررسی کنید.'}},
+        // Keep the name operation: mobile reuses this HTML in its action group.
+        operation:{title:menu('bulk'),filter:false,sort:false,cellMaker:() => menu('row'),
+          // A smaller priority runs earlier; each step inherits the column's priority/optional.
+          guide:{status:'active',id:'route-operations',priority:20,optional:true,steps:[
+            {id:'edit-route',target:'list.row.action.edit',title:'ویرایش مسیر',description:'این گزینه فرم ویرایش همین مسیر را باز می‌کند. آموزش فقط پیش‌نمایش است.'},
+            {id:'delete-route',target:'list.row.action.delete',title:'حذف مسیر',description:'پیش از تأیید حذف، مشخصات مسیر را بررسی کنید. آموزش هیچ عملیاتی اجرا نمی‌کند.'},
+            {id:'delete-selected',target:'list.bulk.action.delete',title:'حذف گروهی',description:'این عملیات مربوط به ردیف‌های انتخاب‌شده است. آموزش انتخاب شما را تغییر نمی‌دهد.'}
+          ]}}
+      },
+      presentation:{view:'table',titleKey:'route'}
+    };
+    var host={repositories:{'grid.grid':'/basiscore-grid/basiscore.grid.js'},sources:{'sample.rows':[
+      {id:1,route:'تهران ← دبی'},{id:2,route:'تهران ← استانبول'}
+    ]}};
+    function setView(view) {
+      options.presentation.view=view;
+      const command=window.$bc.all.flatMap(wrapper=>wrapper.GetComponentList()).find(command=>command.manager?.gridInstance);
+      command.manager.gridInstance.materialTemplate.updatePresentation(options.presentation);
+    }
+  </script>
+</head>
+<body>
+  <main>
+    <h1>نمونهٔ راهنمای عملیات</h1>
+    <button type="button" onclick="setView('table')">جدول</button>
+    <button type="button" onclick="setView('mobile')">موبایل</button>
+    <output id="result" aria-live="polite"></output>
+    <div id="grid"><basis core="component.grid.grid" run="atclient" datamembername="sample.rows" options="options"></basis></div>
+  </main>
+</body>
+</html>

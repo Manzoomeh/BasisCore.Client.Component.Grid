@@ -1,6 +1,6 @@
 {
   "name": "basiscore.grid",
-  "version": "1.5.0-rc.1",
+  "version": "1.6.0-rc.1",
   "description": "",
   "main": "index.js",
   "types": "dist/types/ComponentLoader.d.ts",
@@ -9,7 +9,7 @@
     "build": "webpack --mode=production && npm run build:types",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:demo": "npm run build && npm --prefix demo/template4 run build && node scripts/update-template4-demo.cjs",
-    "test": "node tests/dashboard.test.mjs && node tests/core-release.test.cjs",
+    "test": "node tests/dashboard.test.mjs && node tests/guide-config.test.cjs && node tests/guide-release.test.cjs",
     "test:release": "npm run typecheck && npm --prefix demo/template4 run typecheck && npm --prefix demo/template4 test && npm run test:compat && npm run build:demo && npm test && npm run test:template4",
     "test:compat": "webpack --mode=development && node tests/run-compatibility.cjs",
     "test:template4": "node tests/run-template4.cjs",

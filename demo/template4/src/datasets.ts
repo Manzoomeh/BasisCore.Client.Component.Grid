@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { isColumnGuideConfig, isGuideOptions, type ColumnGuideConfig, type GridGuideMetadata, type GridGuideOptions } from '../../../src/component/grid/GuideConfig';
+import routeGuide from '../../../docs/guides/flight-routes.json';
+import legacyRouteGuide from './guides/flight-routes-legacy.json';
 
 const columnSchema = z.object({
   key: z.string().min(1),
@@ -9,6 +12,7 @@ const columnSchema = z.object({
   visible: z.boolean().optional(),
   width: z.string().optional(),
   valueIcons: z.record(z.string(), z.string()).optional(),
+  guide: z.custom<ColumnGuideConfig>(isColumnGuideConfig, 'راهنمای ستون معتبر نیست.').optional(),
 });
 
 export const datasetSchema = z.object({
@@ -16,6 +20,8 @@ export const datasetSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   filter: z.enum(['simple', 'row', 'none', 'advanced']).optional(),
+  guide: z.custom<GridGuideOptions>(isGuideOptions, 'guide باید true، false یا object معتبر باشد؛ id و lid در صورت وجود عدد صحیح مثبت‌اند.').optional(),
+  operationGuide: z.custom<ColumnGuideConfig>(isColumnGuideConfig, 'راهنمای عملیات معتبر نیست.').optional(),
   direction: z.enum(['rtl', 'ltr']).optional(),
   view: z.object({
     default: z.enum(['table', 'list', 'grid', 'mobile']).optional(),
@@ -48,22 +54,35 @@ const baseStatusMap = {
 
 const airlineSampleIcon = 'icon:plane';
 const routes: Dataset = {
+  guide: routeGuide as GridGuideMetadata,
+  // The studio adapter passes this unchanged to columns.operation.guide.
+  operationGuide: {status:'active',id:'route-operations',priority:2000,optional:true,steps:[
+    {id:'route-edit',target:'list.row.action.edit',title:'ویرایش مسیر',description:'گزینهٔ ویرایش، اطلاعات همین مسیر را باز می‌کند. پیش از ویرایش، مبدأ، مقصد و کد مسیر را بررسی کنید. اینجا فقط پیش‌نمایش منو نمایش داده می‌شود.'},
+    {id:'route-disable',target:'list.row.action.disable',title:'غیرفعال کردن مسیر',description:'این گزینه وضعیت همین مسیر را تغییر می‌دهد؛ با حذف تفاوت دارد. آموزش وضعیت واقعی مسیر را تغییر نمی‌دهد.'},
+    {id:'route-delete',target:'list.row.action.delete',title:'حذف یک مسیر',description:'این گزینه فقط مربوط به مسیر همین ردیف است. پیش از تأیید حذف، مسیر و کد آن را دوباره بررسی کنید. آموزش چیزی را حذف نمی‌کند.'}
+  ]},
   filter: 'row',
   id: 'flight-routes', title: 'لیست مسیرهای پروازی', description: 'مدیریت مسیرهای پروازی و برنامه حرکت ناوگان', direction: 'rtl',
   view: { default: 'table', density: 'comfortable', pageSize: 8, card: { titleKey: 'route', subtitleKey: 'airline', badgeKey: 'status' } }, statusMap: baseStatusMap,
   columns: [
-    { key: 'route', label: 'مسیر پرواز', type: 'text', width: '170px', sortable: true, filterable: true },
+    { key: 'route', label: 'مسیر پرواز', type: 'text', width: '170px', sortable: true, filterable: true,
+      guide: {status: 'active', id: 'route-row', description: 'مبدأ و مقصد این مسیر را کنار هم بخوانید؛ هر ردیف فقط یک مسیر پروازی را نشان می‌دهد.', optional: true} },
     { key: 'airline', label: 'ایرلاین', type: 'text', width: '200px', sortable: true, filterable: true,
-      valueIcons: {
+      guide: {status: 'active', id: 'route-airline', description: 'شرکت هواپیماییِ همین مسیر را بررسی کنید. مسیرهای هم‌نام ممکن است ایرلاین متفاوتی داشته باشند.', optional: true}, valueIcons: {
       'Emirates Airlines': airlineSampleIcon, 'Turkish Airlines': airlineSampleIcon, 'Iran Air': airlineSampleIcon,
       'Iraqi Airways': airlineSampleIcon, 'Air France': airlineSampleIcon, 'Qatar Airways': airlineSampleIcon,
       flydubai: airlineSampleIcon, Pegasus: airlineSampleIcon, Lufthansa: airlineSampleIcon,
     } },
-    { key: 'aircraft', label: 'نوع هواپیما', type: 'text', width: '160px', filterable: true },
-    { key: 'code', label: 'کد مسیر', type: 'text', width: '120px', sortable: true, filterable: true },
-    { key: 'duration', label: 'مدت سفر (دقیقه)', type: 'number', width: '140px', sortable: true, filterable: true },
-    { key: 'createdAt', label: 'تاریخ ایجاد', type: 'date', width: '156px', sortable: true, filterable: true },
-    { key: 'status', label: 'وضعیت', type: 'status', width: '110px', filterable: true },
+    { key: 'aircraft', label: 'نوع هواپیما', type: 'text', width: '160px', filterable: true,
+      guide: {status: 'active', id: 'route-aircraft', description: 'مدل هواپیمای ثبت‌شده برای این مسیر اینجا نمایش داده می‌شود؛ آن را با کد مسیر اشتباه نگیرید.', optional: true} },
+    { key: 'code', label: 'کد مسیر', type: 'text', width: '120px', sortable: true, filterable: true,
+      guide: {status: 'active', id: 'route-code', description: 'از کد برای پیدا کردن دقیق‌تر مسیر استفاده کنید؛ می‌توانید همین مقدار را در جستجو بنویسید.', optional: true} },
+    { key: 'duration', label: 'مدت سفر (دقیقه)', type: 'number', width: '140px', sortable: true, filterable: true,
+      guide: {status: 'active', id: 'route-duration', description: 'مدت سفر به دقیقه است. برای مقایسهٔ طول سفر، این ستون را مرتب کنید.', optional: true} },
+    { key: 'createdAt', label: 'تاریخ ایجاد', type: 'date', width: '156px', sortable: true, filterable: true,
+      guide: {status: 'active', id: 'route-created', description: 'این تاریخ زمان ایجاد رکورد مسیر است، نه تاریخ حرکت پرواز.', optional: true} },
+    { key: 'status', label: 'وضعیت', type: 'status', width: '110px', filterable: true,
+      guide: {status: 'active', id: 'route-status', description: 'فعال یا غیرفعال بودن همین رکورد مسیر را نشان می‌دهد؛ این وضعیت مربوط به بلیت مسافر نیست.', optional: true} },
   ],
   rows: [
     { id: 'route-1', route: 'تهران ← دبی', airline: 'Emirates Airlines', aircraft: 'Airbus A320', code: 'EK-978', duration: 150, createdAt: '2025-06-18', status: 'active' }, { id: 'route-2', route: 'تهران ← استانبول', airline: 'Turkish Airlines', aircraft: 'Boeing 737', code: 'TK-879', duration: 180, createdAt: '2025-06-12', status: 'active' }, { id: 'route-3', route: 'تهران ← آنتالیا', airline: 'Turkish Airlines', aircraft: 'Airbus A321', code: 'TK-884', duration: 240, createdAt: '2025-05-24', status: 'inactive' }, { id: 'route-4', route: 'تهران ← مشهد', airline: 'Iran Air', aircraft: 'ATR 72', code: 'IR-214', duration: 90, createdAt: '2025-05-11', status: 'active' }, { id: 'route-5', route: 'رشت ← بغداد', airline: 'Iraqi Airways', aircraft: 'Boeing 737-300', code: 'IA-442', duration: 120, createdAt: '2025-04-29', status: 'active' }, { id: 'route-6', route: 'تهران ← پاریس', airline: 'Air France', aircraft: 'Boeing 777', code: 'AF-739', duration: 420, createdAt: '2025-04-17', status: 'inactive' }, { id: 'route-7', route: 'شیراز ← دوحه', airline: 'Qatar Airways', aircraft: 'Airbus A350', code: 'QR-477', duration: 110, createdAt: '2025-04-10', status: 'active' }, { id: 'route-8', route: 'اصفهان ← دبی', airline: 'flydubai', aircraft: 'Boeing 737', code: 'FZ-123', duration: 120, createdAt: '2025-03-28', status: 'active' }, { id: 'route-9', route: 'تبریز ← استانبول', airline: 'Pegasus', aircraft: 'Airbus A320', code: 'PC-511', duration: 165, createdAt: '2025-03-19', status: 'active' }, { id: 'route-10', route: 'تهران ← فرانکفورت', airline: 'Lufthansa', aircraft: 'Airbus A340', code: 'LH-601', duration: 390, createdAt: '2025-03-05', status: 'inactive' }, { id: 'route-11', route: 'مشهد ← بغداد', airline: 'Iraqi Airways', aircraft: 'Airbus A320', code: 'IA-611', duration: 145, createdAt: '2025-02-28', status: 'active' }, { id: 'route-12', route: 'کیش ← دبی', airline: 'Emirates Airlines', aircraft: 'Boeing 777', code: 'EK-979', duration: 105, createdAt: '2025-02-16', status: 'active' },
@@ -86,11 +105,26 @@ const users: Dataset = {
   ], features: { search: true, sorting: true, filtering: true, pagination: true, selection: true, columnVisibility: true, csvExport: true },
 };
 
-const englishColumns = ['Flight route','Airline','Aircraft','Route code','Duration (min)','Created on','Status'];
+const englishColumns = [
+  ['Flight route', 'Read the origin and destination together. Each row represents one flight route.'],
+  ['Airline', 'Check the airline for this route. Routes with the same cities can have different airlines.'],
+  ['Aircraft', 'This is the aircraft model assigned to the route, not the route code.'],
+  ['Route code', 'Use this code to find a specific route in search.'],
+  ['Duration (min)', 'Travel duration is measured in minutes. Sort this column to compare routes.'],
+  ['Created on', 'This is the date the route record was created, not the departure date.'],
+  ['Status', 'Active or inactive refers to this route record, not a passenger ticket.'],
+];
 const englishRoutes: Dataset = {
   ...structuredClone(routes), id:'flight-routes-en', direction:'ltr',
   title:'Flight routes', description:'Manage flight routes and fleet schedules',
-  columns:routes.columns.map((column,index) => ({...structuredClone(column),label:englishColumns[index]})),
+  guide:{schemaVersion:2,id:1,lid:2,revision:1,title:'Flight routes guide'},
+  operationGuide:{status:'active',id:'route-operations',priority:2000,optional:true,steps:[
+    {id:'route-edit',target:'list.row.action.edit',title:'Edit route',description:'Open the details for this route. Check the origin, destination and route code before editing. The guide only previews this menu.'},
+    {id:'route-disable',target:'list.row.action.disable',title:'Disable route',description:'Change the status of this route without deleting it. The guide does not change the route status.'},
+    {id:'route-delete',target:'list.row.action.delete',title:'Delete route',description:'Delete only this route. Check its cities and code before confirming. The guide does not delete any data.'},
+  ]},
+  columns:routes.columns.map((column,index) => ({...structuredClone(column),label:englishColumns[index][0],
+    guide:{...column.guide!,description:englishColumns[index][1]}})),
   statusMap:{active:{label:'Active',color:'success'},inactive:{label:'Inactive',color:'neutral'}},
   rows:routes.rows.map((row,index) => ({...row,route:[
     'Tehran → Dubai','Tehran → Istanbul','Tehran → Antalya','Tehran → Mashhad',
@@ -100,3 +134,19 @@ const englishRoutes: Dataset = {
 };
 
 export const originalDatasets = [routes, products, users, englishRoutes];
+
+export function migrateSampleGuide(dataset: Dataset): Dataset {
+  const previousGuide = {...routeGuide,revision:3};
+  if (dataset.id === routes.id && !dataset.operationGuide &&
+      JSON.stringify(dataset.guide) === JSON.stringify(previousGuide) &&
+      dataset.columns.every(column => JSON.stringify(column.guide) === JSON.stringify(routes.columns.find(sample => sample.key === column.key)?.guide))) {
+    return {...dataset,guide:structuredClone(routes.guide),operationGuide:structuredClone(routes.operationGuide)};
+  }
+  // Only upgrade the unchanged built-in tour; preserve user-authored guides and all other saved data.
+  if (dataset.id !== routes.id || dataset.columns.some(column => column.guide) ||
+      JSON.stringify(dataset.guide) !== JSON.stringify(legacyRouteGuide)) return dataset;
+  return {...dataset, guide: structuredClone(routes.guide), operationGuide:structuredClone(routes.operationGuide), columns: dataset.columns.map(column => {
+    const guide = routes.columns.find(sample => sample.key === column.key)?.guide;
+    return guide ? {...column, guide: structuredClone(guide)} : column;
+  })};
+}

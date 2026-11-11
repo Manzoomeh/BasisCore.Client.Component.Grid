@@ -5,10 +5,11 @@ the Template 4 card opens `/component/configuration/mobileDesign/template4.html`
 on the same server. `/examples.html` preserves all 31 original examples.
 No original sample configuration or rendering path is rewritten.
 
-The current edition is Template 4 core, without Guide. The gallery/version badge
+The current edition is Template 4 + opt-in Guide. The gallery/version badge
 and studio identify the package version. The studio offers desktop/mobile,
 Persian/English, filters, sorting, paging, radio/checkbox selection, trusted HTML
-actions, JSON editing/import/export and a classic comparison.
+actions, JSON editing/import/export and a classic comparison. FA/EN route samples
+include column steps and inert action-menu previews using the actual Grid Guide.
 
 Its editable source is in `demo/template4`, a private build package. Install
 `npm --prefix demo/template4 ci`, then run `npm run build:demo` at the repo root.
@@ -25,10 +26,13 @@ relative source paths and SHA-256 hashes of served assets. Rebuilding removes
 only obsolete assets listed in the previous manifest, not other local snapshots.
 No separate server, proxy, port 18474 or external source checkout is needed.
 
-Core browser storage is isolated from the full snapshot. If only old studio data
-exists, its rows/settings are read into the core schema without mutating the
-original key. New writes go to `basiscore-grid-template4-core-datasets-v1`;
-unsupported tutorial metadata is not exposed by the core JSON editor.
+Guide browser storage is isolated from Core and the archived full snapshot.
+Archived data is imported read-only, preserving rows/settings/custom tutorials.
+New writes go to `basiscore-grid-template4-guide-datasets-v1`; Core's
+`basiscore-grid-template4-core-datasets-v1` is never read or overwritten.
+The JSON editor forwards `guide` and each column's `guide` to native options;
+its `operationGuide` field maps to `columns.operation.guide`. See
+`docs/guides/actions.md` for the semantic HTML action markers and priority rules.
 
 The favicon and shared LineIcons font remain local; the live page also uses
 BasisPanel-hosted icon CSS and the existing font fallbacks. Test fixtures cache

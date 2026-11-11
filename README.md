@@ -1,13 +1,13 @@
 # BasisCore Grid
 
-## Template 4 Core: 1.5.0-rc.1
+## Template 4 + Guide: 1.6.0-rc.1
 
-This release candidate adds the opt-in `template4` renderer to upstream 1.4.2
-(`ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`). It includes desktop and mobile
-presentations, Persian/RTL and English/LTR examples, and the comparison studio.
-It **does not include Guide**: no tutorial runtime, options, styles or samples.
-The full experimental snapshot is preserved on `basisfly/template4-with-guide`
-at `ada5e1f`. See [release versions](docs/releases.md) before publishing either edition.
+This additive release candidate builds on Template 4 Core `1.5.0-rc.1`
+(`30e0aae`). It retains desktop/mobile, Persian/RTL, English/LTR and the native
+comparison studio, and adds opt-in guided tours for columns and HTML actions.
+The Core candidate remains on `master`; Guide is prepared separately on
+`basisfly/template4-guide`. The original full snapshot remains untouched at
+`basisfly/template4-with-guide` (`ada5e1f`). See [release versions](docs/releases.md).
 
 The implementation is native BasisCore/TypeScript, with no React runtime.
 The default remains `template1`; templates 1, 2 and 3 remain available with
@@ -36,6 +36,28 @@ The standalone entry remains `dist/basiscore.grid.js`. The studio entry combines
 the native exports from `src/StudioLoader.ts`; it is not a second grid engine.
 Public declarations are emitted to `dist/types` by the production build.
 
+## Opt-In Guide
+
+The Guide runtime is included in this edition, but no tour or help button is
+initialized without `guide: true` or a valid object and configured steps.
+`guide: false`, omission, or an empty tour keeps the button hidden. Existing
+Core configurations need no Guide fields and keep their normal grid behavior.
+
+```js
+options.guide = {schemaVersion: 2, id: 1001, lid: 2, revision: 1, title: 'Routes guide'};
+options.columns.name.guide = {
+  status: 'active', id: 'route-name', priority: 10,
+  description: 'Check this route name before editing.',
+};
+```
+
+Column guidance highlights its header through the first visible row's value.
+Global steps can target list/page controls; action steps use semantic HTML
+markers without replacing `cellMaker` or real handlers. Action menus are
+previewed inertly: the tour never invokes edit/delete or selects rows for you.
+See the [Guide JSON contract](docs/guides/flight-routes.md) and
+[HTML action integration](docs/guides/actions.md) for complete examples.
+
 ## Build And Verify
 
 Use Node 22. Install the private studio dependencies separately; they are not
@@ -57,7 +79,7 @@ npm run test:release
 
 The release check runs component/studio type checks, studio unit tests, 216
 legacy comparisons, a fresh production build, artifact/version assertions and
-all core browser suites. `GRID_STUDIO_URL` overrides the preview URL.
+all grid/Guide browser suites. `GRID_STUDIO_URL` overrides the preview URL.
 Chrome is the default test engine. Alternatively install Playwright Chromium
 and set `BROWSER_CHANNEL=chromium`.
 

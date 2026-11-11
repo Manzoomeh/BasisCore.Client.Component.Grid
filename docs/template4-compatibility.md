@@ -1,9 +1,11 @@
-# Template 4 Core Compatibility
+# Template 4 + Guide Compatibility
 
 ## Baseline And Editions
 
 - Upstream baseline: `ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`, version 1.4.2.
-- Candidate on `master`: `1.5.0-rc.1`, Template 4 core, without Guide.
+- Core on `master`: `1.5.0-rc.1` at `30e0aae`, without Guide.
+- Additive Guide candidate: `basisfly/template4-guide`, `1.6.0-rc.1`, based on
+  that Core commit. No changes to the processing managers or legacy templates.
 - Full experimental snapshot: branch `basisfly/template4-with-guide`, commit
   `ada5e1f`. Its historical 1.4.2 package number is not a new published release.
 - No push, package publication or upstream PR is performed by the release check.
@@ -17,8 +19,9 @@ not a separate implementation or a React renderer.
 
 All original layout HTML, images and legacy CSS remain unchanged. Defaults still
 select `template1`; templates 1-3 keep their original rendering paths. Template 4
-owns its new DOM, header, filters, mobile cards and styles. Guide code, public
-configuration, tutorial CSS and tutorial examples are absent from this candidate.
+owns its new DOM, header, filters, mobile cards and styles. This candidate adds
+Guide code/types/styles and samples; activation requires an explicit root
+`guide` switch and configured steps. Omission/false initializes no Guide instance.
 
 | Shared location | Template 4 behavior | Legacy behavior |
 | --- | --- | --- |
@@ -41,15 +44,18 @@ compatibility when arbitrary old widgets switch to Template 4.
   option/state types rather than a copied component implementation.
 - Production Webpack entry points and declarations, cycle detection, package
   and lockfile version equality, manifest hashes and version banners.
-- Artifact assertions reject tutorial runtime/styles/options in every shipped
-  component bundle and the public declarations.
+- Artifact assertions verify Guide runtime/styles/options in every shipped
+  component bundle and the public declarations, with synchronized version identity.
 - 216 legacy comparisons against a freshly built baseline; 72 original files
   and 24 Grid methods are checked unchanged before browser comparisons.
 - Core browser suites: real BasisCore mount/reset, header HTML, filter modes,
   English/LTR, mobile bounds/touch, radio/multi selection, HTML menus, native
   refresh selectors, server/mix callback fixtures and export success/failure.
-- Core storage tests import saved full-version rows without mutating the old
-  browser key. Changes are saved to `basiscore-grid-template4-core-datasets-v1`.
+- Guide suites cover schema validation, priorities, switches, column geometry,
+  action-menu previews, safe text, keyboard/focus, missing/external targets and
+  disposal. They assert that tutorials do not execute handlers or change data.
+- Edition tests preserve both Core and archived full-version browser keys.
+  Guide changes are saved only to `basiscore-grid-template4-guide-datasets-v1`.
 
 `npm run test:release` rebuilds and runs these checks. Browser tests serve the
 checked-in production demo bundle, cache the BasisPanel icon stylesheet and

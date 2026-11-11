@@ -1,5 +1,5 @@
 import './index.css';
-import {datasetSchema, originalDatasets, type Dataset, type ViewMode, type Density} from './datasets';
+import {datasetSchema, originalDatasets, migrateSampleGuide, type Dataset, type ViewMode, type Density} from './datasets';
 import {icon, type IconName} from './icons';
 import {escapeHTML as esc, formatValue} from './format';
 import {mountGrid} from './basis';
@@ -7,15 +7,15 @@ import {englishGridLabels} from './grid-labels';
 import type {GridState, Options, Row} from './types';
 import {version} from '../../../package.json';
 
-// Separate storage prevents the core preview from overwriting saved full-version tutorials.
-const storageKey = 'basiscore-grid-template4-core-datasets-v1';
+// Keep the Core candidate and archived tutorial data untouched when editing this edition.
+const storageKey = 'basiscore-grid-template4-guide-datasets-v1';
 const previousStorageKey = 'material-list-studio-datasets';
 function loadDatasets(): Dataset[] {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem(storageKey) ?? localStorage.getItem(previousStorageKey) ?? '[]');
     const custom = Array.isArray(saved) ? saved.flatMap(item => {
       const parsed = datasetSchema.safeParse(item);
-      return parsed.success ? [parsed.data] : [];
+      return parsed.success ? [migrateSampleGuide(parsed.data)] : [];
     }) : [];
     return [...originalDatasets.map(base => custom.find(item => item.id === base.id) ?? structuredClone(base)), ...custom.filter(item => !originalDatasets.some(base => base.id === item.id))];
   } catch { return structuredClone(originalDatasets); }
@@ -104,6 +104,7 @@ function optionsFor(classic: boolean): Options {
   const typedFilters = filter === 'advanced' || (filter === 'row' && (state.view === 'mobile' || dataset.features?.filterMode !== 'header'));
   const columns = Object.fromEntries(dataset.columns.filter(column => column.visible !== false).map(column => [column.key, {
     title:esc(column.label), source:column.key, sort:column.sortable ?? false, filter:column.filterable ?? false,
+    ...(!classic && column.guide ? {guide:column.guide} : {}),
     ...(column.width ? {width:column.width} : {}),
     compare:(left:unknown,right:unknown) => String(left ?? '').localeCompare(String(right ?? ''),english ? 'en' : 'fa',{numeric:true}),
     cellMaker:(_row:Row,value:unknown) => formatValue(value,column,dataset),
@@ -114,8 +115,8 @@ function optionsFor(classic: boolean): Options {
     }} : {}),
   }]));
   if (classic) Object.values(columns).forEach(column => {column.filter = true; delete column.filterData;});
-  if (!classic && state.rowActions && dataset.id.startsWith('flight-routes')) columns.operation = {
-    title:text('عملیات','Actions'),source:'id',sort:false,filter:false,compare:()=>0,
+  if (!classic && state.rowActions && (dataset.id.startsWith('flight-routes') || dataset.operationGuide)) columns.operation = {
+    title:text('عملیات','Actions'),source:'id',sort:false,filter:false,compare:()=>0,guide:dataset.operationGuide,
     cellMaker:row => `<div class="iconsOperations studio-route-actions" data-grid-actions="row">
       <button type="button" class="icon icon-button" data-grid-action-trigger="row" aria-label="${text('عملیات مسیر','Route actions')}">${icon('MoreVertical')}</button>
       <div class="iconsDetail" data-grid-action-menu>
@@ -127,6 +128,8 @@ function optionsFor(classic: boolean): Options {
   if (classic && state.rowActions) columns.operation = {title:text('عملیات','Actions'),source:'id',sort:false,filter:false,compare:()=>0,cellMaker:row => `<button type="button" class="classic-row-action" data-row-id="${esc(row.id)}" aria-label="${text('ویرایش ردیف','Edit row')}">${icon('MoreVertical')}</button>`};
   const sizes = [...new Set([6,8,10,12,state.pageSize])].sort((a,b) => a-b);
   return {
+    guide: classic ? undefined : dataset.guide,
+    guideTargets: classic ? undefined : {'page.create': () => root.querySelector<HTMLElement>('.dataset-actions [data-action=new]')},
     headerMaker: classic ? undefined : () => `<h3>${esc(dataset.title)}</h3>${dataset.description ? `<p>${esc(dataset.description)}</p>` : ''}`,
     columns, process:'client',filter:classic && filter === 'advanced' ? 'row' : filter,direction:dataset.direction ?? 'rtl',
     paging:!classic && state.pagination ? sizes : false,defaultPagingIndex:sizes.indexOf(state.pageSize),
@@ -158,7 +161,7 @@ async function render() {
     if (mine !== revision) return;
     document.documentElement.dataset.theme = state.theme;
     document.documentElement.dataset.gridVersion = version;
-    document.documentElement.dataset.gridEdition = 'template4-core';
+    document.documentElement.dataset.gridEdition = 'template4-guide';
     root.dataset.datasetId = active().id;
     root.innerHTML = `<div class="app-shell" dir="rtl"><main class="studio-main"><div class="topbar"><div class="brand"><div class="brand-mark"><img src="/basisicon.ico" width="32" height="32" alt="BasisPanel"></div><div><strong>BasisPanel List Studio</strong><span class="release-version" lang="en" dir="ltr">Template 4 · ${version}</span></div></div><div class="topbar-actions"><span class="saved-label"><span class="saved-dot"></span>${storageFailed ? 'ذخیره‌سازی مرورگر در دسترس نیست' : 'ذخیره خودکار فعال است'}</span>${tool('theme','تغییر حالت روشن و تاریک',state.theme === 'light' ? 'Moon' : 'Sun')}${tool('settings','تنظیمات','Settings2')}</div></div>${gallery()}<section class="workspace-section"><div class="section-heading workspace-heading"><div><span class="eyebrow">فضای کار زنده</span><h2>داده را تغییر دهید، نتیجه را ببینید</h2></div><div class="workspace-tabs"><button type="button" data-action="workspace" data-value="preview" class="${state.workspace === 'preview' ? 'tab-active' : ''}">${icon('Sparkles',16)}پیش‌نمایش</button><button type="button" data-action="workspace" data-value="config" class="${state.workspace === 'config' ? 'tab-active' : ''}">${icon('FileJson',16)}پیکربندی JSON</button></div></div>${datasetBar()}${workspace()}</section><footer class="studio-footer"><span>${icon('Sparkles',16)}ساخته شده برای تجربه بهتر داده‌ها</span><span>BasisPanel List Studio <b>·</b> Material 3</span></footer></main></div>`;
     const dataset = active();

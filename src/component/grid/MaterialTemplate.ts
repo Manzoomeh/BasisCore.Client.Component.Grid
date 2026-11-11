@@ -11,6 +11,8 @@ import NoPaginateProcessManager from "../paginate/NoPaginateProcessManager";
 import ProcessManager from "../paginate/ProcessManager";
 import PaginateProcessManager from "../paginate/PaginateProcessManager";
 import "../../asset/template4.css";
+import GridGuide from "./GridGuide";
+import { GridGuideConfig, GridGuideStep, GuideTargets, isColumnGuideConfig, isGuideConfig, isGuideOptions } from "./GuideConfig";
 
 type PopoverElement = HTMLElement & { showPopover?: () => void; hidePopover?: () => void };
 
@@ -23,6 +25,7 @@ function element<K extends keyof HTMLElementTagNameMap>(tag: K, className = "", 
 
 // Owns the template DOM; all filtering, sorting and paging stays in the existing process managers.
 export default class MaterialTemplate {
+  guide?: GridGuide;
   readonly columns: IGridColumnInfo[];
   readonly process: ProcessManager;
   private rows: GridRow[] = [];
@@ -40,6 +43,7 @@ export default class MaterialTemplate {
   private mobileBulkActions = element("div", "mobile-bulk-actions");
   private filterButton: HTMLButtonElement;
   private settingsButton: HTMLButtonElement;
+  private guideButton?: HTMLButtonElement;
   private menuObserver?: MutationObserver;
   private footer = element("div", "pagination");
   private resultCount = element("span");
@@ -180,6 +184,64 @@ export default class MaterialTemplate {
       item.append(button, status);
       exports.append(item);
     });
+    const guidedColumns = this.dataColumns.flatMap((column, index) => {
+      const guide = column.guide;
+      return isColumnGuideConfig(guide) && guide.status === "active" ? [{column, index, guide}] : [];
+    });
+    const makeGuideConfig = (): GridGuideConfig | null => {
+      if (!options.guide || !isGuideOptions(options.guide)) return null;
+      // The boolean switch uses column content without inventing database identity/language metadata.
+      const settings = options.guide === true ? {} : options.guide;
+      const columnSteps: GridGuideStep[] = guidedColumns.flatMap(({column, index, guide}) => {
+        const target = `column.${index}`;
+        const title = this.columnTitle(column);
+        const overview = guide.description === undefined ? [] : [{
+          id: guide.id, target, title, priority: guide.priority, optional: guide.optional,
+          description: this.columnGuideDescription(column, guide.description),
+        }];
+        const steps = (guide.steps || []).map(step => ({
+          ...step, target: step.target ?? target, title: step.title ?? title,
+          optional: step.optional ?? guide.optional, priority: step.priority ?? guide.priority,
+          description: step.target === undefined ? this.columnGuideDescription(column, step.description) : step.description,
+        }));
+        return [...overview, ...steps];
+      });
+      // Stable ties preserve column/array order; explicit targets coexist with column guides.
+      const steps = [...columnSteps, ...(settings.steps || [])]
+        .sort((left, right) => (left.priority ?? 1000) - (right.priority ?? 1000));
+      const config = {...settings, title: settings.title ?? this.label("guide", "راهنما"), steps};
+      return isGuideConfig(config) ? config : null;
+    };
+    const initialGuideConfig = makeGuideConfig();
+    if (initialGuideConfig) {
+      const firstVisible = (selector: string) => Array.from(container.querySelectorAll<HTMLElement>(selector)).find(node => GridGuide.visible(node)) || null;
+      const targets: GuideTargets = {
+        "list.header": () => this.headerContent.parentElement ? this.headerContent : toolbar,
+        "list.search": () => this.queryInput,
+        "list.filters": () => this.headerFilters ? firstVisible(".header-filter") : this.filterButton,
+        "list.row": () => firstVisible("tbody tr[data-sys-tr], .mobile-row, .list-item, .data-card"),
+        "list.row.checkbox": () => firstVisible('tbody input[type="checkbox"], .mobile-row input[type="checkbox"], .list-item input[type="checkbox"], .data-card input[type="checkbox"]'),
+        "list.bulk.actions": () => this.clearSelection,
+        "list.bulk.menu": () => firstVisible('[data-grid-actions="bulk"] [data-grid-action-trigger="bulk"], thead .iconsOperations > .icon, .mobile-bulk-actions .iconsOperations > .icon, .mobile-bulk-actions button'),
+        "list.row.actions": () => firstVisible('[data-grid-actions="row"] [data-grid-action-trigger="row"], tbody .iconsOperations > .icon, .action-cell button, .mobile-row-actions .iconsOperations > .icon, .mobile-row-actions button, .mobile-row-actions a[href], .list-item .iconsOperations > .icon, .list-trailing button, .data-card .iconsOperations > .icon, .card-heading button'),
+        "list.pagination": () => options.paging ? this.footer : null,
+        ...options.guideTargets,
+      };
+      guidedColumns.forEach(({column, index}) => { targets[`column.${index}`] = () => this.guideColumnTarget(column); });
+      this.guide = new GridGuide(container, initialGuideConfig, targets, options.culture.labels);
+      const help = element("button", "button button-outlined guide-start-button");
+      help.type = "button";
+      help.title = this.label("guide", "راهنما");
+      help.setAttribute("aria-label", help.title);
+      help.append(this.icon("helpIcon"), element("span", "guide-start-copy", ` ${help.title}`));
+      help.addEventListener("click", () => {
+        const config = makeGuideConfig();
+        if (config) this.guide?.start(help, config);
+      });
+      help.dataset.guideStart = "";
+      this.guideButton = help;
+      toolbar.append(help);
+    }
     this.createFooter();
     this.mobileSelectAll.type = "checkbox";
     const selectLabel = element("label", "mobile-select-all");
@@ -246,6 +308,28 @@ export default class MaterialTemplate {
   private get filterColumns() { return this.columnFilters ? this.dataColumns.filter(column => column.filter &&
     (this.presentation.view !== "mobile" || column.name !== "operation")) : []; }
   private columnTitle(column: IGridColumnInfo) { return this.columnLabels.get(column) ?? column.name ?? ""; }
+  private guideColumnTarget(column: IGridColumnInfo) {
+    const headings = Array.from(this.container.querySelectorAll<HTMLElement>("[data-guide-column]"));
+    const heading = headings.find(node => node.dataset.guideColumn === column.name && GridGuide.visible(node)) ||
+      Array.from(this.container.querySelectorAll<HTMLElement>("[data-guide-column-header]"))
+        .find(node => node.dataset.guideColumnHeader === column.name && GridGuide.visible(node)) || null;
+    const start = this.presentation.view === "mobile"
+      ? heading?.closest<HTMLElement>("[data-mobile-field], [data-mobile-primary]") || heading
+      : heading?.closest<HTMLElement>("th") || heading;
+    const cell = this.guideColumnCell(column);
+    return start && cell ? [start, cell] : start;
+  }
+  private guideColumnCell(column: IGridColumnInfo) {
+    const firstRow = this.body.querySelector<HTMLElement>("tbody tr, .mobile-row, .list-item, .data-card");
+    return Array.from(firstRow?.querySelectorAll<HTMLElement>("[data-guide-column-value]") || [])
+      .find(node => node.dataset.guideColumnValue === column.name) || null;
+  }
+  private columnGuideDescription(column: IGridColumnInfo, description: string) {
+    const example = this.guideColumnCell(column)?.textContent?.replace(/\s+/g, " ").trim().slice(0, 160);
+    if (!example) return description;
+    const suffix = `\n${this.label("firstRowExample", "نمونه از ردیف اول")}: ${example}`;
+    return description.slice(0, Math.max(0, 2000 - suffix.length)) + suffix;
+  }
   private closeMenus = (event?: Event) => {
     if (event?.target instanceof HTMLElement && event.target.closest(".iconsDetail[popover]")) return;
     this.container.querySelectorAll<PopoverElement>(".iconsOperations.show .iconsDetail").forEach(menu => {
@@ -255,6 +339,7 @@ export default class MaterialTemplate {
   };
 
   dispose() {
+    this.guide?.close();
     this.closeMenus();
     this.menuObserver?.disconnect();
     this.container.removeEventListener("scroll", this.closeMenus, true);
@@ -545,6 +630,8 @@ export default class MaterialTemplate {
       if (this.selectionSummary.parentElement !== this.toolbar) this.toolbar.querySelector(".toolbar-spacer")?.after(this.selectionSummary);
       if (this.settingsButton.parentElement !== this.toolbar) this.selectionSummary.after(this.settingsButton);
     }
+    const guideParent = view === "mobile" && hasHeader ? this.sectionHeader : this.toolbar;
+    if (this.guideButton && this.guideButton.parentElement !== guideParent) guideParent.append(this.guideButton);
     this.quickFilters.querySelectorAll<HTMLButtonElement>("[data-quick-filter]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.quickFilter === (this.process.filter?.[this.presentation.quickFilter] || "")));
     });
@@ -567,6 +654,7 @@ export default class MaterialTemplate {
       this.columns.forEach(column => {
         const th = element("th", column.type === ColumnType.select ? "check-cell" : column.name === "operation" ? "action-cell" : "");
         th.scope = "col";
+        if (column.name && column.type === ColumnType.data) th.dataset.guideColumnHeader = column.name;
         if (column.width) th.style.width = column.width;
         if (column.headerCssClass) th.classList.add(...(Array.isArray(column.headerCssClass) ? column.headerCssClass : [column.headerCssClass]));
         if (column.type === ColumnType.select) {
@@ -583,6 +671,7 @@ export default class MaterialTemplate {
         } else {
           const content = element("div", "th-content");
           const title = element("span");
+          if (column.name && column.type === ColumnType.data) title.dataset.guideColumn = column.name;
           title.innerHTML = column.title;
           const hasFilter = this.headerFilters && filtering && column.type === ColumnType.data && column.filter;
           const control = hasFilter && !independent ? this.createColumnFilter(column) : null;
@@ -701,6 +790,7 @@ export default class MaterialTemplate {
   private cell(row: GridRow, column: IGridColumnInfo, tag: "div" | "td" = "div") {
     const cell = element(tag);
     if (tag === "td" && column.name === "operation") cell.classList.add("action-cell");
+    if (column.name) cell.dataset.guideColumnValue = column.name;
     const value = row._dataProxy[column.name];
     cell.setAttribute("data-bc-data", "");
     if (column.cellMaker) cell.innerHTML = column.cellMaker(row.data, value, cell) ?? String(value ?? "");
@@ -771,9 +861,11 @@ export default class MaterialTemplate {
       const badgeColumn = fields.find(column => column.name === this.presentation.badgeKey && column !== firstColumn);
       if (firstColumn) {
         const title = element("h3");
+        title.dataset.guideColumnValue = firstColumn.name;
         title.append(...Array.from(this.cell(row, firstColumn).childNodes));
         copy.dataset.mobilePrimary = firstColumn.name;
         const label = element("span", "mobile-field-label", this.columnTitle(firstColumn));
+        label.dataset.guideColumn = firstColumn.name;
         copy.append(label, title);
       }
       heading.append(copy);
@@ -782,6 +874,7 @@ export default class MaterialTemplate {
         const status = this.cell(row, badgeColumn);
         status.classList.add("mobile-row-badge");
         status.dataset.mobileBadge = badgeColumn.name;
+        status.dataset.guideColumn = badgeColumn.name;
         status.setAttribute("role", "group");
         status.setAttribute("aria-label", this.columnTitle(badgeColumn));
         trailing.append(status);
@@ -803,6 +896,7 @@ export default class MaterialTemplate {
           const value = element("dd");
           value.append(this.cell(row, column));
           const label = element("dt", "", this.columnTitle(column));
+          label.dataset.guideColumn = column.name;
           field.append(label, value);
           data.append(field);
       });
@@ -840,8 +934,10 @@ export default class MaterialTemplate {
     columns.filter(column => ![titleKey, subtitleKey, image?.name].includes(column.name)).slice(0, 3).forEach(column => {
       const field = element("div");
       const value = element("strong");
+      value.dataset.guideColumnValue = column.name;
       value.append(...Array.from(this.cell(row, column).childNodes));
       const label = element("span", "", this.columnTitle(column));
+      label.dataset.guideColumn = column.name;
       field.append(label, value);
       meta.append(field);
     });

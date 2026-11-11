@@ -1,8 +1,8 @@
 # Template 4
 
-This document describes `1.5.0-rc.1`, the core edition on `master`.
-Tutorial/Guide support is not included; the full snapshot remains on
-`basisfly/template4-with-guide`. See [release versions](releases.md).
+This document describes `1.6.0-rc.1`, the additive Guide candidate on
+`basisfly/template4-guide`. Core `1.5.0-rc.1` remains on `master`.
+See [release versions](releases.md).
 
 Activate with `culture.template: 'template4'`; no existing template is replaced.
 The existing BasisCore component, data sources, refresh/selected source callbacks,
@@ -86,6 +86,25 @@ populate the supplied element and return nothing. It runs once per instance
 creates no header. Escape untrusted values yourself; these callbacks are not an
 HTML sanitizer or safe handlers for user-provided code.
 
+## Guide
+
+Set root `guide: true` or a valid object to enable configured column/global
+steps. Missing/false or no steps means no help button and no Guide instance.
+The runtime/styles are included in this edition; activation remains opt-in.
+Ordinary Core configurations work without new Guide settings.
+
+`columns.<name>.guide` describes that column or supplies several `steps`.
+`priority` orders column and global steps together (smaller numbers first).
+Global `guide.steps` and `guideTargets` also support page controls outside the
+grid. Metadata `id`, `lid`, `revision` are positive integers when supplied;
+`schemaVersion` is 2. `lid` is metadata, not automatic text translation.
+
+Desktop guidance includes the column header and first current row; mobile
+highlights the corresponding label/value group. `optional: true` skips missing
+targets; a required missing target shows a notice instead. No action executes.
+Read the [JSON guide](guides/flight-routes.md), [HTML action contract](guides/actions.md)
+and [English labels](template4-english.md) before authoring a tour.
+
 ## Styles And Lifecycle
 
 `src/asset/template4.css` is the editable, scoped library stylesheet. It is loaded
@@ -93,7 +112,7 @@ only when a Template 4 instance is created. It uses the BasisPanel-hosted LineIc
 stylesheet and bundles the matching font locally. Provide Vazirmatn in the host page, or the
 Tahoma/sans-serif fallback is used.
 
-BasisCore reset/disposal closes popovers, removes observers and clears
+BasisCore reset/disposal closes popovers and active tours, removes observers and clears
 Template 4 markers before reusing a host for a legacy template. Direct consumers
 must call `grid.materialTemplate.dispose()` before removing/reusing their host.
 

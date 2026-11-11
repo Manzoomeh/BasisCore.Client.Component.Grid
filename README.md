@@ -5,8 +5,8 @@
 This additive release candidate builds on Template 4 Core `1.5.0-rc.1`
 (`30e0aae`). It retains desktop/mobile, Persian/RTL, English/LTR and the native
 comparison studio, and adds opt-in guided tours for columns and HTML actions.
-The Core candidate remains on `master`; Guide is prepared separately on
-`basisfly/template4-guide`. The original full snapshot remains untouched at
+The Guide candidate is now on `master`, prepared on `basisfly/template4-guide`.
+Core is preserved separately on `basisfly/template4-core`. The original full snapshot remains untouched at
 `basisfly/template4-with-guide` (`ada5e1f`). See [release versions](docs/releases.md).
 
 The implementation is native BasisCore/TypeScript, with no React runtime.

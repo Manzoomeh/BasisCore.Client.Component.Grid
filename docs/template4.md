@@ -1,7 +1,8 @@
 # Template 4
 
-This document describes `1.6.0-rc.1`, the additive Guide candidate on
-`basisfly/template4-guide`. Core `1.5.0-rc.1` remains on `master`.
+This document describes `1.6.0-rc.1`, the additive Guide candidate now on
+`master`, prepared on `basisfly/template4-guide`. Core `1.5.0-rc.1` is preserved
+on `basisfly/template4-core`.
 See [release versions](releases.md).
 
 Activate with `culture.template: 'template4'`; no existing template is replaced.

@@ -3,9 +3,10 @@
 ## Baseline And Editions
 
 - Upstream baseline: `ede9f9a03aaf329c5e01d25d665fd1e53c88cfb1`, version 1.4.2.
-- Core on `master`: `1.5.0-rc.1` at `30e0aae`, without Guide.
-- Additive Guide candidate: `basisfly/template4-guide`, `1.6.0-rc.1`, based on
-  that Core commit. No changes to the processing managers or legacy templates.
+- Core on `basisfly/template4-core`: `1.5.0-rc.1` at `30e0aae`, without Guide.
+- Additive Guide candidate on `master`: `1.6.0-rc.1`, prepared on
+  `basisfly/template4-guide` and based on that Core commit. No changes to the
+  processing managers or legacy templates.
 - Full experimental snapshot: branch `basisfly/template4-with-guide`, commit
   `ada5e1f`. Its historical 1.4.2 package number is not a new published release.
 - No push, package publication or upstream PR is performed by the release check.

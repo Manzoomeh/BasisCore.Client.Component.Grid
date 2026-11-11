@@ -4,8 +4,9 @@
 
 | Branch | Edition | Package version | State |
 | --- | --- | --- | --- |
-| `master` | Template 4 core, without Guide | `1.5.0-rc.1` | Preserved at `30e0aae`; approved by the requester |
-| `basisfly/template4-guide` | Template 4 + opt-in Guide | `1.6.0-rc.1` | Additive candidate based on `30e0aae` |
+| `master` | Template 4 + opt-in Guide | `1.6.0-rc.1` | Guide candidate prepared for the requester to push |
+| `basisfly/template4-core` | Template 4 core, without Guide | `1.5.0-rc.1` | Preserved at `30e0aae`; approved by the requester |
+| `basisfly/template4-guide` | Template 4 + opt-in Guide | `1.6.0-rc.1` | Feature commit `573e16b`, based on `30e0aae` |
 | `basisfly/template4-with-guide` | Full Template 4 + Guide snapshot | historical `1.4.2` | Backup at `ada5e1f`, not a publishable new release |
 | `basisfly/template4-upstream` | Earlier full-feature PR preparation | historical `1.4.2` | Preserved, not used for the core PR |
 
@@ -81,10 +82,12 @@ contracts still need review before broad rollout. No PR/push until approval.
 
 ## Guide Candidate And Storage
 
-The Guide PR should target the accepted Core history, not the archived full
-snapshot. Its diff against `master` includes only the additive feature, Guide
-documentation/tests/demo metadata and the new release identity. `master` and
-`basisfly/template4-with-guide` remain untouched by this preparation.
+The Guide feature was prepared on `basisfly/template4-guide`, then fast-forwarded
+onto local `master` at the requester's direction. The previous Core tip is kept
+on `basisfly/template4-core`; `basisfly/template4-with-guide` remains untouched.
+Compare against the Core branch for the additive feature, documentation/tests,
+demo metadata and release identity. For a Guide-only upstream PR, the target
+must already include the Core history; otherwise the PR also includes Core.
 
 The editable Guide studio writes `basiscore-grid-template4-guide-datasets-v1`.
 Archived `material-list-studio-datasets` data is a read-only import fallback;
@@ -93,7 +96,7 @@ rows and settings are preserved. Core's separate key is neither read nor
 overwritten. This isolation concerns the demo only, not consumer grid data.
 
 No fetch/push, PR creation, tag, deployment or package publication is performed.
-The requester will push the prepared branch after reviewing the local commit.
+The requester will push `master` after reviewing the local commits.
 
 ## Guide Verification: 2026-11-11
 

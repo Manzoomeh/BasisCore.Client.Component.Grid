@@ -2,10 +2,17 @@ const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const demoHttpServer = require("./server/http");
+const {BannerPlugin} = require("webpack");
+const {version} = require("./package.json");
 
 module.exports = (env, options) => {
   return {
     entry: {
+      studio: {
+        import: "./src/StudioLoader.ts",
+        filename: "basiscore-grid/basiscore.grid.js",
+        library: { name: "grid", type: "assign" },
+      },
       grid: {
         import: "./src/Loader.ts",
         filename: "basiscore.grid.js",
@@ -39,6 +46,7 @@ module.exports = (env, options) => {
         },
       },
     },
+    output: {clean: true},
     externals: {
       basiscore: "basiscore",
     },
@@ -86,12 +94,17 @@ module.exports = (env, options) => {
           test: /\.(png|gif)/i,
           type: "asset/inline",
         },
+        {
+          test: /\.woff2$/i,
+          type: "asset/inline",
+        },
       ],
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".css", ".png"], // there's a dot missing
     },
     plugins: [
+      new BannerPlugin(`BasisCore Grid ${version} | Template 4 core (without Guide)`),
       new CircularDependencyPlugin({
         // `onStart` is called before the cycle detection starts
         onStart({ compilation }) {

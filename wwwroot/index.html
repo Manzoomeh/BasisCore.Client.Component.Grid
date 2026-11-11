@@ -1,100 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grid Examples</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BasisPanel List Studio · Grid Templates</title>
+  <link rel="icon" href="/dashboard/basisicon.ico">
+  <link rel="preconnect" href="https://basispanel.ir">
+  <link rel="stylesheet" href="https://basispanel.ir/asset/css/LineIcons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dashboard/studio.css">
+  <script type="module" src="/dashboard/studio.mjs"></script>
 </head>
-
 <body>
-  <ul>
-    <li>
-      JavaScript library
-      <ul>
-        <li><a href="library.html">Simple</a></li>
-      </ul>
-    </li>
-
-    <li>
-      BasisCore Component
-      <ul>
-        <li><a href="./component/zero-config.html">Zero Config</a></li>
-        <li><a href="./component/if.html">Use If</a></li>
-        <li><a href="./component/reset.html">Reset</a></li>
-        <li><a href="./component/dynamic-data.html">Dynamic Data</a></li>
-
-        <li>
-          Configuration
-          <ul>
-            <li><a href="./component/configuration/with-config.html">With Simple Config</a></li>
-            <li><a href="./component/configuration/with-config-en.html">With Simple Config Left Direction</a></li>
-            <li>
-              Add Row
-              <ul>
-                <li><a href="./component/configuration/new-row.html">Desktop</a></li>
-                <li><a href="./component/configuration/new-row-mobile.html">Mobile</a></li>
-              </ul>
-            </li>
-            <li>
-              Paging
-              <ul>
-                <li><a href="./component/configuration/paging/no-paging.html">No Paging</a></li>
-                <li><a href="./component/configuration/paging/simple-paging.html">Simple Paging</a></li>
-                <li><a href="./component/configuration/paging/multi-paging.html">Multi Paging</a></li>
-                <li><a href="./component/configuration/paging/multi-paging-with-default.html">Multi Paging With Default</a></li>
-              </ul>
-            </li>
-            <li>
-              Layout
-              <ul>
-                <li><a href="./component/configuration/layout/css-class.html">CSS Class</a></li>
-                <li><a href="./component/configuration/layout/no-data.html">No Data</a></li>
-                <li><a href="./component/configuration/layout/first-last-btn.html">First And Last Button</a></li>
-                <li><a href="./component/configuration/layout/loader.html">Loader</a></li>
-                <li><a href="./component/configuration/layout/refresh.html">Refresh Button</a></li>
-                <li><a href="./component/configuration/layout/selectable.html">Selectable</a></li>
-              </ul>
-            </li>
-            <li>
-              Width card
-              <ul>
-                <li><a href="./component/configuration/widthCard/sample.html">Simple</a></li>
-              </ul>
-            </li>
-            <li>
-              Mobile Design
-              <ul>
-                <li><a href="./component/configuration/mobileDesign/template1.html">Template 1</a></li>
-                <li><a href="./component/configuration/mobileDesign/template2.html">Template 2</a></li>
-                <li><a href="./component/configuration/mobileDesign/template3.html">Template 3</a></li>
-              </ul>
-            </li>
-            <li>
-              With Export
-              <ul>
-                <li><a href="./component/configuration/withExport/exportExcel.html">Export Excel</a></li>
-              </ul>
-            </li>
-            <li><a href="./component/configuration/with-action.html">With Action Config</a></li>
-          </ul>
-        </li>
-        <li>
-          Process
-          <ul>
-            <li><a href="./component/process/server.html">Server</a></li>
-            <li><a href="./component/process/mix.html">Mix</a></li>
-            <li><a href="./component/process/mixWithConfig.html">Mix With Config</a></li>
-          </ul>
-        </li>
-
-        <li><a href="./component/use-dbsource.html">Use DbSource</a></li>
-        <li><a href="./component/use-api.html">Use API</a></li>
-        <li><a href="./component/use-websocket.html">Use WebSocket</a></li>
-      </ul>
-    </li>
-  </ul>
+  <a class="skip-link" href="#workspace">رفتن به پیش‌نمایش</a>
+  <div class="studio-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="BasisPanel List Studio"><img src="/dashboard/basisicon.ico" width="34" height="34" alt=""><strong lang="en" dir="ltr">BasisPanel List Studio</strong></a>
+      <div class="topbar-actions"><span class="version" lang="en" dir="ltr">Grid 1.5.0-rc.1</span><a class="button quiet-button" href="/examples.html"><span data-icon="BookOpen"></span><span>همه نمونه‌ها</span></a></div>
+    </header>
+    <main>
+      <section class="template-section" aria-labelledby="templates-heading">
+        <div class="section-heading"><h1 id="templates-heading">تمپلیت‌های گرید</h1><span class="muted">BasisCore Client Component Grid</span></div>
+        <nav id="template-gallery" class="template-gallery" aria-label="انتخاب تمپلیت"></nav>
+      </section>
+      <section id="workspace" class="workspace" aria-labelledby="workspace-heading" tabindex="-1">
+        <div class="section-heading workspace-heading"><h2 id="workspace-heading">پیش‌نمایش زنده</h2><span class="workspace-label"><span data-icon="PanelTop"></span><span>نمونه‌های اصلی</span></span></div>
+        <div class="sample-bar">
+          <label class="sample-select"><span>نمونه فعال</span><select id="example-select" aria-label="انتخاب نمونه"></select></label>
+          <div class="sample-actions"><button type="button" id="reload-example" class="icon-button" aria-label="بارگذاری مجدد نمونه" title="بارگذاری مجدد نمونه"><span data-icon="RefreshCw"></span></button><a id="open-example" class="button" href="/component/configuration/mobileDesign/template1.html" target="_blank" rel="noopener"><span data-icon="ExternalLink"></span><span>باز کردن نمونه</span></a></div>
+        </div>
+        <div class="preview-heading">
+          <div class="preview-title"><span class="surface-icon" data-icon="Table2"></span><div><h3 id="example-title">تمپلیت ۱</h3><code id="example-name" lang="en" dir="ltr">template1</code></div></div>
+          <span id="page-status" class="page-status" role="status" aria-live="polite">در حال بارگذاری صفحه</span>
+        </div>
+        <div class="preview-toolbar">
+          <div class="viewport-control" role="group" aria-label="اندازه پیش‌نمایش">
+            <button type="button" data-viewport="desktop" aria-pressed="true"><span data-icon="Monitor"></span><span>دسکتاپ</span></button>
+            <button type="button" data-viewport="tablet" aria-pressed="false"><span data-icon="Tablet"></span><span>تبلت</span></button>
+            <button type="button" data-viewport="mobile" aria-pressed="false"><span data-icon="Smartphone"></span><span>موبایل</span></button>
+          </div>
+          <span id="viewport-size" class="viewport-size" lang="en" dir="ltr"></span>
+        </div>
+        <div id="preview-stage" class="preview-stage" data-viewport="desktop"><div class="preview-viewport"><iframe id="example-frame" title="پیش‌نمایش تمپلیت ۱"></iframe></div></div>
+        <div class="preview-footer"><span data-icon="FileCode2"></span><a id="example-path" href="/component/configuration/mobileDesign/template1.html" target="_blank" rel="noopener" dir="ltr">component/configuration/mobileDesign/template1.html</a></div>
+      </section>
+    </main>
+    <footer class="studio-footer"><span lang="en" dir="ltr">BasisCore Grid · Templates 1 / 2 / 3 / 4</span><a href="https://github.com/daniyalsh1/BasisCore.Client.Component.Grid" target="_blank" rel="noopener">مخزن پروژه<span data-icon="ExternalLink"></span></a></footer>
+  </div>
+  <noscript><p class="noscript-message">برای نمایش نمونه‌ها جاوااسکریپت را فعال کنید یا <a href="/examples.html">فهرست نمونه‌ها</a> را باز کنید.</p></noscript>
 </body>
-
 </html>

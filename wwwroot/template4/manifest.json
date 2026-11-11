@@ -1,0 +1,38 @@
+{
+  "source": "demo/template4",
+  "entry": "/component/configuration/mobileDesign/template4.html",
+  "assets": [
+    {
+      "path": "/assets/index-B8ZTtWSP.css",
+      "sha256": "6d330153cf251b9e0ff5e2e1d242c08c9ca7c07172dd98248ffc62548ddb427c"
+    },
+    {
+      "path": "/assets/index-DXfe-gBK.js",
+      "sha256": "c6dcf9b1b1c0db20a860bea4aa86c549c1f1ed3c53eca434721869d8c4f71ade"
+    },
+    {
+      "path": "/basiscore/basiscore.js",
+      "sha256": "14d7002ad9cf64009d831a2f2dafd8ce7790dc668cab7447504ccb68667be2ba"
+    },
+    {
+      "path": "/basiscore-grid/basiscore.grid.js",
+      "sha256": "00da9a1c931d11f72698409e1742d7d682a2861f56675ee74bcf6e17c0b92aca"
+    },
+    {
+      "path": "/basisicon.ico",
+      "sha256": "3ee9ed1142fd7a1f7a4486fce84fe9186d6380f27f51e8be606e75ac96398ac5"
+    }
+  ],
+  "resources": [
+    {
+      "path": "/LineIcons.woff2",
+      "sha256": "22d65627d2483a04af29571b0637043746d2536c84a977860bc3ece769cf3418"
+    }
+  ],
+  "componentSource": "src/StudioLoader.ts",
+  "componentBuild": "npm run build",
+  "shellSource": "demo/template4/src",
+  "shellBuild": "npm --prefix demo/template4 run build",
+  "version": "1.5.0-rc.1",
+  "edition": "template4-core"
+}

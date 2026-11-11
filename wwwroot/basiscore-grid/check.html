@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>BasisCore Grid Checks</title>
+<link rel="icon" href="/basisicon.ico">
+<script src="/basiscore/basiscore.js"></script>
+<script src="./basiscore.grid.js"></script>
+<div id="grid"></div>
+<div id="classic"></div>
+<output id="result">Running</output>
+<script>
+try {
+  let checks = 0;
+  const assert = (condition, message) => { if (!condition) throw new Error(message); checks++; };
+  const host = document.getElementById('grid');
+  const rows = Array.from({length: 12}, (_, i) => ({id: i, name: `Row ${i}`, count: i, city: i % 2 ? 'B' : 'A'}));
+  let selected = [];
+  const instance = new grid.Grid(host, {
+    filter:'advanced', process:'client', paging:[6,8,12], selectable:'multi', selectAll:true, rowNumber:'',
+    culture:{deviceId:1,template:'template4',labels:{}},
+    columns:{name:{title:'Name'},count:{title:'Count',filter:false},city:{title:'City',filterData:{type:'select'}}},
+    presentation:{view:'table',density:'comfortable'},
+  },()=>{},data=>selected=data);
+  instance.setSource(rows);
+  const count = () => host.querySelectorAll('tbody tr').length;
+  assert(count() === 6, 'Page size');
+  host.querySelector('[aria-label="صفحه آخر"]').click();
+  assert(host.querySelector('tbody').textContent.includes('Row 6'), 'Last page delegates to native paging');
+  host.querySelector('[aria-label="صفحه اول"]').click();
+  assert(host.querySelector('tbody').textContent.includes('Row 0'), 'First page delegates to native paging');
+  assert(host.querySelectorAll('.page-number').length === 2 && host.querySelector('.page-number[aria-current="page"]').textContent === '۱', 'Numbered pagination and active page');
+  host.querySelectorAll('.page-number')[1].click();
+  assert(host.querySelector('tbody').textContent.includes('Row 6') && host.querySelector('.page-number[aria-current="page"]').textContent === '۲', 'Numbered page uses BasisCore paging');
+  host.querySelector('[aria-label="صفحه قبل"]').click();
+  host.querySelector('[aria-label="صفحه بعد"]').click();
+  assert(host.querySelector('tbody').textContent.includes('Row 6'), 'Next page');
+  instance.materialTemplate.setPageSize(8);
+  assert(count() === 8, 'Change page size');
+  const search = host.querySelector('.search-field input');
+  search.value = 'Row 1'; search.dispatchEvent(new Event('input'));
+  assert(count() === 3, 'Search across columns');
+  const city = host.querySelector('[aria-label="City"]');
+  city.value = 'B'; city.dispatchEvent(new Event('change'));
+  assert(count() === 2, 'Combine column filter and search');
+  host.querySelector('.clear-filters').click();
+  search.value = 'not-present'; search.dispatchEvent(new Event('input'));
+  assert(count() === 0 && host.querySelector('.empty-state'), 'Empty state');
+  search.value = ''; search.dispatchEvent(new Event('input'));
+  assert(count() === 8, 'Recover after empty result');
+  host.querySelector('thead input').click();
+  assert(selected.length === 8, 'Select all on page');
+  host.querySelector('tbody input').click();
+  assert(host.querySelector('thead input').indeterminate && selected.length === 7, 'Checkbox partial selection');
+  host.querySelector('tbody input').click();
+  instance.materialTemplate.updatePresentation({view:'list'});
+  assert(host.querySelectorAll('.list-item').length === 8 && host.querySelectorAll('.list-item input:checked').length === 8, 'Keep selection on view change');
+  instance.materialTemplate.updatePresentation({view:'grid'});
+  assert(host.querySelectorAll('.data-card').length === 8, 'Card view');
+  instance.materialTemplate.updatePresentation({view:'mobile',titleKey:'name',subtitleKey:'city',rowActions:true});
+  assert(host.querySelectorAll('.mobile-row').length === 8 && !host.querySelector('table'), 'Native mobile rows replace wide table');
+  assert(host.querySelector('.mobile-row-fields dd').textContent === '0', 'Mobile uses the table column order');
+  assert(!host.querySelector('details') && host.querySelectorAll('.mobile-row:first-child .mobile-row-fields dt').length === 2, 'Every table column is visible without expanding');
+  assert(host.querySelectorAll('.mobile-row input:checked').length === 8, 'Mobile keeps selected rows');
+  host.querySelector('.mobile-select-all input').click();
+  assert(selected.length === 0, 'Mobile select all toggles page');
+  const mobileSort = host.querySelector('.mobile-tools select');
+  mobileSort.value = 'count:desc'; mobileSort.dispatchEvent(new Event('change'));
+  assert(host.querySelector('.mobile-row h3').textContent === 'Row 11', 'Mobile sorting uses process manager');
+  mobileSort.value = ''; mobileSort.dispatchEvent(new Event('change'));
+  search.value = 'not-present'; search.dispatchEvent(new Event('input'));
+  assert(host.querySelector('.empty-state') && host.querySelector('.mobile-select-all input').disabled, 'Mobile empty state');
+  search.value = ''; search.dispatchEvent(new Event('input'));
+  assert(host.querySelectorAll('.mobile-row').length === 8, 'Mobile recovers after search');
+  instance.materialTemplate.updatePresentation({view:'table'});
+  host.querySelector('[aria-label="مرتب‌سازی Count"]').click();
+  assert(host.querySelector('tbody tr td:nth-child(3)').textContent === '0', 'Numeric sorting');
+  host.querySelector('[aria-label="مرتب‌سازی Count"]').click();
+  assert(host.querySelector('tbody tr td:nth-child(3)').textContent === '11', 'Descending sorting');
+  host.querySelector('[aria-label="مرتب‌سازی Count"]').click();
+  assert(host.querySelector('tbody tr td:nth-child(3)').textContent === '0', 'Clear sort restores source order');
+  instance.setSource([{id:99,name:'Replacement',count:99,city:'C'}]);
+  assert(count() === 1 && host.querySelector('tbody').textContent.includes('Replacement'), 'Replace source');
+  const classic = new grid.Grid(document.getElementById('classic'), {
+    culture:{deviceId:1,template:'template1',labels:{}},filter:'none',paging:false,
+    columns:{name:'Name'},rowNumber:'',loader:false,
+  },()=>{},()=>{});
+  classic.setSource([{name:'Legacy row'}]);
+  assert(document.querySelector('#classic tbody').textContent === 'Legacy row', 'Legacy template');
+  const headerHost = document.createElement('div');
+  document.body.append(headerHost);
+  const headerGrid = new grid.Grid(headerHost, {
+    culture:{deviceId:1,template:'template4',labels:{}},filter:'row',process:'client',paging:[6],rowNumber:'',
+    columns:{name:{title:'Name',sort:true},city:{title:'City'},count:{title:'Count',filter:false}},
+    presentation:{filterMode:'header'},
+  },()=>{},()=>{});
+  headerGrid.setSource(rows);
+  const headerInput = () => headerHost.querySelector('[data-column-filter="name"]');
+  assert(headerInput().placeholder === 'Name' && headerHost.querySelectorAll('.header-filter').length === 2, 'Opt-in header placeholders and filter eligibility');
+  assert(headerHost.querySelector('.filter-panel').style.display === 'none', 'Header mode replaces filter panel');
+  headerInput().focus();
+  headerInput().value = 'Row 1'; headerInput().setSelectionRange(5,5);
+  headerInput().dispatchEvent(new Event('input'));
+  assert(headerHost.querySelectorAll('tbody tr').length === 3, 'Header substring filtering');
+  assert(document.activeElement === headerInput() && headerInput().selectionStart === 5, 'Typing keeps focus and caret');
+  headerHost.querySelector('[aria-label="مرتب‌سازی Name"]').click();
+  assert(headerHost.querySelectorAll('tbody tr').length === 3, 'Sort preserves partial header filter');
+  const headerCity = headerHost.querySelector('[data-column-filter="city"]');
+  headerCity.value = 'b'; headerCity.dispatchEvent(new Event('input'));
+  assert(headerHost.querySelectorAll('tbody tr').length === 2, 'Combine header filters');
+  headerInput().value = 'missing'; headerInput().dispatchEvent(new Event('input'));
+  assert(headerHost.querySelector('.empty-state') && headerInput(), 'Empty state retains header inputs');
+  headerGrid.materialTemplate.updatePresentation({filterMode:'panel'});
+  assert(headerHost.querySelectorAll('thead .header-filter').length === 2 && headerHost.querySelector('.filter-panel').style.display === 'none', 'Row config cannot enable advanced panel through presentation');
+  const columnsHost = document.createElement('div');
+  document.body.append(columnsHost);
+  const columnsGrid = new grid.Grid(columnsHost, {
+    culture:{deviceId:1,template:'template4',labels:{}}, filter:'row',process:'client',paging:[6],rowNumber:'',
+    columns:{name:{title:'Name',filterData:{type:'text'}},city:{title:'City',filterData:{type:'select',fixValues:[{id:'A',value:'A'},{id:'B',value:'B'}]}}},
+    presentation:{filterMode:'columns',quickFilter:'city'},
+  },()=>{},()=>{});
+  columnsGrid.setSource(rows);
+  assert(columnsHost.querySelector('th .th-content').textContent === 'Name' && columnsHost.querySelectorAll('thead .header-filter').length === 2, 'Column mode keeps titles and typed controls');
+  assert(columnsHost.querySelector('[data-quick-filter="a"] .quick-filter-count').textContent === '۶', 'Quick count uses whole source, not first page');
+  columnsHost.querySelector('[data-quick-filter="a"]').click();
+  assert(columnsHost.querySelector('[data-column-filter="city"]').value === 'A', 'Column select restores the original uppercase ID');
+  assert(columnsHost.querySelector('.filter-panel [aria-label="City"]').value === 'A', 'Panel select agrees with the active quick filter');
+  const nameFilter = columnsHost.querySelector('[data-column-filter="name"]');
+  nameFilter.value = 'Row 1'; nameFilter.dispatchEvent(new Event('input'));
+  assert(columnsHost.querySelectorAll('tbody tr').length === 1 && columnsHost.querySelector('tbody').textContent.includes('Row 10'), 'Combine substring filter and exact quick select');
+  columnsHost.querySelector('[data-quick-filter=""]').click();
+  assert(columnsHost.querySelectorAll('tbody tr').length === 3, 'All clears only the quick-filter column');
+  columnsGrid.setSource([{id:1,name:'Row 1',city:'active'},{id:2,name:'Row 1',city:'inactive'}]);
+  columnsHost.querySelector('[data-quick-filter="active"]').click();
+  assert(columnsHost.querySelectorAll('tbody tr').length === 1 && !columnsHost.querySelector('tbody').textContent.includes('inactive'), 'Exact select does not confuse active with inactive');
+  assert(columnsHost.querySelector('.advanced-filter-button').style.display === 'none' && columnsHost.querySelector('.filter-panel').style.display === 'none', 'Column mode excludes advanced controls');
+  const fallbackHost = document.createElement('div');
+  document.body.append(fallbackHost);
+  const fallbackGrid = new grid.Grid(fallbackHost, {
+    culture:{deviceId:1,template:'template4',labels:{}},filter:'row',process:'client',paging:[6],rowNumber:'',
+    columns:{city:{title:'City',filterData:{type:'select'}}},presentation:{filterMode:'columns'},
+  },()=>{},()=>{});
+  fallbackGrid.setSource(rows);
+  const fallbackSelect = fallbackHost.querySelector('[data-column-filter="city"]');
+  assert(fallbackSelect.options.length === 3, 'Select without fixValues derives unique source values');
+  fallbackSelect.value = 'B'; fallbackSelect.dispatchEvent(new Event('change'));
+  assert(fallbackHost.querySelectorAll('tbody tr').length === 6 && fallbackHost.querySelector('[data-column-filter="city"]').value === 'B', 'Derived options filter exactly and retain selection');
+  document.getElementById('result').textContent = `All ${checks} checks passed`;
+} catch(error) {
+  document.getElementById('result').textContent = `FAILED: ${error.message}`;
+  throw error;
+}
+</script>
+<script>
+async function checkNativeComponent() {
+  const container = document.createElement('div');
+  container.id = 'native';
+  container.innerHTML = '<basis core="component.grid.grid" run="atclient" datamembername="check.rows" options="nativeCheckOptions" onrendered="nativeCheckRendered"></basis>';
+  document.body.append(container);
+  window.nativeCheckOptions = {
+    culture: {deviceId: 1, template: 'template4', labels: {}},
+    columns: {name: {title: 'Name'}}, process: 'client', filter: 'row', paging: [6], rowNumber: '',
+    selectable: 'multi', selectAll: true, selectedSourceId: 'check.selected',
+  };
+  let finish;
+  let rendered = new Promise(resolve => finish = resolve);
+  window.nativeCheckRendered = () => finish();
+  const runtime = $bc.new().addFragment(container).setOptions({
+    repositories: {'grid.grid': './basiscore.grid.js'},
+    sources: {'check.rows': [{id: 1, name: 'Native component'}]},
+  }).run();
+  await rendered;
+  // A source update is a new user action, after the initial render callback exits.
+  await new Promise(requestAnimationFrame);
+  if (!container.querySelector('tbody').textContent.includes('Native component')) throw new Error('Native component source');
+  const command = runtime.GetComponentList()[0];
+  if (command.core !== 'component.grid.grid' || !command.manager.gridInstance) throw new Error('Component manager');
+  rendered = new Promise(resolve => finish = resolve);
+  runtime.setSource('check.rows', [{id: 2, name: 'Source updated'}]);
+  await rendered;
+  if (!container.querySelector('tbody').textContent.includes('Source updated')) throw new Error('Reactive source update');
+  container.querySelector('tbody input').click();
+  if (command.manager.gridInstance.getSelectedRows().length !== 1) throw new Error('Native selection');
+  document.getElementById('result').textContent += '; 4 native BasisCore lifecycle/source/selection checks passed';
+}
+checkNativeComponent().catch(error => {
+  document.getElementById('result').textContent = `FAILED: ${error.message}`;
+  throw error;
+});
+</script>
+</html>

@@ -13,6 +13,12 @@ export default class BasisCoreGridComponent implements IComponentManager {
   private sourceId: SourceId = null;
   private resetSourceId: SourceId = null;
 
+  public get gridInstance(): Grid { return this.grid; }
+
+  public disposeAsync(): void {
+    this.grid?.materialTemplate?.dispose();
+  }
+
   constructor(owner: IUserDefineComponent) {
     this.owner = owner;
   }
@@ -84,6 +90,7 @@ export default class BasisCoreGridComponent implements IComponentManager {
 
   public async runAsync(source?: ISource): Promise<boolean> {
     if (source?.id == this.resetSourceId) {
+      this.disposeAsync();
       this.grid = null;
       await this.displayDataIfExistsAsync();
     } else {

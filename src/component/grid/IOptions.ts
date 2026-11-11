@@ -1,7 +1,7 @@
 import { HttpMethod, IFixValue } from "basiscore";
 import { IDictionary, IGridType, ISortType } from "../../type-alias";
 
-export type FilterType = "none" | "simple" | "row";
+export type FilterType = "none" | "simple" | "row" | "advanced";
 
 export type HtmlDirection = "ltr" | "rtl";
 
@@ -11,13 +11,31 @@ export type ProcessActionType = "server" | "client";
 
 export type SelectType = "none" | "single" | "multi";
 
-export type ITemplate = "template1" | "template2" | "template3";
+export type ITemplate = "template1" | "template2" | "template3" | "template4";
+
+export type IGridPresentation = {
+  filterMode?: "panel" | "header" | "columns";
+  showHeaderFilters?: boolean;
+  quickFilter?: string;
+  view?: "table" | "list" | "grid" | "mobile";
+  density?: "compact" | "comfortable";
+  search?: boolean;
+  rowActions?: boolean;
+  titleKey?: string;
+  subtitleKey?: string;
+  imageKey?: string;
+  badgeKey?: string;
+  onRowAction?: (row: any) => void;
+  onPageSizeChange?: (size: number) => void;
+  onSettings?: () => void;
+};
 
 export type ExportType = "excel";
 
 export type FilterDataType = "text" | "select" | "autocomplete";
 
 export type IGridOptions = {
+  presentation?: IGridPresentation;
   columns: IDictionary<IColumn>;
   filter?: FilterType;
   editMode?: IEditModeInfo;
@@ -34,6 +52,7 @@ export type IGridOptions = {
     labels: IDictionary<string>;
   };
   rowMaker?: IRowMakerCallback;
+  headerMaker?: IHeaderMakerCallback;
   direction: HtmlDirection;
   process: ProcessType;
   ProcessActionType?: {
@@ -81,6 +100,7 @@ export type IEditModeColumnInfo = {
 };
 
 export type IColumnInfo = {
+  compare?: (left: any, right: any) => number;
   source?: string | IFieldMakerCallback;
   title?: string;
   sort?: boolean;
@@ -106,6 +126,8 @@ export type ICellMakerCallback = (
 
 export type IRowMakerCallback = (row: any, element: HTMLElement) => void;
 
+export type IHeaderMakerCallback = (element: HTMLElement) => RawHtml | void;
+
 export type IFieldMakerCallback = (row: any) => any;
 
 export type INoDataCallback = (td: HTMLTableCellElement) => void;
@@ -128,6 +150,7 @@ export type IExportInfo = {
 
 export type IFilterData = {
   type: FilterDataType;
+  inputType?: "search" | "number" | "date";
   link?: string;
   fixValues?: Array<IFixValue>;
 };

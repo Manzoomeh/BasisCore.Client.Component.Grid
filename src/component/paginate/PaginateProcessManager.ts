@@ -67,6 +67,9 @@ export default abstract class PaginateProcessManager extends ProcessManager {
     this.totalPage =
       Math.floor(this.totalRows / this.pageSize) +
       (Math.ceil(this.totalRows % this.pageSize) > 0 ? 1 : 0);
+    if (this.owner.options.culture?.template === "template4") {
+      this.totalPage = Math.max(1, this.totalPage);
+    }
     this.pageNumber = Math.min(this.pageNumber, this.totalPage - 1);
     this.pageButtonsContainer.innerHTML = "";
     const pageSideCount = Math.floor(this.owner.options.pageCount / 2);

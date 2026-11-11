@@ -1,0 +1,20 @@
+{
+  "searchIcon": { "name": "lni-search", "size": 18 },
+  "filterIcon": { "name": "lni-funnel", "size": 16 },
+  "settingsIcon": { "name": "lni-equalizer", "size": 18 },
+  "moreIcon": { "name": "lni-more-alt", "size": 18 },
+  "arrowUpIcon": { "name": "lni-arrow-up", "size": 14 },
+  "arrowDownIcon": { "name": "lni-arrow-down", "size": 14 },
+  "sortIcon": { "name": "lni-sort-amount-asc", "size": 14 },
+  "previous": { "name": "lni-chevron-right", "size": 18 },
+  "next": { "name": "lni-chevron-left", "size": 18 },
+  "pagePreviousIcon": { "name": "lni-chevron-left", "size": 16 },
+  "pageNextIcon": { "name": "lni-chevron-right", "size": 16 },
+  "firstPageIcon": { "name": "lni-angle-double-left", "size": 16 },
+  "lastPageIcon": { "name": "lni-angle-double-right", "size": 16 },
+  "resultsIcon": { "name": "lni-list", "size": 20 },
+  "emptyIcon": { "name": "lni-search", "size": 26 },
+  "closeIcon": { "name": "lni-close", "size": 14 },
+  "refreshIcon": { "name": "lni-reload", "size": 16 },
+  "downloadIcon": { "name": "lni-download", "size": 16 }
+}
